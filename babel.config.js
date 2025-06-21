@@ -4,8 +4,9 @@ module.exports = {
     [
       'module-resolver',
       {
+        root: ['./src'],
         alias: {
-          test: './src',
+          src: './src',
         },
       },
     ],
