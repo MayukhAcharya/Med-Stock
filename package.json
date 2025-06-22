@@ -15,6 +15,7 @@
     "@react-navigation/native-stack": "^7.3.18",
     "babel-plugin-module-resolver": "^5.0.2",
     "formik": "^2.4.6",
+    "lucide-react-native": "^0.522.0",
     "react": "19.1.0",
     "react-native": "0.80.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",

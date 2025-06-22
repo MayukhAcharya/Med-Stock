@@ -1,4 +1,4 @@
-import { View, Text, useColorScheme } from 'react-native';
+import { View, Text, useColorScheme, StatusBar } from 'react-native';
 import React, { ReactNode } from 'react';
 import { LinearGradient } from 'react-native-linear-gradient';
 
@@ -22,40 +22,61 @@ const BackgroundFill = (props: backgroundProps) => {
   const currentStyles = styles(backgroundColor);
   return showDesign ? (
     scroll ? (
-      <LinearGradient
-        colors={['#2567E8', '#1CE6DA']}
-        style={currentStyles.container}
-        start={{
-          x: 0,
-          y: 1,
-        }}
-        end={{
-          x: 1,
-          y: 1,
-        }}
-      >
-        <KeyboardAwareScrollView>{children}</KeyboardAwareScrollView>
-      </LinearGradient>
+      <>
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle={'dark-content'}
+        />
+        <LinearGradient
+          colors={['#2567E8', '#1CE6DA']}
+          style={currentStyles.container}
+          start={{
+            x: 0,
+            y: 1,
+          }}
+          end={{
+            x: 1,
+            y: 1,
+          }}
+        >
+          <KeyboardAwareScrollView>{children}</KeyboardAwareScrollView>
+        </LinearGradient>
+      </>
     ) : (
-      <LinearGradient
-        colors={['#2567E8', '#1CE6DA']}
-        style={currentStyles.container}
-        start={{
-          x: 0,
-          y: 1,
-        }}
-        end={{
-          x: 1,
-          y: 1,
-        }}
-      >
-        {children}
-      </LinearGradient>
+      <>
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle={'dark-content'}
+        />
+        <LinearGradient
+          colors={['#2567E8', '#1CE6DA']}
+          style={currentStyles.container}
+          start={{
+            x: 0,
+            y: 1,
+          }}
+          end={{
+            x: 1,
+            y: 1,
+          }}
+        >
+          {children}
+        </LinearGradient>
+      </>
     )
   ) : (
-    <View style={[currentStyles.container, currentStyles.backgroundColor]}>
-      {children}
-    </View>
+    <>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle={'dark-content'}
+      />
+      <View style={[currentStyles.container, currentStyles.backgroundColor]}>
+        {children}
+      </View>
+    </>
   );
 };
 

@@ -2,14 +2,14 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 
-import DashboardScreen from 'src/screens/DashboardScreen/DashboardScreen';
 import {
   AuthStackParamList,
   MainStackParamList,
   UnAuthStackParamList,
 } from 'src/navigation/types';
 import LoginScreen from 'src/screens/LoginScreen';
-import RegisterScreen from 'src/screens/RegisterScreen';
+import DashboardScreen from 'src/screens/DashboardScreen';
+import Header from 'src/components/Header/Header';
 
 const AppNavigation = () => {
   const UnAuthStack = createNativeStackNavigator<UnAuthStackParamList>();
@@ -21,17 +21,17 @@ const AppNavigation = () => {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName="LoginScreen"
+      initialRouteName="LoginRegisterScreen"
     >
-      <UnAuthStack.Screen name="LoginScreen" component={LoginScreen} />
-      <UnAuthStack.Screen name="RegisterScreen" component={RegisterScreen} />
+      <UnAuthStack.Screen name="LoginRegisterScreen" component={LoginScreen} />
     </UnAuthStack.Navigator>
   );
 
   const AuthStackScreens = () => (
     <AuthStack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        header: () => <Header title="My Medicines" />,
       }}
     >
       <AuthStack.Screen name="DashboardScreen" component={DashboardScreen} />
@@ -48,6 +48,10 @@ const AppNavigation = () => {
         <MainStack.Screen
           name="UnAuthStackScreens"
           component={UnAuthStackScreens}
+        />
+        <MainStack.Screen
+          name="AuthStackScreens"
+          component={AuthStackScreens}
         />
       </MainStack.Navigator>
     </NavigationContainer>
