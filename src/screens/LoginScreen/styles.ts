@@ -7,7 +7,7 @@ export const styles = () =>
   StyleSheet.create({
     container: {
       flex: 1,
-      paddingTop: normalize(38, 'height'),
+      paddingTop: normalize(60, 'height'),
       paddingHorizontal: normalize(16),
     },
     logoText: {
@@ -15,14 +15,13 @@ export const styles = () =>
       fontSize: normalize(25),
       color: colors.pureBlack,
     },
-    loginContainer: {
+    loginRegisterContainer: {
       marginTop: normalize(60, 'height'),
       width: normalize(343, 'width'),
       backgroundColor: colors.pureWhite,
       borderRadius: normalize(12),
-      paddingVertical: normalize(24, 'height'),
-      paddingHorizontal: normalize(24, 'width'),
       elevation: 10,
+      flexDirection: 'row',
     },
     loginTextStyle: {
       ...fonts.bold,
@@ -74,11 +73,40 @@ export const styles = () =>
       borderWidth: 1,
       borderColor: colors.stroke,
       elevation: 0,
-      marginBottom: normalize(20, 'height'),
     },
     googleButtonLabelStyle: {
       ...fonts.medium,
       fontSize: normalize(14),
       color: colors.pureBlack,
+    },
+    loginContainer: {
+      width: normalize(343, 'width'),
+      paddingVertical: normalize(24, 'height'),
+      paddingHorizontal: normalize(24, 'width'),
+    },
+    registerContainer: {
+      width: normalize(343, 'width'),
+      paddingVertical: normalize(24, 'height'),
+      paddingHorizontal: normalize(24, 'width'),
+    },
+    signUpTextStyle: {
+      ...fonts.bold,
+      fontSize: normalize(32),
+      color: colors.extraDarkBlue,
+    },
+    accountTextstyle: {
+      ...fonts.medium,
+      fontSize: normalize(14),
+      color: colors.grey,
+    },
+    LoginTextStyle: {
+      ...fonts.medium,
+      fontSize: normalize(14),
+      color: colors.primaryBlue,
+      textAlign: 'center',
+    },
+    inputContainer: {
+      marginTop: normalize(25, 'height'),
+      rowGap: normalize(16),
     },
   });

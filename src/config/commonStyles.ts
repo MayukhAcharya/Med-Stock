@@ -348,4 +348,7 @@ export const commonStyles = StyleSheet.create({
   mb3: {
     marginBottom: normalize(3, 'height'),
   },
+  rowGap6: {
+    rowGap: normalize(6),
+  },
 });
