@@ -1,5 +1,6 @@
 export type UnAuthStackParamList = {
   LoginScreen: undefined;
+  RegisterScreen: undefined;
 };
 
 export type AuthStackParamList = {

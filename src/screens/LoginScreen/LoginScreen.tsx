@@ -13,8 +13,14 @@ import Button from 'src/components/Button/Button';
 import { GoogleIcon } from 'src/assets/svg/GoogleIcon';
 import { UnAuthStackParamList } from 'src/navigation/types';
 
+type navigationPropsofLoginScreen = NativeStackNavigationProp<
+  UnAuthStackParamList,
+  'LoginScreen'
+>;
+
 const LoginScreen = () => {
   const currentStyles = styles();
+  const navigation = useNavigation<navigationPropsofLoginScreen>();
   return (
     <BackgroundFill showDesign={true} scroll>
       <View style={currentStyles.container}>
@@ -29,7 +35,10 @@ const LoginScreen = () => {
                 <Text style={currentStyles.noAccountTextstyle}>
                   Don't have an account?
                 </Text>
-                <TouchableOpacity style={commonStyles.ml6}>
+                <TouchableOpacity
+                  style={commonStyles.ml6}
+                  onPress={() => navigation.navigate('RegisterScreen')}
+                >
                   <Text style={currentStyles.signupTextStyle}> Sign up</Text>
                 </TouchableOpacity>
               </View>

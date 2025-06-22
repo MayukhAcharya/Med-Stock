@@ -1,7 +1,7 @@
-import LoginScreen from 'src/screens/LoginScreen/LoginScreen';
+import AppNavigation from './navigation/AppNavigation';
 
 function App() {
-  return <LoginScreen />;
+  return <AppNavigation />;
 }
 
 export default App;
