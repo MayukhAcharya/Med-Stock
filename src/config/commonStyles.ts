@@ -52,6 +52,9 @@ export const commonStyles = StyleSheet.create({
   justifyCenter: {
     justifyContent: 'center',
   },
+  justifyFlexEnd: {
+    justifyContent: 'flex-end',
+  },
   opacity0: {
     opacity: 0,
   },
@@ -175,11 +178,14 @@ export const commonStyles = StyleSheet.create({
   h39: {
     height: normalize(39),
   },
+  mt5: {
+    marginTop: normalize(5, 'height'),
+  },
   mt8: {
     marginTop: normalize(8),
   },
   mt10: {
-    marginTop: normalize(10),
+    marginTop: normalize(10, 'height'),
   },
   mt12: {
     marginTop: normalize(12),

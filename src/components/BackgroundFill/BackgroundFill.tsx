@@ -73,9 +73,11 @@ const BackgroundFill = (props: backgroundProps) => {
         backgroundColor="transparent"
         barStyle={'dark-content'}
       />
-      <View style={[currentStyles.container, currentStyles.backgroundColor]}>
+      <KeyboardAwareScrollView
+        style={[currentStyles.container, currentStyles.backgroundColor]}
+      >
         {children}
-      </View>
+      </KeyboardAwareScrollView>
     </>
   );
 };
