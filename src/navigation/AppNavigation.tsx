@@ -10,10 +10,13 @@ import {
 import LoginScreen from 'src/screens/LoginScreen';
 import DashboardScreen from 'src/screens/DashboardScreen';
 import Header from 'src/components/Header/Header';
+import AllMedicinesScreen from 'src/screens/AllMedicinesScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import ProfileScreen from 'src/screens/ProfileScreen/ProfileScreen';
 
 const AppNavigation = () => {
   const UnAuthStack = createNativeStackNavigator<UnAuthStackParamList>();
-  const AuthStack = createNativeStackNavigator<AuthStackParamList>();
+  const AuthStack = createBottomTabNavigator<AuthStackParamList>();
   const MainStack = createNativeStackNavigator<MainStackParamList>();
 
   const UnAuthStackScreens = () => (
@@ -28,13 +31,31 @@ const AppNavigation = () => {
   );
 
   const AuthStackScreens = () => (
-    <AuthStack.Navigator
-      screenOptions={{
-        headerShown: true,
-        header: () => <Header title="My Medicines" />,
-      }}
-    >
-      <AuthStack.Screen name="DashboardScreen" component={DashboardScreen} />
+    <AuthStack.Navigator>
+      <AuthStack.Screen
+        name="DashboardScreen"
+        component={DashboardScreen}
+        options={{
+          headerShown: true,
+          header: () => <Header title="My Medicines" />,
+        }}
+      />
+      <AuthStack.Screen
+        name="AllMedicinesScreen"
+        component={AllMedicinesScreen}
+        options={{
+          headerShown: true,
+          header: () => <Header title="All Medicines" />,
+        }}
+      />
+      <AuthStack.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
+        options={{
+          headerShown: true,
+          header: () => <Header title="Profile" />,
+        }}
+      />
     </AuthStack.Navigator>
   );
 

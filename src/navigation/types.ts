@@ -4,6 +4,8 @@ export type UnAuthStackParamList = {
 
 export type AuthStackParamList = {
   DashboardScreen: undefined;
+  AllMedicinesScreen: undefined;
+  ProfileScreen: undefined;
 };
 
 export type MainStackParamList = {
