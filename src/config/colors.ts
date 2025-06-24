@@ -10,6 +10,8 @@ type Colors = {
   borderColor: string;
   grey: string;
   stroke: string;
+  borderColor05: string;
+  lightBlue05: string;
 };
 
 export const colors: Colors = {
@@ -24,4 +26,6 @@ export const colors: Colors = {
   borderColor: '#D9D9D9',
   grey: '#808080',
   stroke: '#EDF1F3',
+  borderColor05: 'rgba(217, 217, 217, 0.5)',
+  lightBlue05: 'rgba(155, 212, 241, 0.11)',
 };

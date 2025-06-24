@@ -27,7 +27,7 @@ const MedicineCard = (props: medicineCardProps) => {
           {image ? (
             <Image
               source={{
-                uri: 'https://5.imimg.com/data5/SELLER/Default/2023/3/296912948/ON/WW/IV/128021380/calpol-650-mg-tablet.png',
+                uri: image,
               }}
               style={currentStyles.imageStyle}
             />
