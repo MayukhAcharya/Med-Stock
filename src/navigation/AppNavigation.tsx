@@ -13,6 +13,11 @@ import Header from 'src/components/Header/Header';
 import AllMedicinesScreen from 'src/screens/AllMedicinesScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import ProfileScreen from 'src/screens/ProfileScreen/ProfileScreen';
+import { Text, TouchableOpacity } from 'react-native';
+import { fonts } from 'src/config/fonts';
+import normalize from 'src/config/normalize';
+import { colors } from 'src/config/colors';
+import { HomeIcon, PillBottleIcon, User } from 'lucide-react-native';
 
 const AppNavigation = () => {
   const UnAuthStack = createNativeStackNavigator<UnAuthStackParamList>();
@@ -31,13 +36,35 @@ const AppNavigation = () => {
   );
 
   const AuthStackScreens = () => (
-    <AuthStack.Navigator>
+    <AuthStack.Navigator initialRouteName="DashboardScreen">
       <AuthStack.Screen
         name="DashboardScreen"
         component={DashboardScreen}
         options={{
           headerShown: true,
           header: () => <Header title="My Medicines" />,
+          tabBarLabel: ({ focused }) => {
+            return (
+              <Text
+                style={{
+                  ...fonts.regular,
+                  fontSize: normalize(14),
+                  // color: focused ? colors.pureWhite : colors.primaryBlue,
+                  color: colors.primaryBlue,
+                }}
+              >
+                Home
+              </Text>
+            );
+          },
+          tabBarIcon: ({ focused }) => {
+            return (
+              <HomeIcon
+                size={20}
+                color={focused ? colors.primaryBlue : colors.pureBlack}
+              />
+            );
+          },
         }}
       />
       <AuthStack.Screen
@@ -46,6 +73,28 @@ const AppNavigation = () => {
         options={{
           headerShown: true,
           header: () => <Header title="All Medicines" />,
+          tabBarLabel: ({ focused }) => {
+            return (
+              <Text
+                style={{
+                  ...fonts.regular,
+                  fontSize: normalize(14),
+                  // color: focused ? colors.pureWhite : colors.primaryBlue,
+                  color: colors.primaryBlue,
+                }}
+              >
+                All Medicines
+              </Text>
+            );
+          },
+          tabBarIcon: ({ focused }) => {
+            return (
+              <PillBottleIcon
+                size={20}
+                color={focused ? colors.primaryBlue : colors.pureBlack}
+              />
+            );
+          },
         }}
       />
       <AuthStack.Screen
@@ -54,6 +103,28 @@ const AppNavigation = () => {
         options={{
           headerShown: true,
           header: () => <Header title="Profile" />,
+          tabBarLabel: ({ focused }) => {
+            return (
+              <Text
+                style={{
+                  ...fonts.regular,
+                  fontSize: normalize(14),
+                  // color: focused ? colors.pureWhite : colors.primaryBlue,
+                  color: colors.primaryBlue,
+                }}
+              >
+                Profile
+              </Text>
+            );
+          },
+          tabBarIcon: ({ focused }) => {
+            return (
+              <User
+                size={20}
+                color={focused ? colors.primaryBlue : colors.pureBlack}
+              />
+            );
+          },
         }}
       />
     </AuthStack.Navigator>

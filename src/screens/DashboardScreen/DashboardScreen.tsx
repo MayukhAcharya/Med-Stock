@@ -18,7 +18,7 @@ const dummyList = [
     id: '1',
     medicineName: 'Paracetamol',
     image:
-      'https://ayushcare.in/products/calpol-500-paracetamol-tablets-ip-500mg-15tablets',
+      'https://5.imimg.com/data5/SELLER/Default/2023/3/296912948/ON/WW/IV/128021380/calpol-650-mg-tablet.png',
     date: '10/10/2025',
     category: 'Pill',
   },
@@ -32,7 +32,7 @@ const dummyList = [
     id: '3',
     medicineName: 'Famoccid-10',
     image:
-      'https://ayushcare.in/products/calpol-500-paracetamol-tablets-ip-500mg-15tablets',
+      'https://5.imimg.com/data5/SELLER/Default/2023/3/296912948/ON/WW/IV/128021380/calpol-650-mg-tablet.png',
     date: '10/10/2025',
     category: 'Pill',
   },
@@ -46,7 +46,7 @@ const dummyList = [
     id: '5',
     medicineName: 'Paracetamol',
     image:
-      'https://ayushcare.in/products/calpol-500-paracetamol-tablets-ip-500mg-15tablets',
+      'https://5.imimg.com/data5/SELLER/Default/2023/3/296912948/ON/WW/IV/128021380/calpol-650-mg-tablet.png',
     date: '10/10/2025',
     category: 'Pill',
   },
@@ -61,7 +61,7 @@ const dummyList = [
 const DashboardScreen = () => {
   const currentStyles = styles();
   return (
-    <BackgroundFill showDesign={false} backgroundColor="white">
+    <BackgroundFill showDesign={false} backgroundColor="white" scroll>
       <View style={currentStyles.container}>
         <View style={commonStyles.rowGap6}>
           <Text style={currentStyles.userWelcomeStyle}>Hello, Mayukh</Text>
