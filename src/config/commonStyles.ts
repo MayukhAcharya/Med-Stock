@@ -223,6 +223,9 @@ export const commonStyles = StyleSheet.create({
   mr16: {
     marginRight: normalize(16),
   },
+  mr20: {
+    marginRight: normalize(20),
+  },
   mr26: {
     marginRight: normalize(26),
   },

@@ -7,6 +7,7 @@ import { commonStyles } from 'src/config/commonStyles';
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
 import { Plus } from 'lucide-react-native';
 import { colors } from 'src/config/colors';
+import FloatingButton from 'src/components/FloatingButton/FloatingButton';
 
 const dummyList = [
   {
@@ -63,31 +64,28 @@ const AllMedicinesScreen = () => {
   const currentStyles = styles();
   return (
     <>
-      <BackgroundFill showDesign={false} scroll={false}>
-        <View style={currentStyles.container}>
-          <View style={commonStyles.aic}>
-            <FlatList
-              data={dummyList}
-              renderItem={({ item, index }) => {
-                return (
-                  <MedicineListCard
-                    expiryDate={item.date}
-                    medicineName={item.medicineName}
-                    quantity="20"
-                    category={item.category}
-                    image={item.image ? item.image : null}
-                  />
-                );
-              }}
-              keyExtractor={item => item.id}
-              ItemSeparatorComponent={() => <View style={commonStyles.mt20} />}
-            />
-          </View>
+      <View style={currentStyles.container}>
+        <View style={commonStyles.aic}>
+          <FlatList
+            data={dummyList}
+            renderItem={({ item, index }) => {
+              return (
+                <MedicineListCard
+                  expiryDate={item.date}
+                  medicineName={item.medicineName}
+                  quantity="20"
+                  category={item.category}
+                  image={item.image ? item.image : null}
+                />
+              );
+            }}
+            keyExtractor={item => item.id}
+            ItemSeparatorComponent={() => <View style={commonStyles.mt20} />}
+          />
         </View>
-      </BackgroundFill>
-      <TouchableOpacity style={currentStyles.fab} onPress={() => {}}>
-        <Plus color={colors.pureWhite} />
-      </TouchableOpacity>
+
+        <FloatingButton />
+      </View>
     </>
   );
 };

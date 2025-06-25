@@ -6,10 +6,10 @@ import { styles } from 'src/components/BackgroundFill/styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 type backgroundProps = {
-  showDesign: boolean;
   children: ReactNode;
   backgroundColor?: 'white' | 'offwhite';
   scroll?: boolean;
+  showDesign?: boolean;
 };
 
 const BackgroundFill = (props: backgroundProps) => {

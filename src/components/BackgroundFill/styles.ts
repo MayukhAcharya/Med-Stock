@@ -5,6 +5,7 @@ export const styles = (backgroundColor: string) =>
   StyleSheet.create({
     container: {
       flex: 1,
+      flexDirection: 'row',
     },
     backgroundColor: {
       backgroundColor:

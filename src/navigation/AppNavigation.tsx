@@ -1,6 +1,8 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
+import { Text } from 'react-native';
+import { HomeIcon, PillBottleIcon, User } from 'lucide-react-native';
 
 import {
   AuthStackParamList,
@@ -12,12 +14,10 @@ import DashboardScreen from 'src/screens/DashboardScreen';
 import Header from 'src/components/Header/Header';
 import AllMedicinesScreen from 'src/screens/AllMedicinesScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import ProfileScreen from 'src/screens/ProfileScreen/ProfileScreen';
-import { Text, TouchableOpacity } from 'react-native';
 import { fonts } from 'src/config/fonts';
 import normalize from 'src/config/normalize';
 import { colors } from 'src/config/colors';
-import { HomeIcon, PillBottleIcon, User } from 'lucide-react-native';
+import ProfileScreen from 'src/screens/ProfileScreen';
 
 const AppNavigation = () => {
   const UnAuthStack = createNativeStackNavigator<UnAuthStackParamList>();
@@ -102,7 +102,9 @@ const AppNavigation = () => {
         component={ProfileScreen}
         options={{
           headerShown: true,
-          header: () => <Header title="Profile" />,
+          header: () => (
+            <Header title="Profile" showBackIcon={true} signout={true} />
+          ),
           tabBarLabel: ({ focused }) => {
             return (
               <Text
