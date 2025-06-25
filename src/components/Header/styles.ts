@@ -8,16 +8,22 @@ export const styles = () =>
     container: {
       height: normalize(90, 'width'),
       borderBottomWidth: 1,
-      width: '100%',
       justifyContent: 'center',
-      alignItems: 'center',
       backgroundColor: colors.offWhite,
       borderColor: colors.borderColor,
       elevation: 10,
+      width: '100%',
+      paddingHorizontal: normalize(12),
     },
     titleTextContainer: {
       ...fonts.medium,
       fontSize: normalize(20),
       color: colors.extraDarkBlue,
+    },
+    headerView: {
+      marginTop: normalize(25, 'height'),
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      alignItems: 'center',
     },
   });
