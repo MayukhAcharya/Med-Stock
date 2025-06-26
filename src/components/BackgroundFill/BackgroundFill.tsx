@@ -1,9 +1,16 @@
-import { View, Text, useColorScheme, StatusBar } from 'react-native';
+import {
+  View,
+  Text,
+  useColorScheme,
+  StatusBar,
+  SafeAreaView,
+} from 'react-native';
 import React, { ReactNode } from 'react';
 import { LinearGradient } from 'react-native-linear-gradient';
 
 import { styles } from 'src/components/BackgroundFill/styles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { commonStyles } from 'src/config/commonStyles';
 
 type backgroundProps = {
   children: ReactNode;
@@ -23,11 +30,6 @@ const BackgroundFill = (props: backgroundProps) => {
   return showDesign ? (
     scroll ? (
       <>
-        <StatusBar
-          translucent
-          backgroundColor="transparent"
-          barStyle={'dark-content'}
-        />
         <LinearGradient
           colors={['#2567E8', '#1CE6DA']}
           style={currentStyles.container}
@@ -40,16 +42,16 @@ const BackgroundFill = (props: backgroundProps) => {
             y: 1,
           }}
         >
+          <StatusBar
+            translucent
+            backgroundColor="transparent"
+            barStyle={'dark-content'}
+          />
           <KeyboardAwareScrollView>{children}</KeyboardAwareScrollView>
         </LinearGradient>
       </>
     ) : (
       <>
-        <StatusBar
-          translucent
-          backgroundColor="transparent"
-          barStyle={'dark-content'}
-        />
         <LinearGradient
           colors={['#2567E8', '#1CE6DA']}
           style={currentStyles.container}
@@ -62,27 +64,41 @@ const BackgroundFill = (props: backgroundProps) => {
             y: 1,
           }}
         >
+          <StatusBar
+            translucent
+            backgroundColor="transparent"
+            barStyle={'dark-content'}
+          />
           {children}
         </LinearGradient>
       </>
     )
   ) : (
     <>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle={'dark-content'}
-      />
       {scroll ? (
-        <KeyboardAwareScrollView
+        <SafeAreaView style={commonStyles.flex1}>
+          <KeyboardAwareScrollView
+            style={[commonStyles.flex1, currentStyles.backgroundColor]}
+          >
+            <StatusBar
+              translucent
+              backgroundColor="transparent"
+              barStyle={'dark-content'}
+            />
+            {children}
+          </KeyboardAwareScrollView>
+        </SafeAreaView>
+      ) : (
+        <SafeAreaView
           style={[currentStyles.container, currentStyles.backgroundColor]}
         >
+          <StatusBar
+            translucent
+            backgroundColor="transparent"
+            barStyle={'dark-content'}
+          />
           {children}
-        </KeyboardAwareScrollView>
-      ) : (
-        <View style={[currentStyles.container, currentStyles.backgroundColor]}>
-          {children}
-        </View>
+        </SafeAreaView>
       )}
     </>
   );

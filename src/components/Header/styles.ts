@@ -13,7 +13,6 @@ export const styles = () =>
       borderColor: colors.borderColor,
       elevation: 10,
       width: '100%',
-      paddingHorizontal: normalize(12),
     },
     titleTextContainer: {
       ...fonts.medium,
@@ -25,5 +24,17 @@ export const styles = () =>
       justifyContent: 'space-between',
       flexDirection: 'row',
       alignItems: 'center',
+    },
+    side: {
+      width: normalize(60),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    center: {
+      flex: 1,
+      alignItems: 'center',
+    },
+    placeholder: {
+      width: normalize(60),
     },
   });

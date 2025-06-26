@@ -2,10 +2,11 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
 
 import { styles } from 'src/components/Header/styles';
-import { commonStyles } from 'src/config/commonStyles';
-import { BackArrowIcon } from 'src/assets/svg/BackArrowIcon';
 import { ArrowLeftIcon, LogOut } from 'lucide-react-native';
 import { colors } from 'src/config/colors';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AuthStackParamList } from 'src/navigation/types';
+import { useNavigation } from '@react-navigation/native';
 
 type headerProps = {
   title: string;
@@ -13,26 +14,36 @@ type headerProps = {
   signout?: boolean;
 };
 
+type NavigationProps = NativeStackNavigationProp<AuthStackParamList>;
+
 const Header = (props: headerProps) => {
   const currentStyles = styles();
   const { title, showBackIcon = false, signout = false } = props;
+  const navigation = useNavigation<NavigationProps>();
   return (
     <View style={currentStyles.container}>
       <View style={currentStyles.headerView}>
         {showBackIcon ? (
-          <TouchableOpacity style={commonStyles.mt8}>
+          <TouchableOpacity
+            style={currentStyles.side}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
             <ArrowLeftIcon />
           </TouchableOpacity>
         ) : (
-          <View />
+          <View style={currentStyles.placeholder} />
         )}
-        <Text style={currentStyles.titleTextContainer}>{title}</Text>
+        <View style={currentStyles.center}>
+          <Text style={currentStyles.titleTextContainer}>{title}</Text>
+        </View>
         {signout ? (
-          <TouchableOpacity>
+          <TouchableOpacity style={currentStyles.side}>
             <LogOut color={colors.error} />
           </TouchableOpacity>
         ) : (
-          <View />
+          <View style={currentStyles.placeholder} />
         )}
       </View>
     </View>
