@@ -4,10 +4,15 @@ import React from 'react';
 import { styles } from 'src/screens/AllMedicinesScreen/styles';
 import MedicineListCard from 'src/components/MedicineListCard/MedicineListCard';
 import { commonStyles } from 'src/config/commonStyles';
-import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
-import { Plus } from 'lucide-react-native';
-import { colors } from 'src/config/colors';
 import FloatingButton from 'src/components/FloatingButton/FloatingButton';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AllMedicineStackParamList } from 'src/navigation/types';
+import { useNavigation } from '@react-navigation/native';
+
+type navigationPropsForAllMedicines = NativeStackNavigationProp<
+  AllMedicineStackParamList,
+  'AllMedicinesScreen'
+>;
 
 const dummyList = [
   {
@@ -62,6 +67,7 @@ const dummyList = [
 
 const AllMedicinesScreen = () => {
   const currentStyles = styles();
+  const navigation = useNavigation<navigationPropsForAllMedicines>();
   return (
     <>
       <View style={currentStyles.container}>
@@ -76,11 +82,15 @@ const AllMedicinesScreen = () => {
                   quantity="20"
                   category={item.category}
                   image={item.image ? item.image : null}
+                  onPress={() => {
+                    navigation.navigate('MedicineDetailsScreen');
+                  }}
                 />
               );
             }}
             keyExtractor={item => item.id}
             ItemSeparatorComponent={() => <View style={commonStyles.mt20} />}
+            showsVerticalScrollIndicator={false}
           />
         </View>
 

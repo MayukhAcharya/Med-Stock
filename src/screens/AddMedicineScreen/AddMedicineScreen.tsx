@@ -1,81 +1,87 @@
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import React from 'react';
+import { PlusCircleIcon } from 'lucide-react-native';
 
-import { styles } from 'src/screens/ProfileScreen/styles';
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
+import { styles } from 'src/screens/AddMedicineScreen/styles';
 import CustomTextInput from 'src/components/CustomTextInput/CustomTextInput';
 import { colors } from 'src/config/colors';
 import { commonStyles } from 'src/config/commonStyles';
-import normalize from 'src/config/normalize';
 import Button from 'src/components/Button/Button';
-import { SaveIcon } from 'lucide-react-native';
 
-const ProfileScreen = () => {
+const AddMedicineScreen = () => {
   const currentStyles = styles();
   return (
-    <BackgroundFill backgroundColor="white" scroll>
+    <BackgroundFill showDesign={false} backgroundColor="white">
       <View style={currentStyles.container}>
         <View style={currentStyles.inputContainer}>
           <CustomTextInput
-            label="Name"
+            label="Medicine Name"
             borderColor={colors.borderColor}
             value=""
-            placeholder="Your Name"
+            placeholder="Medicine Name"
             allStyle={commonStyles.w100per}
             style={{ backgroundColor: colors.pureWhite }}
             labelStyle={currentStyles.labelStyle}
           />
           <CustomTextInput
-            label="Email"
+            label="Category(optional)"
             borderColor={colors.borderColor}
             value=""
-            placeholder="Enter mail"
+            placeholder="Tablet/Syrup"
             allStyle={commonStyles.w100per}
-            keyboardType="email-address"
             style={{ backgroundColor: colors.pureWhite }}
             labelStyle={currentStyles.labelStyle}
           />
           <View style={[commonStyles.row, commonStyles.spaceBetween]}>
             <CustomTextInput
-              label="Age"
+              label="Quantity"
               borderColor={colors.borderColor}
               value=""
-              placeholder="Your age"
+              placeholder="Quantity"
               allStyle={commonStyles.w45Per}
               keyboardType="numeric"
               style={{ backgroundColor: colors.pureWhite }}
               labelStyle={currentStyles.labelStyle}
+              rightContainer={
+                <Text style={currentStyles.quantityUnitStyle}>Unit</Text>
+              }
             />
             <CustomTextInput
-              label="Gender"
+              label="Expiry Date"
               borderColor={colors.borderColor}
               value=""
-              placeholder="Select gender"
+              placeholder="date"
               allStyle={commonStyles.w45Per}
               style={{ backgroundColor: colors.pureWhite }}
               labelStyle={currentStyles.labelStyle}
             />
           </View>
-          <CustomTextInput
-            label="Allergies(if any)"
-            borderColor={colors.borderColor}
-            value=""
-            placeholder="List allergies..."
-            allStyle={[commonStyles.w100per]}
-            keyboardType="numeric"
-            style={{
-              backgroundColor: colors.pureWhite,
-              height: normalize(100, 'height'),
-            }}
-            labelStyle={currentStyles.labelStyle}
-            multiline
-          />
+          <View style={currentStyles.boxView}>
+            <View
+              style={[
+                commonStyles.row,
+                commonStyles.spaceBetween,
+                commonStyles.aic,
+              ]}
+            >
+              <Text style={currentStyles.boxHeaderText}>Uses(optional)</Text>
+              <TouchableOpacity>
+                <Text style={currentStyles.editText}>Edit</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={commonStyles.mt5}>
+              <Text style={currentStyles.boxDescriptionText}>
+                Pain Relief, Treatment of Fever
+              </Text>
+            </View>
+          </View>
         </View>
-        <View style={commonStyles.mt30}>
+        <View>
           <Button
-            label="Save changes"
-            icon={<SaveIcon color={colors.pureWhite} />}
+            label="Add Medicine"
             mainStyle={commonStyles.w100per}
+            icon={<PlusCircleIcon color={colors.pureWhite} />}
             onPress={() => {}}
           />
         </View>
@@ -84,4 +90,4 @@ const ProfileScreen = () => {
   );
 };
 
-export default ProfileScreen;
+export default AddMedicineScreen;

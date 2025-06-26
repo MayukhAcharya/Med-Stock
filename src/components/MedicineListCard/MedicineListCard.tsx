@@ -11,13 +11,15 @@ type medicineListProps = {
   quantity: string;
   category?: string;
   image?: any;
+  onPress: () => void;
 };
 
 const MedicineListCard = (props: medicineListProps) => {
   const currentStyles = styles();
-  const { medicineName, expiryDate, category, image, quantity } = props;
+  const { medicineName, expiryDate, category, image, quantity, onPress } =
+    props;
   return (
-    <TouchableOpacity style={currentStyles.container}>
+    <TouchableOpacity style={currentStyles.container} onPress={() => onPress()}>
       <View>
         <View style={[commonStyles.row, commonStyles.aic]}>
           {image ? (

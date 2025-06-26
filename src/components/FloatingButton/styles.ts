@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import normalize from 'src/config/normalize';
 
 export const styles = () =>
   StyleSheet.create({
@@ -10,23 +11,37 @@ export const styles = () =>
       right: 20,
       bottom: 30,
       backgroundColor: '#007AFF',
-      width: 56,
-      height: 56,
-      borderRadius: 28,
+      width: normalize(56),
+      height: normalize(56),
+      borderRadius: normalize(28),
       justifyContent: 'center',
       alignItems: 'center',
       elevation: 5,
     },
     smallFab: {
       position: 'absolute',
-      right: 23,
+      right: 27,
       bottom: 30,
       backgroundColor: '#007AFF',
-      width: 45,
-      height: 45,
-      borderRadius: 28,
+      width: normalize(45),
+      height: normalize(45),
+      borderRadius: normalize(28),
       justifyContent: 'center',
       alignItems: 'center',
       elevation: 5,
+    },
+    plusIconPressStyle: {
+      width: normalize(56),
+      height: normalize(56),
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: normalize(28),
+    },
+    smallIconsPressStyle: {
+      width: normalize(45),
+      height: normalize(45),
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: normalize(28),
     },
   });

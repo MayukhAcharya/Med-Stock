@@ -1,10 +1,9 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, Pressable } from 'react-native';
 import React from 'react';
+import { BandageIcon, MoveDiagonalIcon, PillIcon } from 'lucide-react-native';
 
 import { styles } from 'src/components/MedicineCard/styles';
 import { commonStyles } from 'src/config/commonStyles';
-import { BandageIcon, MoveDiagonalIcon, PillIcon } from 'lucide-react-native';
-import { colors } from 'src/config/colors';
 
 type medicineCardProps = {
   medicineName: string;
@@ -12,13 +11,19 @@ type medicineCardProps = {
   category: string;
   color: string;
   image?: string | null;
+  onPress: () => void;
 };
 
 const MedicineCard = (props: medicineCardProps) => {
   const currentStyles = styles();
-  const { expiryDate, medicineName, image, category, color } = props;
+  const { expiryDate, medicineName, image, category, color, onPress } = props;
   return (
-    <TouchableOpacity style={currentStyles.container}>
+    <Pressable
+      style={currentStyles.container}
+      onPress={() => {
+        onPress();
+      }}
+    >
       <View style={commonStyles.alignItemsRight}>
         <MoveDiagonalIcon size={20} />
       </View>
@@ -46,7 +51,7 @@ const MedicineCard = (props: medicineCardProps) => {
           </Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

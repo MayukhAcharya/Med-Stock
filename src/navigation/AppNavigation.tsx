@@ -5,7 +5,9 @@ import { Text } from 'react-native';
 import { HomeIcon, PillBottleIcon, User } from 'lucide-react-native';
 
 import {
+  AllMedicineStackParamList,
   AuthStackParamList,
+  DashboardStackParamList,
   MainStackParamList,
   UnAuthStackParamList,
 } from 'src/navigation/types';
@@ -18,11 +20,16 @@ import { fonts } from 'src/config/fonts';
 import normalize from 'src/config/normalize';
 import { colors } from 'src/config/colors';
 import ProfileScreen from 'src/screens/ProfileScreen';
+import MedicineDetailsScreen from 'src/screens/MedicineDetailsScreen';
+import AddMedicineScreen from 'src/screens/AddMedicineScreen';
 
 const AppNavigation = () => {
   const UnAuthStack = createNativeStackNavigator<UnAuthStackParamList>();
   const AuthStack = createBottomTabNavigator<AuthStackParamList>();
   const MainStack = createNativeStackNavigator<MainStackParamList>();
+  const DashboardStack = createNativeStackNavigator<DashboardStackParamList>();
+  const AllMedicineStack =
+    createNativeStackNavigator<AllMedicineStackParamList>();
 
   const UnAuthStackScreens = () => (
     <UnAuthStack.Navigator
@@ -35,14 +42,81 @@ const AppNavigation = () => {
     </UnAuthStack.Navigator>
   );
 
-  const AuthStackScreens = () => (
-    <AuthStack.Navigator initialRouteName="DashboardScreen">
-      <AuthStack.Screen
+  const DashboardStackScreens = () => (
+    <DashboardStack.Navigator
+      initialRouteName="DashboardScreen"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <DashboardStack.Screen
         name="DashboardScreen"
         component={DashboardScreen}
         options={{
           headerShown: true,
           header: () => <Header title="My Medicines" />,
+        }}
+      />
+      <DashboardStack.Screen
+        name="MedicineDetailsScreen"
+        component={MedicineDetailsScreen}
+        options={{
+          headerShown: true,
+          header: () => <Header title="Medicine Details" showBackIcon={true} />,
+        }}
+      />
+      <DashboardStack.Screen
+        name="AddMedicineScreen"
+        component={AddMedicineScreen}
+        options={{
+          headerShown: true,
+          header: () => <Header title="Add Medicine" showBackIcon={true} />,
+        }}
+      />
+    </DashboardStack.Navigator>
+  );
+
+  const AllMedicineStackScreens = () => (
+    <AllMedicineStack.Navigator>
+      <AllMedicineStack.Screen
+        name="AllMedicinesScreen"
+        component={AllMedicinesScreen}
+        options={{
+          headerShown: true,
+          header: () => <Header title="All Medicines" />,
+        }}
+      />
+      <AllMedicineStack.Screen
+        name="MedicineDetailsScreen"
+        component={MedicineDetailsScreen}
+        options={{
+          headerShown: true,
+          header: () => <Header title="Medicine Details" showBackIcon={true} />,
+        }}
+      />
+      <AllMedicineStack.Screen
+        name="AddMedicineScreen"
+        component={AddMedicineScreen}
+        options={{
+          headerShown: true,
+          header: () => <Header title="Add Medicine" showBackIcon={true} />,
+        }}
+      />
+    </AllMedicineStack.Navigator>
+  );
+
+  const AuthStackScreens = () => (
+    <AuthStack.Navigator
+      initialRouteName="DashboardStackScreens"
+      screenOptions={{
+        tabBarHideOnKeyboard: true,
+      }}
+    >
+      <AuthStack.Screen
+        name="DashboardStackScreens"
+        component={DashboardStackScreens}
+        options={{
+          headerShown: false,
           tabBarLabel: ({ focused }) => {
             return (
               <Text
@@ -68,11 +142,11 @@ const AppNavigation = () => {
         }}
       />
       <AuthStack.Screen
-        name="AllMedicinesScreen"
-        component={AllMedicinesScreen}
+        name="AllMedicineStackScreens"
+        component={AllMedicineStackScreens}
         options={{
-          headerShown: true,
-          header: () => <Header title="All Medicines" />,
+          headerShown: false,
+          tabBarHideOnKeyboard: true,
           tabBarLabel: ({ focused }) => {
             return (
               <Text

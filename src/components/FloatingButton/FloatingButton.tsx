@@ -11,15 +11,23 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated';
-
-import { styles } from 'src/components/FloatingButton/styles';
 import {
   CameraIcon,
   PlusIcon,
   SpeechIcon,
   TextIcon,
 } from 'lucide-react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+import { styles } from 'src/components/FloatingButton/styles';
 import { colors } from 'src/config/colors';
+import { AllMedicineStackParamList } from 'src/navigation/types';
+import { useNavigation } from '@react-navigation/native';
+
+type navigationPropsToAddMedicine = NativeStackNavigationProp<
+  AllMedicineStackParamList,
+  'AddMedicineScreen'
+>;
 
 const FloatingButton = () => {
   const currentStyles = styles();
@@ -30,6 +38,7 @@ const FloatingButton = () => {
   const progress = useDerivedValue(() =>
     isOpen.value ? withTiming(1) : withTiming(0),
   );
+  const navigation = useNavigation<navigationPropsToAddMedicine>();
 
   const handlePress = () => {
     const config = {
@@ -99,17 +108,33 @@ const FloatingButton = () => {
   return (
     <View style={[currentStyles.container]}>
       <Animated.View style={[currentStyles.smallFab, textIconAnimate]}>
-        <Pressable>
+        <Pressable
+          style={currentStyles.smallIconsPressStyle}
+          onPress={() => {
+            handlePress();
+            navigation.navigate('AddMedicineScreen');
+          }}
+        >
           <TextIcon color={colors.pureWhite} />
         </Pressable>
       </Animated.View>
       <Animated.View style={[currentStyles.smallFab, cameraIconAnimate]}>
-        <Pressable>
+        <Pressable
+          style={currentStyles.smallIconsPressStyle}
+          onPress={() => {
+            handlePress();
+          }}
+        >
           <CameraIcon color={colors.pureWhite} />
         </Pressable>
       </Animated.View>
       <Animated.View style={[currentStyles.smallFab, speechIconAnimate]}>
-        <Pressable>
+        <Pressable
+          style={currentStyles.smallIconsPressStyle}
+          onPress={() => {
+            handlePress();
+          }}
+        >
           <SpeechIcon color={colors.pureWhite} />
         </Pressable>
       </Animated.View>
@@ -118,6 +143,7 @@ const FloatingButton = () => {
           onPress={() => {
             handlePress();
           }}
+          style={currentStyles.plusIconPressStyle}
         >
           <PlusIcon color={colors.pureWhite} />
         </Pressable>
