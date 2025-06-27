@@ -42,4 +42,11 @@ export const styles = () =>
       color: colors.extraDarkBlue,
       fontSize: normalize(16),
     },
+    editText: {
+      ...fonts.medium,
+      color: colors.primaryBlue,
+      fontSize: normalize(15),
+      textDecorationLine: 'underline',
+      textDecorationColor: colors.primaryBlue,
+    },
   });
