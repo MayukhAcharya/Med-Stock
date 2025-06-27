@@ -110,6 +110,10 @@ const AppNavigation = () => {
       initialRouteName="DashboardStackScreens"
       screenOptions={{
         tabBarHideOnKeyboard: true,
+        tabBarStyle: {
+          backgroundColor: colors.pureWhite,
+          height: 55,
+        },
       }}
     >
       <AuthStack.Screen
@@ -134,7 +138,7 @@ const AppNavigation = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <HomeIcon
-                size={20}
+                size={18}
                 color={focused ? colors.primaryBlue : colors.pureBlack}
               />
             );
@@ -164,7 +168,7 @@ const AppNavigation = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <PillBottleIcon
-                size={20}
+                size={18}
                 color={focused ? colors.primaryBlue : colors.pureBlack}
               />
             );
@@ -196,7 +200,7 @@ const AppNavigation = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <User
-                size={20}
+                size={18}
                 color={focused ? colors.primaryBlue : colors.pureBlack}
               />
             );

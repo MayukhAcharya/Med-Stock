@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { PlusCircleIcon } from 'lucide-react-native';
 
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
@@ -8,9 +8,11 @@ import CustomTextInput from 'src/components/CustomTextInput/CustomTextInput';
 import { colors } from 'src/config/colors';
 import { commonStyles } from 'src/config/commonStyles';
 import Button from 'src/components/Button/Button';
+import UsesBottomSheet from 'src/components/UsesBottomSheet/UsesBottomSheet';
 
 const AddMedicineScreen = () => {
   const currentStyles = styles();
+  const [showUsesModal, setUsesModal] = useState<boolean>(false);
   return (
     <BackgroundFill showDesign={false} backgroundColor="white">
       <View style={currentStyles.container}>
@@ -66,7 +68,11 @@ const AddMedicineScreen = () => {
               ]}
             >
               <Text style={currentStyles.boxHeaderText}>Uses(optional)</Text>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setUsesModal(true);
+                }}
+              >
                 <Text style={currentStyles.editText}>Edit</Text>
               </TouchableOpacity>
             </View>
@@ -86,6 +92,12 @@ const AddMedicineScreen = () => {
           />
         </View>
       </View>
+      {showUsesModal ? (
+        <UsesBottomSheet
+          onClose={() => setUsesModal(false)}
+          isVisible={showUsesModal}
+        />
+      ) : null}
     </BackgroundFill>
   );
 };
