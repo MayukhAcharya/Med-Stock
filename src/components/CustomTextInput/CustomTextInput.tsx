@@ -18,7 +18,7 @@ type textInputProps = {
   allStyle: StyleProp<ViewStyle>;
   rightContainer?: ReactNode;
   isError?: boolean;
-  errorContaier?: ReactNode;
+  errorContainer?: ReactNode;
   style?: StyleProp<ViewStyle>;
   borderColor: string;
   placeholder: string;
@@ -33,7 +33,7 @@ const CustomTextInput = forwardRef(
       allStyle,
       rightContainer,
       isError = false,
-      errorContaier,
+      errorContainer,
       style,
       borderColor,
       placeholder,
@@ -74,6 +74,11 @@ const CustomTextInput = forwardRef(
             </View>
           ) : null}
         </View>
+        {errorContainer ? (
+          <View>
+            <Text style={currentStyles.errorTextStyle}>{errorContainer}</Text>
+          </View>
+        ) : null}
       </View>
     );
   },

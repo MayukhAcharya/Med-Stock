@@ -91,7 +91,7 @@ export const styles = () =>
     },
     signUpTextStyle: {
       ...fonts.bold,
-      fontSize: normalize(32),
+      fontSize: normalize(25),
       color: colors.extraDarkBlue,
     },
     accountTextstyle: {
