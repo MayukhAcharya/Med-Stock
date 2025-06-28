@@ -9,11 +9,34 @@ import { commonStyles } from 'src/config/commonStyles';
 import normalize from 'src/config/normalize';
 import Button from 'src/components/Button/Button';
 import UsesBottomSheet from 'src/components/UsesBottomSheet/UsesBottomSheet';
+import CustomDropdown from 'src/components/CustomDropdown/CustomDropdown';
+import DateComponent from 'src/components/DateComponent/DateComponent';
+
+const categoryOptions = [
+  {
+    label: 'Tablet',
+    value: 'Tablet',
+  },
+  {
+    label: 'Syrup',
+    value: 'Syrup',
+  },
+  {
+    label: 'Bandage',
+    value: 'Bandage',
+  },
+  {
+    label: 'Ointment',
+    value: 'Ointment',
+  },
+];
 
 const MedicineDetailsScreen = () => {
   const currentStyles = styles();
 
   const [showUsesModal, setUsesModal] = useState<boolean>(false);
+  const [date, setDate] = useState<Date>(new Date());
+
   return (
     <BackgroundFill showDesign={false} backgroundColor="white" scroll>
       <View style={currentStyles.container}>
@@ -27,13 +50,25 @@ const MedicineDetailsScreen = () => {
             style={{ backgroundColor: colors.pureWhite }}
             labelStyle={currentStyles.labelStyle}
           />
+          <CustomDropdown
+            label="Category(optional)"
+            borderColor={colors.borderColor}
+            selectedValue=""
+            placeholder="Tablet/Syrup"
+            allStyle={commonStyles.w100per}
+            style={{ backgroundColor: colors.pureWhite }}
+            list={categoryOptions}
+            onValueSelect={item => {
+              console.log(item);
+            }}
+          />
           <View style={[commonStyles.row, commonStyles.spaceBetween]}>
             <CustomTextInput
               label="Quantity"
               borderColor={colors.borderColor}
               value=""
               placeholder="Quantity"
-              allStyle={commonStyles.w45Per}
+              allStyle={commonStyles.w160}
               keyboardType="numeric"
               style={{ backgroundColor: colors.pureWhite }}
               labelStyle={currentStyles.labelStyle}
@@ -41,14 +76,17 @@ const MedicineDetailsScreen = () => {
                 <Text style={currentStyles.quantityUnitStyle}>Unit</Text>
               }
             />
-            <CustomTextInput
+            <DateComponent
               label="Expiry Date"
               borderColor={colors.borderColor}
-              value=""
+              value={date}
               placeholder="date"
-              allStyle={commonStyles.w45Per}
+              allStyle={commonStyles.w160}
               style={{ backgroundColor: colors.pureWhite }}
-              labelStyle={currentStyles.labelStyle}
+              labelSyle={currentStyles.labelStyle}
+              onChange={date => {
+                setDate(date);
+              }}
             />
           </View>
 
@@ -91,7 +129,7 @@ const MedicineDetailsScreen = () => {
         </View>
         <View style={commonStyles.mt30}>
           <Button
-            label="Save Medicine details"
+            label="Save medicine details"
             mainStyle={commonStyles.w100per}
             onPress={() => {}}
           />

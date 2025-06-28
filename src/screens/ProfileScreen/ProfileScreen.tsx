@@ -9,6 +9,22 @@ import { commonStyles } from 'src/config/commonStyles';
 import normalize from 'src/config/normalize';
 import Button from 'src/components/Button/Button';
 import { SaveIcon } from 'lucide-react-native';
+import CustomDropdown from 'src/components/CustomDropdown/CustomDropdown';
+
+const genderOptions = [
+  {
+    label: 'Male',
+    value: 'Male',
+  },
+  {
+    label: 'Female',
+    value: 'Female',
+  },
+  {
+    label: 'Prefer not to say',
+    value: 'noSay',
+  },
+];
 
 const ProfileScreen = () => {
   const currentStyles = styles();
@@ -25,35 +41,29 @@ const ProfileScreen = () => {
             style={{ backgroundColor: colors.pureWhite }}
             labelStyle={currentStyles.labelStyle}
           />
-          <CustomTextInput
-            label="Email"
-            borderColor={colors.borderColor}
-            value=""
-            placeholder="Enter mail"
-            allStyle={commonStyles.w100per}
-            keyboardType="email-address"
-            style={{ backgroundColor: colors.pureWhite }}
-            labelStyle={currentStyles.labelStyle}
-          />
           <View style={[commonStyles.row, commonStyles.spaceBetween]}>
             <CustomTextInput
               label="Age"
               borderColor={colors.borderColor}
               value=""
               placeholder="Your age"
-              allStyle={commonStyles.w45Per}
+              allStyle={commonStyles.w160}
               keyboardType="numeric"
               style={{ backgroundColor: colors.pureWhite }}
               labelStyle={currentStyles.labelStyle}
             />
-            <CustomTextInput
+            <CustomDropdown
               label="Gender"
+              list={genderOptions}
               borderColor={colors.borderColor}
-              value=""
+              selectedValue=""
               placeholder="Select gender"
-              allStyle={commonStyles.w45Per}
+              allStyle={commonStyles.w160}
               style={{ backgroundColor: colors.pureWhite }}
-              labelStyle={currentStyles.labelStyle}
+              labelSyle={currentStyles.labelStyle}
+              onValueSelect={item => {
+                console.log(item);
+              }}
             />
           </View>
           <CustomTextInput

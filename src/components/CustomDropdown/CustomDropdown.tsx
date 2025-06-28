@@ -1,0 +1,118 @@
+import {
+  View,
+  Text,
+  StyleProp,
+  ViewStyle,
+  TouchableOpacity,
+  ScrollView,
+  TextStyle,
+} from 'react-native';
+import React, { ReactNode, useRef, useState } from 'react';
+import {
+  BandageIcon,
+  ChevronDown,
+  PillBottleIcon,
+  PillIcon,
+} from 'lucide-react-native';
+
+import { styles } from 'src/components/CustomDropdown/styles';
+import CustomTextInput from '../CustomTextInput/CustomTextInput';
+import { colors } from 'src/config/colors';
+import { OintmentIcon } from 'src/assets/svg/OintmentIcon';
+
+type listType = {
+  label: string;
+  value: string;
+  [key: string]: any;
+};
+
+type dropdownProps = {
+  selectedValue: string;
+  allStyle: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
+  borderColor: string;
+  placeholder: string;
+  isError?: boolean;
+  errorContainer?: ReactNode;
+  list: listType[];
+  label: string;
+  onValueSelect: (item: any) => void;
+  dropdownMainStyle?: StyleProp<ViewStyle>;
+  labelSyle?: StyleProp<TextStyle>;
+};
+
+const CustomDropdown = (props: dropdownProps) => {
+  const currentStyles = styles();
+  const dropdownRef = useRef(null);
+  const {
+    allStyle,
+    borderColor,
+    placeholder,
+    selectedValue,
+    errorContainer,
+    isError,
+    style,
+    list,
+    label,
+    dropdownMainStyle,
+    labelSyle,
+    onValueSelect,
+  } = props;
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  return (
+    <View ref={dropdownRef}>
+      <TouchableOpacity onPress={() => setIsOpen!(!isOpen)}>
+        <CustomTextInput
+          allStyle={[allStyle]}
+          value={selectedValue}
+          label={label}
+          borderColor={borderColor}
+          placeholder={placeholder}
+          rightContainer={
+            <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
+              <ChevronDown color={colors.pureBlack} size={20} />
+            </TouchableOpacity>
+          }
+          editable={false}
+          style={[style]}
+          isError={isError}
+          errorContainer={errorContainer}
+          labelStyle={[labelSyle]}
+        />
+      </TouchableOpacity>
+      {isOpen ? (
+        <ScrollView
+          style={[currentStyles.dropdownMainStyle, dropdownMainStyle]}
+        >
+          {list.map((item, index) => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  onValueSelect(item);
+                  setIsOpen(false);
+                }}
+                key={index}
+                style={currentStyles.flatlistView}
+              >
+                <Text style={currentStyles.itemLabelStyle}>{item.label}</Text>
+                <View>
+                  {item.label === 'Tablet' ? (
+                    <PillIcon />
+                  ) : item.label === 'Syrup' ? (
+                    <PillBottleIcon />
+                  ) : item.label === 'Bandage' ? (
+                    <BandageIcon />
+                  ) : item.label === 'Ointment' ? (
+                    <OintmentIcon />
+                  ) : null}
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      ) : null}
+    </View>
+  );
+};
+
+export default CustomDropdown;

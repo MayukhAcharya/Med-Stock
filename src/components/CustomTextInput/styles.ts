@@ -47,4 +47,9 @@ export const styles = () =>
       paddingLeft: normalize(15),
       marginRight: normalize(12),
     },
+    errorTextStyle: {
+      ...fonts.regular,
+      fontSize: normalize(13),
+      color: colors.error,
+    },
   });

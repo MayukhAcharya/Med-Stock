@@ -2,7 +2,12 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { Text } from 'react-native';
-import { HomeIcon, PillBottleIcon, User } from 'lucide-react-native';
+import {
+  BriefcaseMedical,
+  HomeIcon,
+  PillBottleIcon,
+  User,
+} from 'lucide-react-native';
 
 import {
   AllMedicineStackParamList,
@@ -167,7 +172,7 @@ const AppNavigation = () => {
           },
           tabBarIcon: ({ focused }) => {
             return (
-              <PillBottleIcon
+              <BriefcaseMedical
                 size={18}
                 color={focused ? colors.primaryBlue : colors.pureBlack}
               />
