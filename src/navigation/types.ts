@@ -3,7 +3,7 @@ export type UnAuthStackParamList = {
 };
 
 export type AuthStackParamList = {
-  ProfileScreen: undefined;
+  ProfileStackScreens: undefined;
   DashboardStackScreens: undefined;
   AllMedicineStackScreens: undefined;
 };
@@ -20,7 +20,12 @@ export type AllMedicineStackParamList = {
   AddMedicineScreen: undefined;
 };
 
+export type ProfileStackParamList = {
+  ProfileScreen: undefined;
+};
+
 export type MainStackParamList = {
   UnAuthStackScreens: undefined;
   AuthStackScreens: undefined;
+  LoadingScreen: undefined;
 };

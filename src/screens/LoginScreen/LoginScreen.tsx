@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 
@@ -9,15 +9,9 @@ import { commonStyles } from 'src/config/commonStyles';
 import CustomTextInput from 'src/components/CustomTextInput/CustomTextInput';
 import { colors } from 'src/config/colors';
 import Button from 'src/components/Button/Button';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'; //remove later
-import { MainStackParamList } from 'src/navigation/types'; //remove later
-import { useNavigation } from '@react-navigation/native';
 import CustomDropdown from 'src/components/CustomDropdown/CustomDropdown';
-
-type navigationPropsTest = NativeStackNavigationProp<
-  MainStackParamList,
-  'AuthStackScreens'
->;
+import { database } from 'src/Database/database';
+import Profile from 'src/Database/profileModel';
 
 const genderOptions = [
   {
@@ -42,7 +36,8 @@ type formikTypes = {
 
 const LoginScreen = () => {
   const currentStyles = styles();
-  const navigation = useNavigation<navigationPropsTest>();
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const validationSchema = yup.object().shape({
     fullName: yup.string().required('Your full name is required'), //needs more validations
@@ -50,8 +45,16 @@ const LoginScreen = () => {
     gender: yup.string().required('Your gender is required'), //needs more validations
   });
 
-  const onSubmitMethod = (values: formikTypes) => {
-    console.log(values);
+  const onSubmitMethod = async (values: formikTypes) => {
+    setIsLoading(true);
+    await database.write(async () => {
+      await database.get<Profile>('profile').create(profile => {
+        profile.fullName = values.fullName;
+        profile.age = values.age;
+        profile.gender = values.gender;
+      });
+    });
+    setIsLoading(false);
   };
 
   return (
@@ -60,7 +63,7 @@ const LoginScreen = () => {
         <View style={[commonStyles.mt20, commonStyles.aic]}>
           <Text style={currentStyles.logoText}>MEDISTOCK LOGO</Text>
         </View>
-        <View style={[commonStyles.aic, commonStyles.mt25]}>
+        <View style={[commonStyles.aic, commonStyles.mt30]}>
           <View style={currentStyles.loginRegisterContainer}>
             <Formik
               initialValues={{ age: '', gender: '', fullName: '' }}
@@ -140,10 +143,10 @@ const LoginScreen = () => {
                     <Button
                       label="Let's appName"
                       onPress={() => {
-                        // handleSubmit();
-                        navigation.navigate('AuthStackScreens');
+                        handleSubmit();
                       }}
                       mainStyle={currentStyles.buttonStyle}
+                      showActivityIndicator={isLoading}
                     />
                   </View>
                 </View>
