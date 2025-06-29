@@ -39,12 +39,19 @@ const Button = (props: buttonProps) => {
       style={[currentStyles.buttonDisableStyle, mainStyle]}
       disabled={true}
     >
-      <Text>{label}</Text>
+      <View style={commonStyles.row}>
+        <View style={commonStyles.mr10}>{icon ? icon : null}</View>
+
+        <Text style={[currentStyles.buttonLabelStyle, labelStyle]}>
+          {label}
+        </Text>
+      </View>
     </TouchableOpacity>
   ) : (
     <TouchableOpacity
       onPress={() => onPress()}
       style={[currentStyles.buttonStyle, mainStyle]}
+      disabled={showActivityIndicator === true ? true : false}
     >
       {showActivityIndicator ? (
         <ActivityIndicator size={'small'} color={colors.pureWhite} />

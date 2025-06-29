@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { Text } from 'react-native';
@@ -14,6 +14,7 @@ import {
   AuthStackParamList,
   DashboardStackParamList,
   MainStackParamList,
+  ProfileStackParamList,
   UnAuthStackParamList,
 } from 'src/navigation/types';
 import LoginScreen from 'src/screens/LoginScreen';
@@ -27,6 +28,8 @@ import { colors } from 'src/config/colors';
 import ProfileScreen from 'src/screens/ProfileScreen';
 import MedicineDetailsScreen from 'src/screens/MedicineDetailsScreen';
 import AddMedicineScreen from 'src/screens/AddMedicineScreen';
+import { database } from 'src/Database/database';
+import LoadingScreen from 'src/screens/LoadingScreen';
 
 const AppNavigation = () => {
   const UnAuthStack = createNativeStackNavigator<UnAuthStackParamList>();
@@ -35,6 +38,7 @@ const AppNavigation = () => {
   const DashboardStack = createNativeStackNavigator<DashboardStackParamList>();
   const AllMedicineStack =
     createNativeStackNavigator<AllMedicineStackParamList>();
+  const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
 
   const UnAuthStackScreens = () => (
     <UnAuthStack.Navigator
@@ -110,6 +114,21 @@ const AppNavigation = () => {
     </AllMedicineStack.Navigator>
   );
 
+  const ProfileStackScreens = () => (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
+        options={{
+          headerShown: true,
+          header: () => (
+            <Header title="Profile" showBackIcon={true} signout={true} />
+          ),
+        }}
+      />
+    </ProfileStack.Navigator>
+  );
+
   const AuthStackScreens = () => (
     <AuthStack.Navigator
       initialRouteName="DashboardStackScreens"
@@ -181,13 +200,10 @@ const AppNavigation = () => {
         }}
       />
       <AuthStack.Screen
-        name="ProfileScreen"
-        component={ProfileScreen}
+        name="ProfileStackScreens"
+        component={ProfileStackScreens}
         options={{
-          headerShown: true,
-          header: () => (
-            <Header title="Profile" showBackIcon={true} signout={true} />
-          ),
+          headerShown: false,
           tabBarLabel: ({ focused }) => {
             return (
               <Text
@@ -215,22 +231,57 @@ const AppNavigation = () => {
     </AuthStack.Navigator>
   );
 
+  type userTypes = 'AuthUser' | 'UnAuthUser' | 'LoadingScreen';
+
+  const [userType, setUserType] = useState<userTypes>('LoadingScreen');
+
+  useEffect(() => {
+    const profileData = database.get('profile');
+    profileData
+      .query()
+      .observe()
+      .forEach(item => {
+        if (item.length > 0) {
+          setUserType('AuthUser');
+        } else {
+          setUserType('UnAuthUser');
+        }
+      });
+  }, []);
+
   return (
     <NavigationContainer>
-      <MainStack.Navigator
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <MainStack.Screen
-          name="UnAuthStackScreens"
-          component={UnAuthStackScreens}
-        />
-        <MainStack.Screen
-          name="AuthStackScreens"
-          component={AuthStackScreens}
-        />
-      </MainStack.Navigator>
+      {userType === 'UnAuthUser' ? (
+        <MainStack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <MainStack.Screen
+            name="UnAuthStackScreens"
+            component={UnAuthStackScreens}
+          />
+        </MainStack.Navigator>
+      ) : userType === 'AuthUser' ? (
+        <MainStack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <MainStack.Screen
+            name="AuthStackScreens"
+            component={AuthStackScreens}
+          />
+        </MainStack.Navigator>
+      ) : (
+        <MainStack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <MainStack.Screen name="LoadingScreen" component={LoadingScreen} />
+        </MainStack.Navigator>
+      )}
     </NavigationContainer>
   );
 };
