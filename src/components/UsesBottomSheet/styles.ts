@@ -42,4 +42,8 @@ export const styles = () =>
     paddingH: {
       paddingHorizontal: normalize(16),
     },
+    useHolder: {
+      marginTop: normalize(20, 'height'),
+      rowGap: normalize(15, 'height'),
+    },
   });

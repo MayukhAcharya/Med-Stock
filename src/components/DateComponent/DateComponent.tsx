@@ -8,7 +8,7 @@ import {
   Modal,
   StatusBar,
 } from 'react-native';
-import React, { ReactNode, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { Calendar } from 'react-native-calendars';
 
 import { styles } from 'src/components/DateComponent/styles';
@@ -23,7 +23,7 @@ import { colors } from 'src/config/colors';
 import normalize from 'src/config/normalize';
 
 type dateProps = {
-  value: Date;
+  value: any;
   allStyle: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
   borderColor: string;
@@ -61,7 +61,6 @@ const DateComponent = (props: dateProps) => {
     day: 'numeric',
   });
 
-  console.log(value);
   const handleCalendarChange = (date: Date) => {
     setSelectedDate(date);
     setIsOpen(false);
@@ -69,6 +68,10 @@ const DateComponent = (props: dateProps) => {
       onChange(date);
     }
   };
+
+  useEffect(() => {
+    setSelectedDate(new Date(value));
+  }, [value]);
 
   return (
     <View ref={dateRef}>
@@ -138,6 +141,7 @@ const DateComponent = (props: dateProps) => {
                 textDayHeaderFontFamily: 'PlusJakartaSans-Regular',
                 textMonthFontFamily: 'PlusJakartaSans-Regular',
               }}
+              initialDate={value}
             />
           </View>
         </Modal>

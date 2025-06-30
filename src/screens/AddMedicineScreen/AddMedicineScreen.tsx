@@ -13,6 +13,17 @@ import Button from 'src/components/Button/Button';
 import UsesBottomSheet from 'src/components/UsesBottomSheet/UsesBottomSheet';
 import CustomDropdown from 'src/components/CustomDropdown/CustomDropdown';
 import DateComponent from 'src/components/DateComponent/DateComponent';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AllMedicineStackParamList } from 'src/navigation/types';
+import { useNavigation } from '@react-navigation/native';
+import { timeoutConstant } from 'src/constants/constants';
+import { database } from 'src/Database/database';
+import Medicine from 'src/Database/medicineModel';
+
+type navigationPropsForAddMedicine = NativeStackNavigationProp<
+  AllMedicineStackParamList,
+  'AddMedicineScreen'
+>;
 
 const categoryOptions = [
   {
@@ -36,13 +47,21 @@ const categoryOptions = [
 type addMedicineFormikTypes = {
   medicineName: string;
   quantity: string;
-  category?: string;
+  category: string;
+};
+
+type usesType = {
+  use: string;
 };
 
 const AddMedicineScreen = () => {
   const currentStyles = styles();
+  const navigation = useNavigation<navigationPropsForAddMedicine>();
+
   const [showUsesModal, setUsesModal] = useState<boolean>(false);
   const [date, setDate] = useState<Date>(new Date());
+  const [uses, setUses] = useState<usesType[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const validationSchema = yup.object().shape({
     medicineName: yup.string().required('Medicine name is required'),
@@ -50,8 +69,25 @@ const AddMedicineScreen = () => {
     category: yup.string().required('category of medicine is required'),
   });
 
-  const addMedicineSubmitMethod = (values: addMedicineFormikTypes) => {
-    console.log(values);
+  const addMedicineSubmitMethod = async (values: addMedicineFormikTypes) => {
+    setIsLoading(true);
+    try {
+      setTimeout(async () => {
+        await database.write(async () => {
+          await database.get<Medicine>('medicines').create(medicine => {
+            medicine.medicineName = values.medicineName;
+            medicine.category = values.category;
+            medicine.expiryDate = date.toISOString();
+            medicine.uses = JSON.stringify(uses);
+            medicine.quantity = values.quantity;
+          });
+        });
+      }, timeoutConstant);
+      setIsLoading(false);
+      navigation.goBack();
+    } catch (error) {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -65,7 +101,14 @@ const AddMedicineScreen = () => {
         onSubmit={addMedicineSubmitMethod}
         validationSchema={validationSchema}
       >
-        {({ handleChange, setFieldValue, values, errors, touched }) => (
+        {({
+          handleChange,
+          setFieldValue,
+          values,
+          errors,
+          touched,
+          handleSubmit,
+        }) => (
           <View style={currentStyles.container}>
             <View style={currentStyles.inputContainer}>
               <CustomTextInput
@@ -168,7 +211,9 @@ const AddMedicineScreen = () => {
                 </View>
                 <View style={commonStyles.mt5}>
                   <Text style={currentStyles.boxDescriptionText}>
-                    Pain Relief, Treatment of Fever
+                    {uses.length > 0
+                      ? uses.map(item => item.use).join(', ')
+                      : 'Press Edit to add uses'}
                   </Text>
                 </View>
               </View>
@@ -178,7 +223,10 @@ const AddMedicineScreen = () => {
                 label="Add Medicine"
                 mainStyle={commonStyles.w100per}
                 icon={<PlusCircleIcon color={colors.pureWhite} />}
-                onPress={() => {}}
+                onPress={() => {
+                  handleSubmit();
+                }}
+                showActivityIndicator={isLoading}
               />
             </View>
           </View>
@@ -189,6 +237,8 @@ const AddMedicineScreen = () => {
         <UsesBottomSheet
           onClose={() => setUsesModal(false)}
           isVisible={showUsesModal}
+          usesArray={uses => setUses(uses)}
+          useData={uses}
         />
       ) : null}
     </BackgroundFill>

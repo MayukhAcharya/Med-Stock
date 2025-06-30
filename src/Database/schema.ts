@@ -49,6 +49,11 @@ export const schema = appSchema({
           type: 'string',
           isOptional: true,
         },
+        {
+          name: 'notes',
+          type: 'string',
+          isOptional: true,
+        },
       ],
     }),
   ],

@@ -1,21 +1,58 @@
-import { View, Text, Modal, Pressable, StatusBar } from 'react-native';
-import React from 'react';
+import {
+  View,
+  Text,
+  Modal,
+  Pressable,
+  StatusBar,
+  TouchableOpacity,
+} from 'react-native';
+import React, { useState } from 'react';
 
 import { styles } from 'src/components/UsesBottomSheet/styles';
 import { colors } from 'src/config/colors';
 import { commonStyles } from 'src/config/commonStyles';
 import CustomTextInput from '../CustomTextInput/CustomTextInput';
 import Button from '../Button/Button';
-import { PlusCircleIcon } from 'lucide-react-native';
+import { PlusCircleIcon, XIcon } from 'lucide-react-native';
+
+type usesType = {
+  use: string;
+};
 
 type UsesBottomSheetProps = {
   onClose: () => void;
   isVisible: boolean;
+  usesArray: (uses: usesType[]) => void;
+  useData?: usesType[];
 };
 
 const UsesBottomSheet = (props: UsesBottomSheetProps) => {
   const currentStyles = styles();
-  const { onClose, isVisible } = props;
+  const { onClose, isVisible, usesArray, useData } = props;
+  const [useArray, setUseArray] = useState<usesType[]>(
+    useData && useData.length > 0
+      ? useData
+      : [
+          {
+            use: '',
+          },
+        ],
+  );
+
+  const handleAddAnotherButton = () => {
+    const isValidItem = (item: any) => item.use !== '';
+
+    const flag = useArray.every(isValidItem);
+
+    return flag;
+  };
+
+  const removeItems = (itemIndex: number) => {
+    const filterData = useArray.filter((item, index) => index !== itemIndex);
+
+    setUseArray(filterData);
+  };
+
   return (
     <Modal
       transparent
@@ -28,7 +65,7 @@ const UsesBottomSheet = (props: UsesBottomSheetProps) => {
         barStyle={'light-content'}
         translucent
       />
-      <Pressable onPress={onClose} style={currentStyles.container}>
+      <Pressable style={currentStyles.container}>
         <View style={currentStyles.subContainer}>
           <View style={currentStyles.paddingH}>
             <View>
@@ -36,15 +73,42 @@ const UsesBottomSheet = (props: UsesBottomSheetProps) => {
                 Add a new Item
               </Text>
             </View>
-            <View style={commonStyles.mt20}>
-              <CustomTextInput
-                label="Use 1"
-                borderColor={colors.borderColor}
-                value=""
-                placeholder="Medicine use"
-                allStyle={commonStyles.w100per}
-                style={{ backgroundColor: colors.pureWhite }}
-              />
+            <View style={currentStyles.useHolder}>
+              {useArray.map((item, index) => {
+                return (
+                  <View
+                    key={index}
+                    style={[commonStyles.row, commonStyles.aic]}
+                  >
+                    <CustomTextInput
+                      label={`Use ${index + 1}`}
+                      borderColor={colors.borderColor}
+                      value={item.use}
+                      placeholder="Medicine use"
+                      allStyle={
+                        index === 0 ? commonStyles.w100per : commonStyles.w93Per
+                      }
+                      style={{ backgroundColor: colors.pureWhite }}
+                      onChangeText={text => {
+                        const updateItems = [...useArray];
+                        updateItems[index].use = text;
+                        setUseArray(updateItems);
+                      }}
+                      autoFocus
+                    />
+                    {index > 0 ? (
+                      <TouchableOpacity
+                        style={[commonStyles.mt18, commonStyles.ml10]}
+                        onPress={() => {
+                          removeItems(index);
+                        }}
+                      >
+                        <XIcon />
+                      </TouchableOpacity>
+                    ) : null}
+                  </View>
+                );
+              })}
             </View>
             <View style={commonStyles.mt18}>
               <Button
@@ -52,7 +116,21 @@ const UsesBottomSheet = (props: UsesBottomSheetProps) => {
                 mainStyle={currentStyles.addAnotherButton}
                 labelStyle={currentStyles.addAnotherButtonLabelStyle}
                 icon={<PlusCircleIcon />}
-                onPress={() => {}}
+                onPress={() => {
+                  if (handleAddAnotherButton()) {
+                    setUseArray([
+                      ...useArray,
+                      {
+                        use: '',
+                      },
+                    ]);
+                  }
+                }}
+                disable={
+                  useArray.length === 5 || handleAddAnotherButton() === false
+                    ? true
+                    : false
+                }
               />
             </View>
           </View>
@@ -63,7 +141,11 @@ const UsesBottomSheet = (props: UsesBottomSheetProps) => {
             <Button
               label="Save Changes"
               mainStyle={commonStyles.w100per}
-              onPress={() => {}}
+              onPress={() => {
+                usesArray(useArray);
+                onClose();
+              }}
+              disable={!handleAddAnotherButton()}
             />
           </View>
         </View>

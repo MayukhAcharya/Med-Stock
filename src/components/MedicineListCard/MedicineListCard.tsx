@@ -3,44 +3,58 @@ import React from 'react';
 
 import { styles } from 'src/components/MedicineListCard/styles';
 import { commonStyles } from 'src/config/commonStyles';
-import { BandageIcon, Drumstick, PillIcon } from 'lucide-react-native';
+import {
+  BandageIcon,
+  Drumstick,
+  ImageOffIcon,
+  PillBottleIcon,
+  PillIcon,
+} from 'lucide-react-native';
+import { OintmentIcon } from 'src/assets/svg/OintmentIcon';
+import { OintmentIconBig } from 'src/assets/svg/OintmentIconBig';
+import { colors } from 'src/config/colors';
 
 type medicineListProps = {
   medicineName: string;
   expiryDate: string;
   quantity: string;
   category?: string;
-  image?: any;
   onPress: () => void;
 };
 
 const MedicineListCard = (props: medicineListProps) => {
   const currentStyles = styles();
-  const { medicineName, expiryDate, category, image, quantity, onPress } =
-    props;
+  const { medicineName, expiryDate, category, quantity, onPress } = props;
   return (
     <TouchableOpacity style={currentStyles.container} onPress={() => onPress()}>
       <View>
         <View style={[commonStyles.row, commonStyles.aic]}>
-          {image ? (
-            <Image
-              source={{
-                uri: 'https://5.imimg.com/data5/SELLER/Default/2023/3/296912948/ON/WW/IV/128021380/calpol-650-mg-tablet.png',
-              }}
-              style={currentStyles.imageStyle}
-            />
-          ) : category === 'Pill' ? (
+          {category === 'Tablet' ? (
             <PillIcon size={75} />
-          ) : (
+          ) : category === 'Syrup' ? (
+            <PillBottleIcon size={75} />
+          ) : category === 'Bandage' ? (
             <BandageIcon size={75} />
+          ) : category === 'Ointment' ? (
+            <OintmentIconBig />
+          ) : (
+            <ImageOffIcon size={75} />
           )}
 
           <View style={commonStyles.ml20}>
-            <Text style={currentStyles.medicineNameTextStyle}>
-              {medicineName}
-            </Text>
+            <View style={[commonStyles.w160]}>
+              <Text
+                style={currentStyles.medicineNameTextStyle}
+                numberOfLines={1}
+                ellipsizeMode="tail"
+              >
+                {medicineName}
+              </Text>
+            </View>
+
             <Text style={currentStyles.quantityTextStyle}>
-              Quantity: {quantity}
+              Quantity: {quantity}{' '}
+              {category === 'Tablet' || category === 'Bandage' ? 'Unit' : 'ml'}
             </Text>
           </View>
         </View>

@@ -9,4 +9,5 @@ export default class Medicine extends Model {
   @field('quantity') quantity!: string;
   @field('expiry_date') expiryDate!: string;
   @field('uses') uses!: string;
+  @field('notes') notes!: string;
 }
