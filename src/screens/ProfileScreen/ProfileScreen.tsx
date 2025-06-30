@@ -16,6 +16,7 @@ import CustomDropdown from 'src/components/CustomDropdown/CustomDropdown';
 import { database } from 'src/Database/database';
 import { initialValues, profileTypes } from './types';
 import Profile from 'src/Database/profileModel';
+import { timeoutConstant } from 'src/constants/constants';
 
 const genderOptions = [
   {
@@ -64,19 +65,21 @@ const ProfileScreen = () => {
   ) => {
     setIsLoading(true);
     try {
-      const profileUpdate = await database
-        .get<Profile>('profile')
-        .find(values.id);
-      await database.write(async () => {
-        await profileUpdate.update(() => {
-          profileUpdate.fullName = values.full_name;
-          profileUpdate.age = values.age;
-          profileUpdate.gender = values.gender;
-          profileUpdate.allergies = values.allergies;
+      setTimeout(async () => {
+        const profileUpdate = await database
+          .get<Profile>('profile')
+          .find(values.id);
+        await database.write(async () => {
+          await profileUpdate.update(() => {
+            profileUpdate.fullName = values.full_name;
+            profileUpdate.age = values.age;
+            profileUpdate.gender = values.gender;
+            profileUpdate.allergies = values.allergies;
+          });
         });
-      });
-      resetForm({ values });
-      setIsLoading(false);
+        resetForm({ values });
+        setIsLoading(false);
+      }, timeoutConstant); //adding a timeout because it SAVES SO FAAAST GAADDAAYUUM
     } catch (error) {
       setIsLoading(false);
     }

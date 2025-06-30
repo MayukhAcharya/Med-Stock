@@ -8,9 +8,14 @@ import Svg, {
   Use,
 } from 'react-native-svg';
 
-export const OintmentIcon = () => {
+export const OintmentIconBig = () => {
   return (
-    <Svg fill="#000000" height="28" width="28" viewBox="-5.7 -5.7 68.39 68.39">
+    <Svg
+      fill="#000000"
+      height="75px"
+      width="75px"
+      viewBox="-5.7 -5.7 68.39 68.39"
+    >
       <G id="SVGRepo_bgCarrier" strokeWidth="0" />
       <G
         id="SVGRepo_tracerCarrier"

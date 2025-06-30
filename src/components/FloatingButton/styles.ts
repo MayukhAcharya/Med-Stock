@@ -1,4 +1,5 @@
 import { StyleSheet } from 'react-native';
+import { colors } from 'src/config/colors';
 import normalize from 'src/config/normalize';
 
 export const styles = () =>
@@ -10,7 +11,7 @@ export const styles = () =>
       position: 'absolute',
       right: 20,
       bottom: 30,
-      backgroundColor: '#007AFF',
+      backgroundColor: colors.primaryBlue,
       width: normalize(56),
       height: normalize(56),
       borderRadius: normalize(28),
@@ -22,7 +23,7 @@ export const styles = () =>
       position: 'absolute',
       right: 27,
       bottom: 30,
-      backgroundColor: '#007AFF',
+      backgroundColor: colors.primaryBlue,
       width: normalize(45),
       height: normalize(45),
       borderRadius: normalize(28),

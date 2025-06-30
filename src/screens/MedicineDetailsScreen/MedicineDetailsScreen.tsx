@@ -1,5 +1,14 @@
 import { View, Text, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
+import * as yup from 'yup';
+import { Formik } from 'formik';
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { styles } from 'src/screens/MedicineDetailsScreen/styles';
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
@@ -11,6 +20,21 @@ import Button from 'src/components/Button/Button';
 import UsesBottomSheet from 'src/components/UsesBottomSheet/UsesBottomSheet';
 import CustomDropdown from 'src/components/CustomDropdown/CustomDropdown';
 import DateComponent from 'src/components/DateComponent/DateComponent';
+import {
+  initialValues,
+  medicineDataTypes,
+} from 'src/screens/MedicineDetailsScreen/types';
+import { AllMedicineStackParamList } from 'src/navigation/types';
+import { database } from 'src/Database/database';
+import Medicine from 'src/Database/medicineModel';
+import { timeoutConstant } from 'src/constants/constants';
+
+type routeProps = RouteProp<AllMedicineStackParamList>;
+
+type navigationPropForMedicineDetials = NativeStackNavigationProp<
+  AllMedicineStackParamList,
+  'MedicineDetailsScreen'
+>;
 
 const categoryOptions = [
   {
@@ -33,112 +57,227 @@ const categoryOptions = [
 
 const MedicineDetailsScreen = () => {
   const currentStyles = styles();
+  const route = useRoute<routeProps>();
+  const navigation = useNavigation<navigationPropForMedicineDetials>();
 
   const [showUsesModal, setUsesModal] = useState<boolean>(false);
-  const [date, setDate] = useState<Date>(new Date());
+  const [fieldValues, setFieldValues] =
+    useState<medicineDataTypes>(initialValues);
+  const [uses, setUses] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const validationSchema = yup.object().shape({
+    medicine_name: yup.string().required('Medicine name is required'),
+    quantity: yup.string().required('Quantity is required'),
+    category: yup.string().required('category of medicine is required'),
+    expiry_date: yup.string().required('Expiry date of medicine is required'),
+  });
+
+  const getMedicineDetailsData = async () => {
+    const medicineDetails = await database
+      .get('medicines')
+      .find(route.params?.medicineDetails.id);
+    const data: any = medicineDetails._raw;
+    setFieldValues(data);
+    setUses(JSON.parse(data.uses));
+  };
+
+  const updateMedicineDetailsMethod = (values: medicineDataTypes) => {
+    setIsLoading(true);
+    try {
+      setTimeout(async () => {
+        const medicineUpdate = await database
+          .get<Medicine>('medicines')
+          .find(route.params?.medicineDetails.id);
+        await database.write(async () => {
+          await medicineUpdate.update(() => {
+            medicineUpdate.medicineName = values.medicine_name;
+            medicineUpdate.category = values.category;
+            medicineUpdate.quantity = values.quantity;
+            medicineUpdate.expiryDate = values.expiry_date;
+            medicineUpdate.uses = JSON.stringify(uses);
+          });
+        });
+        setIsLoading(false);
+        navigation.goBack();
+      }, timeoutConstant);
+    } catch (error) {
+      setIsLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const unsubscribe = getMedicineDetailsData();
+      return () => unsubscribe;
+    }, []),
+  );
 
   return (
     <BackgroundFill showDesign={false} backgroundColor="white" scroll>
-      <View style={currentStyles.container}>
-        <View style={currentStyles.inputContainer}>
-          <CustomTextInput
-            label="Medicine Name"
-            borderColor={colors.borderColor}
-            value=""
-            placeholder="Medicine Name"
-            allStyle={commonStyles.w100per}
-            style={{ backgroundColor: colors.pureWhite }}
-            labelStyle={currentStyles.labelStyle}
-          />
-          <CustomDropdown
-            label="Category(optional)"
-            borderColor={colors.borderColor}
-            selectedValue=""
-            placeholder="Tablet/Syrup"
-            allStyle={commonStyles.w100per}
-            style={{ backgroundColor: colors.pureWhite }}
-            list={categoryOptions}
-            onValueSelect={item => {
-              console.log(item);
-            }}
-          />
-          <View style={[commonStyles.row, commonStyles.spaceBetween]}>
-            <CustomTextInput
-              label="Quantity"
-              borderColor={colors.borderColor}
-              value=""
-              placeholder="Quantity"
-              allStyle={commonStyles.w160}
-              keyboardType="numeric"
-              style={{ backgroundColor: colors.pureWhite }}
-              labelStyle={currentStyles.labelStyle}
-              rightContainer={
-                <Text style={currentStyles.quantityUnitStyle}>Unit</Text>
-              }
-            />
-            <DateComponent
-              label="Expiry Date"
-              borderColor={colors.borderColor}
-              value={date}
-              placeholder="date"
-              allStyle={commonStyles.w160}
-              style={{ backgroundColor: colors.pureWhite }}
-              labelSyle={currentStyles.labelStyle}
-              onChange={date => {
-                setDate(date);
-              }}
-            />
-          </View>
-
-          <View style={currentStyles.boxView}>
-            <View
-              style={[
-                commonStyles.spaceBetween,
-                commonStyles.row,
-                commonStyles.aic,
-              ]}
-            >
-              <Text style={currentStyles.boxHeaderText}>Uses</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  setUsesModal(true);
+      <Formik
+        initialValues={fieldValues}
+        onSubmit={updateMedicineDetailsMethod}
+        enableReinitialize
+        validationSchema={validationSchema}
+      >
+        {({
+          handleChange,
+          values,
+          setFieldValue,
+          handleSubmit,
+          errors,
+          touched,
+        }) => (
+          <View style={currentStyles.container}>
+            <View style={currentStyles.inputContainer}>
+              <CustomTextInput
+                label="Medicine Name"
+                borderColor={colors.borderColor}
+                value={values.medicine_name}
+                placeholder="Medicine Name"
+                allStyle={commonStyles.w100per}
+                style={{ backgroundColor: colors.pureWhite }}
+                labelStyle={currentStyles.labelStyle}
+                onChangeText={text => {
+                  handleChange('medicine_name')(text);
                 }}
-              >
-                <Text style={currentStyles.editText}>Edit</Text>
-              </TouchableOpacity>
+                isError={
+                  errors.medicine_name && touched.medicine_name ? true : false
+                }
+                errorContainer={
+                  errors.medicine_name && touched.medicine_name ? (
+                    <Text>{errors.medicine_name}</Text>
+                  ) : null
+                }
+              />
+              <CustomDropdown
+                label="Category(optional)"
+                borderColor={colors.borderColor}
+                selectedValue={values.category}
+                placeholder="Tablet/Syrup"
+                allStyle={commonStyles.w100per}
+                style={{ backgroundColor: colors.pureWhite }}
+                list={categoryOptions}
+                onValueSelect={item => {
+                  setFieldValue('category', item.label);
+                }}
+                isError={errors.category && touched.category ? true : false}
+                errorContainer={
+                  errors.category && touched.category ? (
+                    <Text>{errors.category}</Text>
+                  ) : null
+                }
+              />
+              <View style={[commonStyles.row, commonStyles.spaceBetween]}>
+                <CustomTextInput
+                  label="Quantity"
+                  borderColor={colors.borderColor}
+                  value={values.quantity}
+                  placeholder="Quantity"
+                  allStyle={commonStyles.w160}
+                  keyboardType="numeric"
+                  style={{ backgroundColor: colors.pureWhite }}
+                  labelStyle={currentStyles.labelStyle}
+                  rightContainer={
+                    <Text style={currentStyles.quantityUnitStyle}>Unit</Text>
+                  }
+                  onChangeText={text => {
+                    handleChange('quantity')(text);
+                  }}
+                  isError={errors.quantity && touched.quantity ? true : false}
+                  errorContainer={
+                    errors.quantity && touched.quantity ? (
+                      <Text>{errors.quantity}</Text>
+                    ) : null
+                  }
+                />
+                <DateComponent
+                  label="Expiry Date"
+                  borderColor={colors.borderColor}
+                  value={values.expiry_date}
+                  placeholder="date"
+                  allStyle={commonStyles.w160}
+                  style={{ backgroundColor: colors.pureWhite }}
+                  labelSyle={currentStyles.labelStyle}
+                  onChange={date => {
+                    setFieldValue('expiry_date', date.toISOString());
+                  }}
+                  isError={
+                    errors.expiry_date && touched.expiry_date ? true : false
+                  }
+                  errorContainer={
+                    errors.expiry_date && touched.expiry_date ? (
+                      <Text>{errors.expiry_date}</Text>
+                    ) : null
+                  }
+                />
+              </View>
+
+              <View style={currentStyles.boxView}>
+                <View
+                  style={[
+                    commonStyles.spaceBetween,
+                    commonStyles.row,
+                    commonStyles.aic,
+                  ]}
+                >
+                  <Text style={currentStyles.boxHeaderText}>Uses</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setUsesModal(true);
+                    }}
+                  >
+                    <Text style={currentStyles.editText}>Edit</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={commonStyles.mt5}>
+                  <Text style={currentStyles.boxDescriptionText}>
+                    {uses.length > 0
+                      ? uses.map(item => item.use).join(', ')
+                      : 'Press Edit to add uses'}
+                  </Text>
+                </View>
+              </View>
+              <CustomTextInput
+                label="Note"
+                borderColor={colors.borderColor}
+                value={values.notes}
+                placeholder="Add doctor notes..."
+                allStyle={commonStyles.w100per}
+                style={{
+                  backgroundColor: colors.pureWhite,
+                  height: normalize(100, 'height'),
+                }}
+                labelStyle={currentStyles.labelStyle}
+                multiline
+                onChangeText={text => {
+                  handleChange('notes')(text);
+                }}
+              />
             </View>
-            <View style={commonStyles.mt5}>
-              <Text style={currentStyles.boxDescriptionText}>
-                Pain Relief, Treatment of Fever
-              </Text>
+            <View style={commonStyles.mt30}>
+              <Button
+                label="Save medicine details"
+                mainStyle={commonStyles.w100per}
+                onPress={() => {
+                  handleSubmit();
+                }}
+                showActivityIndicator={isLoading}
+              />
             </View>
           </View>
-          <CustomTextInput
-            label="Note"
-            borderColor={colors.borderColor}
-            value=""
-            placeholder="Add doctor notes..."
-            allStyle={commonStyles.w100per}
-            style={{
-              backgroundColor: colors.pureWhite,
-              height: normalize(100, 'height'),
-            }}
-            labelStyle={currentStyles.labelStyle}
-            multiline
-          />
-        </View>
-        <View style={commonStyles.mt30}>
-          <Button
-            label="Save medicine details"
-            mainStyle={commonStyles.w100per}
-            onPress={() => {}}
-          />
-        </View>
-      </View>
+        )}
+      </Formik>
+
       {showUsesModal ? (
         <UsesBottomSheet
           onClose={() => setUsesModal(false)}
           isVisible={showUsesModal}
+          useData={uses}
+          usesArray={data => {
+            setUses(data);
+          }}
         />
       ) : null}
     </BackgroundFill>

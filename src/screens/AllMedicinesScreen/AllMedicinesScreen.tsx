@@ -1,5 +1,11 @@
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-import React from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
+import React, { useEffect, useState } from 'react';
 
 import { styles } from 'src/screens/AllMedicinesScreen/styles';
 import MedicineListCard from 'src/components/MedicineListCard/MedicineListCard';
@@ -7,83 +13,99 @@ import { commonStyles } from 'src/config/commonStyles';
 import FloatingButton from 'src/components/FloatingButton/FloatingButton';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AllMedicineStackParamList } from 'src/navigation/types';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { database } from 'src/Database/database';
+import { ReusableDateFormatter } from 'src/utils/FormattedDate';
+import { colors } from 'src/config/colors';
+import { PlusCircleIcon, PlusIcon } from 'lucide-react-native';
 
 type navigationPropsForAllMedicines = NativeStackNavigationProp<
   AllMedicineStackParamList,
   'AllMedicinesScreen'
 >;
 
-const dummyList = [
-  {
-    id: '1',
-    medicineName: 'Paracetamol',
-    image:
-      'https://ayushcare.in/products/calpol-500-paracetamol-tablets-ip-500mg-15tablets',
-    date: '10/10/2025',
-    category: 'Pill',
-  },
-  {
-    id: '2',
-    medicineName: 'Rosuless-10',
-    date: '10/10/2025',
-    category: 'Pill',
-  },
-  {
-    id: '3',
-    medicineName: 'Famoccid-10',
-    image:
-      'https://ayushcare.in/products/calpol-500-paracetamol-tablets-ip-500mg-15tablets',
-    date: '10/10/2025',
-    category: 'Pill',
-  },
-  {
-    id: '4',
-    medicineName: 'Paracetamol',
-    date: '10/10/2025',
-    category: 'Bandage',
-  },
-  {
-    id: '5',
-    medicineName: 'Paracetamol',
-    image:
-      'https://ayushcare.in/products/calpol-500-paracetamol-tablets-ip-500mg-15tablets',
-    date: '10/10/2025',
-    category: 'Pill',
-  },
-  {
-    id: '6',
-    medicineName: 'Paracetamol',
-    date: '10/10/2025',
-    category: 'Bandage',
-  },
-  {
-    id: '7',
-    medicineName: 'Paracetamol',
-    date: '10/10/2025',
-    category: 'Bandage',
-  },
-];
+type medicineDataTypes = {
+  category: string;
+  expiry_date: string;
+  id: string;
+  medicine_name: string;
+  quantity: string;
+  uses: string;
+};
 
 const AllMedicinesScreen = () => {
   const currentStyles = styles();
   const navigation = useNavigation<navigationPropsForAllMedicines>();
+
+  const [allMedicines, setAllMedicines] = useState<medicineDataTypes[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const getMedicineDataMethod = () => {
+    setIsLoading(true);
+    try {
+      const medicineData = database.get('medicines');
+      medicineData
+        .query()
+        .observe()
+        .forEach(item => {
+          let temp: any = [];
+          item.forEach(data => {
+            temp.push(data._raw);
+          });
+          setAllMedicines(temp);
+
+          setIsLoading(false);
+        });
+    } catch (error) {
+      setIsLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const unsubscribe = getMedicineDataMethod();
+      return () => unsubscribe;
+    }, []),
+  );
+
+  const EmptyComponent = () => {
+    return isLoading ? (
+      <ActivityIndicator size="large" color={colors.primaryBlue} />
+    ) : (
+      <View
+        style={[commonStyles.aic, commonStyles.justifyCenter, commonStyles.row]}
+      >
+        <Text style={currentStyles.instructionTextStyle}>Press the </Text>
+        <View style={currentStyles.plusIconStyle}>
+          <PlusIcon color={colors.pureWhite} size={15} />
+        </View>
+        <Text style={currentStyles.instructionTextStyle}>
+          {' '}
+          to add your first medicine
+        </Text>
+      </View>
+    );
+  };
+
   return (
     <>
       <View style={currentStyles.container}>
         <View style={commonStyles.aic}>
           <FlatList
-            data={dummyList}
+            data={allMedicines}
             renderItem={({ item, index }) => {
               return (
                 <MedicineListCard
-                  expiryDate={item.date}
-                  medicineName={item.medicineName}
-                  quantity="20"
+                  expiryDate={ReusableDateFormatter(item.expiry_date)}
+                  medicineName={item.medicine_name}
+                  quantity={item.quantity}
                   category={item.category}
-                  image={item.image ? item.image : null}
                   onPress={() => {
-                    navigation.navigate('MedicineDetailsScreen');
+                    navigation.navigate('MedicineDetailsScreen', {
+                      medicineDetails: {
+                        id: item.id,
+                      },
+                    });
                   }}
                 />
               );
@@ -91,6 +113,7 @@ const AllMedicinesScreen = () => {
             keyExtractor={item => item.id}
             ItemSeparatorComponent={() => <View style={commonStyles.mt20} />}
             showsVerticalScrollIndicator={false}
+            ListEmptyComponent={EmptyComponent}
           />
         </View>
 

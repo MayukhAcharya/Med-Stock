@@ -8,15 +8,19 @@ export type AuthStackParamList = {
   AllMedicineStackScreens: undefined;
 };
 
+type medicineParams = {
+  id: any;
+};
+
 export type DashboardStackParamList = {
   DashboardScreen: undefined;
-  MedicineDetailsScreen: undefined;
+  MedicineDetailsScreen: { medicineDetails: medicineParams };
   AddMedicineScreen: undefined; //will be used only for first time
 };
 
 export type AllMedicineStackParamList = {
   AllMedicinesScreen: undefined;
-  MedicineDetailsScreen: undefined;
+  MedicineDetailsScreen: { medicineDetails: medicineParams };
   AddMedicineScreen: undefined;
 };
 
