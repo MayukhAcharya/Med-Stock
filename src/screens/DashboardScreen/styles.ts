@@ -46,4 +46,7 @@ export const styles = () =>
       fontSize: normalize(22),
       color: colors.error,
     },
+    addButtonLabelStyle: {
+      fontSize: normalize(14),
+    },
   });
