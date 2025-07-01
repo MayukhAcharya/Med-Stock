@@ -14,14 +14,23 @@ import UsesBottomSheet from 'src/components/UsesBottomSheet/UsesBottomSheet';
 import CustomDropdown from 'src/components/CustomDropdown/CustomDropdown';
 import DateComponent from 'src/components/DateComponent/DateComponent';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AllMedicineStackParamList } from 'src/navigation/types';
-import { useNavigation } from '@react-navigation/native';
+import {
+  AllMedicineStackParamList,
+  DashboardStackParamList,
+} from 'src/navigation/types';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { timeoutConstant } from 'src/constants/constants';
 import { database } from 'src/Database/database';
 import Medicine from 'src/Database/medicineModel';
+import normalize from 'src/config/normalize';
 
 type navigationPropsForAddMedicine = NativeStackNavigationProp<
   AllMedicineStackParamList,
+  'AddMedicineScreen'
+>;
+
+type routePropForDashboard = RouteProp<
+  DashboardStackParamList,
   'AddMedicineScreen'
 >;
 
@@ -42,6 +51,14 @@ const categoryOptions = [
     label: 'Ointment',
     value: 'Ointment',
   },
+  {
+    label: 'Ear/Nose/Eye Drop',
+    value: 'drop',
+  },
+  {
+    label: 'Cartridge/Ampule',
+    value: 'syringe',
+  },
 ];
 
 type addMedicineFormikTypes = {
@@ -57,6 +74,7 @@ type usesType = {
 const AddMedicineScreen = () => {
   const currentStyles = styles();
   const navigation = useNavigation<navigationPropsForAddMedicine>();
+  const dashboardRoute = useRoute<routePropForDashboard>();
 
   const [showUsesModal, setUsesModal] = useState<boolean>(false);
   const [date, setDate] = useState<Date>(new Date());
@@ -75,6 +93,7 @@ const AddMedicineScreen = () => {
       setTimeout(async () => {
         await database.write(async () => {
           await database.get<Medicine>('medicines').create(medicine => {
+            // WHEN USER ADDS THIS IT SHOULD NOT GO BACK
             medicine.medicineName = values.medicineName;
             medicine.category = values.category;
             medicine.expiryDate = date.toISOString();
@@ -148,6 +167,7 @@ const AddMedicineScreen = () => {
                     <Text>{errors.category}</Text>
                   ) : null
                 }
+                dropdownMainStyle={{ maxHeight: normalize(200, 'height') }}
               />
               <View style={[commonStyles.row, commonStyles.spaceBetween]}>
                 <CustomTextInput
@@ -164,6 +184,8 @@ const AddMedicineScreen = () => {
                       {values.category === 'Tablet' ||
                       values.category === 'Bandage'
                         ? 'Unit'
+                        : values.category === 'Ointment'
+                        ? 'g'
                         : 'ml'}
                     </Text>
                   }
@@ -217,6 +239,19 @@ const AddMedicineScreen = () => {
                   </Text>
                 </View>
               </View>
+              {dashboardRoute.params &&
+              dashboardRoute.params.addMedicineDetails.isFirstAdd ? (
+                <View style={commonStyles.mt16}>
+                  <Text style={currentStyles.noteTextStyle}>
+                    <Text style={currentStyles.noteTextStyleBold}>Note**:</Text>{' '}
+                    You can now add your medicines from{' '}
+                    <Text style={currentStyles.noteTextStyleBold}>
+                      All Medicines
+                    </Text>{' '}
+                    tab, by pressing the + icon
+                  </Text>
+                </View>
+              ) : null}
             </View>
             <View>
               <Button

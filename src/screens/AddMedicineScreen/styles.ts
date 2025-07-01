@@ -50,4 +50,14 @@ export const styles = () =>
       textDecorationLine: 'underline',
       textDecorationColor: colors.primaryBlue,
     },
+    noteTextStyle: {
+      ...fonts.regular,
+      color: colors.pureBlack,
+      fontSize: normalize(15),
+    },
+    noteTextStyleBold: {
+      ...fonts.bold,
+      color: colors.pureBlack,
+      fontSize: normalize(15),
+    },
   });

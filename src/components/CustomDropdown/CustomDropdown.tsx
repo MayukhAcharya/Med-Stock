@@ -11,8 +11,10 @@ import React, { ReactNode, useRef, useState } from 'react';
 import {
   BandageIcon,
   ChevronDown,
+  DropletsIcon,
   PillBottleIcon,
   PillIcon,
+  SyringeIcon,
 } from 'lucide-react-native';
 
 import { styles } from 'src/components/CustomDropdown/styles';
@@ -104,6 +106,10 @@ const CustomDropdown = (props: dropdownProps) => {
                     <BandageIcon />
                   ) : item.label === 'Ointment' ? (
                     <OintmentIcon />
+                  ) : item.value === 'drop' ? (
+                    <DropletsIcon />
+                  ) : item.value === 'syringe' ? (
+                    <SyringeIcon />
                   ) : null}
                 </View>
               </TouchableOpacity>

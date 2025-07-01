@@ -53,6 +53,14 @@ const categoryOptions = [
     label: 'Ointment',
     value: 'Ointment',
   },
+  {
+    label: 'Ear/Nose/Eye Drop',
+    value: 'drop',
+  },
+  {
+    label: 'Cartridge/Ampule',
+    value: 'syringe',
+  },
 ];
 
 const MedicineDetailsScreen = () => {
@@ -96,6 +104,7 @@ const MedicineDetailsScreen = () => {
             medicineUpdate.quantity = values.quantity;
             medicineUpdate.expiryDate = values.expiry_date;
             medicineUpdate.uses = JSON.stringify(uses);
+            medicineUpdate.notes = values.notes;
           });
         });
         setIsLoading(false);
@@ -168,6 +177,7 @@ const MedicineDetailsScreen = () => {
                     <Text>{errors.category}</Text>
                   ) : null
                 }
+                dropdownMainStyle={{ maxHeight: normalize(200, 'height') }}
               />
               <View style={[commonStyles.row, commonStyles.spaceBetween]}>
                 <CustomTextInput
@@ -180,7 +190,14 @@ const MedicineDetailsScreen = () => {
                   style={{ backgroundColor: colors.pureWhite }}
                   labelStyle={currentStyles.labelStyle}
                   rightContainer={
-                    <Text style={currentStyles.quantityUnitStyle}>Unit</Text>
+                    <Text style={currentStyles.quantityUnitStyle}>
+                      {values.category === 'Tablet' ||
+                      values.category === 'Bandage'
+                        ? 'Unit'
+                        : values.category === 'Ointment'
+                        ? 'g'
+                        : 'ml'}
+                    </Text>
                   }
                   onChangeText={text => {
                     handleChange('quantity')(text);

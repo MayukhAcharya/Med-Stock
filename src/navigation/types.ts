@@ -12,10 +12,14 @@ type medicineParams = {
   id: any;
 };
 
+type addMedicineParams = {
+  isFirstAdd?: boolean;
+};
+
 export type DashboardStackParamList = {
   DashboardScreen: undefined;
   MedicineDetailsScreen: { medicineDetails: medicineParams };
-  AddMedicineScreen: undefined; //will be used only for first time
+  AddMedicineScreen: { addMedicineDetails: addMedicineParams }; //will be used only for first time
 };
 
 export type AllMedicineStackParamList = {
