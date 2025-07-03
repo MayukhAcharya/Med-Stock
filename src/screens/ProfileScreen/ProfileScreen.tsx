@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { useFocusEffect } from '@react-navigation/native';
+import { SaveIcon } from 'lucide-react-native';
 
 import { styles } from 'src/screens/ProfileScreen/styles';
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
@@ -11,12 +12,15 @@ import { colors } from 'src/config/colors';
 import { commonStyles } from 'src/config/commonStyles';
 import normalize from 'src/config/normalize';
 import Button from 'src/components/Button/Button';
-import { SaveIcon } from 'lucide-react-native';
 import CustomDropdown from 'src/components/CustomDropdown/CustomDropdown';
 import { database } from 'src/Database/database';
 import { initialValues, profileTypes } from './types';
 import Profile from 'src/Database/profileModel';
-import { timeoutConstant } from 'src/constants/constants';
+import {
+  fieldRegex,
+  numberFieldRegex,
+  timeoutConstant,
+} from 'src/constants/constants';
 
 const genderOptions = [
   {
@@ -40,9 +44,30 @@ const ProfileScreen = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const validationSchema = yup.object().shape({
-    full_name: yup.string().required('Your full name is required'), //needs more validations
-    age: yup.string().required('Your age is required'), //needs more validations
-    gender: yup.string().required('Your gender is required'), //needs more validations
+    full_name: yup
+      .string()
+      .matches(fieldRegex, 'No special characters are allowed')
+      .required('Your full name is required')
+      .test(
+        'blank-space',
+        'No blank spaces are allowed',
+        (text: any) => text && text.trim().length !== 0,
+      ),
+    age: yup
+      .string()
+      .matches(numberFieldRegex, 'Only numbers are allowed')
+      .required('Your age is required')
+      .test(
+        'blank-space',
+        'No blank spaces are allowed',
+        (text: any) => text && text.trim().length !== 0,
+      )
+      .test(
+        'age',
+        'Age must be between 18-100',
+        (text: any) => Number(text) >= 18 && Number(text) <= 100,
+      ),
+    gender: yup.string().required('Your gender is required'),
   });
 
   const getProfileDataMethod = () => {

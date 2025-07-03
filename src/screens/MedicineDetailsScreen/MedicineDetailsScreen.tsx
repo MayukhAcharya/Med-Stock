@@ -27,7 +27,11 @@ import {
 import { AllMedicineStackParamList } from 'src/navigation/types';
 import { database } from 'src/Database/database';
 import Medicine from 'src/Database/medicineModel';
-import { timeoutConstant } from 'src/constants/constants';
+import {
+  fieldRegex,
+  numberFieldRegex,
+  timeoutConstant,
+} from 'src/constants/constants';
 
 type routeProps = RouteProp<AllMedicineStackParamList>;
 
@@ -75,8 +79,25 @@ const MedicineDetailsScreen = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const validationSchema = yup.object().shape({
-    medicine_name: yup.string().required('Medicine name is required'),
-    quantity: yup.string().required('Quantity is required'),
+    medicine_name: yup
+      .string()
+      .required('Medicine name is required')
+      .matches(fieldRegex, 'No special characters are allowed')
+      .required('Medicine name is required')
+      .test(
+        'blank-space',
+        'No blank spaces are allowed',
+        (text: any) => text && text.trim().length !== 0,
+      ),
+    quantity: yup
+      .string()
+      .matches(numberFieldRegex, 'Only numbers are allowed')
+      .required('Quantity is required')
+      .test(
+        'blank-space',
+        'No blank spaces are allowed',
+        (text: any) => text && text.trim().length !== 0,
+      ),
     category: yup.string().required('category of medicine is required'),
     expiry_date: yup.string().required('Expiry date of medicine is required'),
   });

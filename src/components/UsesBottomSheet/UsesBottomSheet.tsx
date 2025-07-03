@@ -7,13 +7,13 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, { useState } from 'react';
+import { PlusCircleIcon, XIcon } from 'lucide-react-native';
 
 import { styles } from 'src/components/UsesBottomSheet/styles';
 import { colors } from 'src/config/colors';
 import { commonStyles } from 'src/config/commonStyles';
-import CustomTextInput from '../CustomTextInput/CustomTextInput';
-import Button from '../Button/Button';
-import { PlusCircleIcon, XIcon } from 'lucide-react-native';
+import CustomTextInput from 'src/components/CustomTextInput/CustomTextInput';
+import Button from 'src/components/Button/Button';
 
 type usesType = {
   use: string;
@@ -40,7 +40,8 @@ const UsesBottomSheet = (props: UsesBottomSheetProps) => {
   );
 
   const handleAddAnotherButton = () => {
-    const isValidItem = (item: any) => item.use !== '';
+    const isValidItem = (item: any) =>
+      item.use !== '' && item.use.trim().length !== 0;
 
     const flag = useArray.every(isValidItem);
 
