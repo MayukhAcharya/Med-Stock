@@ -5,10 +5,12 @@ import { styles } from 'src/components/MedicineListCard/styles';
 import { commonStyles } from 'src/config/commonStyles';
 import {
   BandageIcon,
+  DropletsIcon,
   Drumstick,
   ImageOffIcon,
   PillBottleIcon,
   PillIcon,
+  SyringeIcon,
 } from 'lucide-react-native';
 import { OintmentIcon } from 'src/assets/svg/OintmentIcon';
 import { OintmentIconBig } from 'src/assets/svg/OintmentIconBig';
@@ -37,6 +39,10 @@ const MedicineListCard = (props: medicineListProps) => {
             <BandageIcon size={75} />
           ) : category === 'Ointment' ? (
             <OintmentIconBig />
+          ) : category === 'Ear/Nose/Eye Drop' ? (
+            <DropletsIcon size={75} />
+          ) : category === 'Cartridge/Ampule' ? (
+            <SyringeIcon size={75} />
           ) : (
             <ImageOffIcon size={75} />
           )}

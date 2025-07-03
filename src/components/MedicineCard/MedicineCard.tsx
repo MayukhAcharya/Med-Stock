@@ -2,10 +2,12 @@ import { View, Text, Image, TouchableOpacity, Pressable } from 'react-native';
 import React from 'react';
 import {
   BandageIcon,
+  DropletsIcon,
   ImageOffIcon,
   MoveDiagonalIcon,
   PillBottleIcon,
   PillIcon,
+  SyringeIcon,
 } from 'lucide-react-native';
 
 import { styles } from 'src/components/MedicineCard/styles';
@@ -44,6 +46,10 @@ const MedicineCard = (props: medicineCardProps) => {
             <BandageIcon size={70} color={color} />
           ) : category === 'Ointment' ? (
             <OintmentIconBig color={color} />
+          ) : category === 'Ear/Nose/Eye Drop' ? (
+            <DropletsIcon size={70} color={color} />
+          ) : category === 'Cartridge/Ampule' ? (
+            <SyringeIcon size={70} color={color} />
           ) : (
             <ImageOffIcon size={70} color={color} />
           )}

@@ -12,6 +12,7 @@ import Button from 'src/components/Button/Button';
 import CustomDropdown from 'src/components/CustomDropdown/CustomDropdown';
 import { database } from 'src/Database/database';
 import Profile from 'src/Database/profileModel';
+import { fieldRegex, numberFieldRegex } from 'src/constants/constants';
 
 const genderOptions = [
   {
@@ -40,9 +41,30 @@ const LoginScreen = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const validationSchema = yup.object().shape({
-    fullName: yup.string().required('Your full name is required'), //needs more validations
-    age: yup.string().required('Your age is required'), //needs more validations
-    gender: yup.string().required('Your gender is required'), //needs more validations
+    fullName: yup
+      .string()
+      .matches(fieldRegex, 'No special characters are allowed')
+      .required('Your full name is required')
+      .test(
+        'blank-space',
+        'No blank spaces are allowed',
+        (text: any) => text && text.trim().length !== 0,
+      ),
+    age: yup
+      .string()
+      .matches(numberFieldRegex, 'Only numbers are allowed')
+      .required('Your age is required')
+      .test(
+        'blank-space',
+        'No blank spaces are allowed',
+        (text: any) => text && text.trim().length !== 0,
+      )
+      .test(
+        'age',
+        'Age must be between 18-100',
+        (text: any) => Number(text) >= 18 && Number(text) <= 100,
+      ),
+    gender: yup.string().required('Your gender is required'),
   });
 
   const onSubmitMethod = async (values: formikTypes) => {

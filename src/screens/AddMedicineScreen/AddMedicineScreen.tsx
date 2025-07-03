@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { PlusCircleIcon } from 'lucide-react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import notifee from '@notifee/react-native';
 
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
 import { styles } from 'src/screens/AddMedicineScreen/styles';
@@ -19,7 +20,11 @@ import {
   DashboardStackParamList,
 } from 'src/navigation/types';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { timeoutConstant } from 'src/constants/constants';
+import {
+  fieldRegex,
+  numberFieldRegex,
+  timeoutConstant,
+} from 'src/constants/constants';
 import { database } from 'src/Database/database';
 import Medicine from 'src/Database/medicineModel';
 import normalize from 'src/config/normalize';
@@ -80,10 +85,29 @@ const AddMedicineScreen = () => {
   const [date, setDate] = useState<Date>(new Date());
   const [uses, setUses] = useState<usesType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [saveOrSaveAnother, setSaveOrSaveAnother] = useState<
+    'Save' | 'Save another'
+  >('Save');
 
   const validationSchema = yup.object().shape({
-    medicineName: yup.string().required('Medicine name is required'),
-    quantity: yup.string().required('Quantity is required'),
+    medicineName: yup
+      .string()
+      .matches(fieldRegex, 'No special characters are allowed')
+      .required('Medicine name is required')
+      .test(
+        'blank-space',
+        'No blank spaces are allowed',
+        (text: any) => text && text.trim().length !== 0,
+      ),
+    quantity: yup
+      .string()
+      .matches(numberFieldRegex, 'Only numbers are allowed')
+      .required('Quantity is required')
+      .test(
+        'blank-space',
+        'No blank spaces are allowed',
+        (text: any) => text && text.trim().length !== 0,
+      ),
     category: yup.string().required('category of medicine is required'),
   });
 
@@ -109,6 +133,46 @@ const AddMedicineScreen = () => {
     }
   };
 
+  const addAnotherMedicineSubmitMethod = async (
+    values: addMedicineFormikTypes,
+    resetForm: any,
+  ) => {
+    setIsLoading(true);
+    try {
+      setTimeout(async () => {
+        await database.write(async () => {
+          await database.get<Medicine>('medicines').create(medicine => {
+            medicine.medicineName = values.medicineName;
+            medicine.category = values.category;
+            medicine.expiryDate = date.toISOString();
+            medicine.uses = JSON.stringify(uses);
+            medicine.quantity = values.quantity;
+          });
+        });
+      }, timeoutConstant);
+      resetForm({
+        values: {
+          medicine_name: '',
+          category: 'Tablet',
+          expiryDate: setDate(new Date()),
+          uses: setUses([]),
+          quantity: '',
+        },
+      });
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
+  };
+
+  const onSubmitMethod = (values: addMedicineFormikTypes, resetForm: any) => {
+    if (saveOrSaveAnother === 'Save') {
+      addMedicineSubmitMethod(values);
+    } else {
+      addAnotherMedicineSubmitMethod(values, resetForm);
+    }
+  };
+
   return (
     <BackgroundFill showDesign={false} backgroundColor="white">
       <Formik
@@ -117,7 +181,9 @@ const AddMedicineScreen = () => {
           quantity: '',
           category: 'Tablet',
         }}
-        onSubmit={addMedicineSubmitMethod}
+        onSubmit={(values: addMedicineFormikTypes, { resetForm }) =>
+          onSubmitMethod(values, resetForm)
+        }
         validationSchema={validationSchema}
       >
         {({
@@ -255,14 +321,27 @@ const AddMedicineScreen = () => {
             </View>
             <View>
               <Button
-                label="Add Medicine"
+                label="Save and add another Medicine"
                 mainStyle={commonStyles.w100per}
                 icon={<PlusCircleIcon color={colors.pureWhite} />}
                 onPress={() => {
+                  setSaveOrSaveAnother('Save another');
                   handleSubmit();
                 }}
                 showActivityIndicator={isLoading}
               />
+              <View style={commonStyles.mt16}>
+                <Button
+                  label="Add Medicine"
+                  mainStyle={commonStyles.w100per}
+                  icon={<PlusCircleIcon color={colors.pureWhite} />}
+                  onPress={() => {
+                    setSaveOrSaveAnother('Save');
+                    handleSubmit();
+                  }}
+                  showActivityIndicator={isLoading}
+                />
+              </View>
             </View>
           </View>
         )}

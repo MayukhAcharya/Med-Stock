@@ -1,4 +1,10 @@
-import { View, Text, FlatList, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import {
   AlertTriangleIcon,
   CircleAlertIcon,
@@ -134,134 +140,144 @@ const DashboardScreen = () => {
             </Text>
           </View>
           {allMedicines.length > 0 ? (
-            <View>
-              <View style={currentStyles.MedsView}>
-                <Text style={currentStyles.safeTextStyle}>Safe</Text>
-                <View style={commonStyles.mt8}>
-                  <ShieldPlusIcon color={colors.green} size={25} />
+            isLoading ? (
+              <View style={commonStyles.mt30}>
+                <ActivityIndicator size="large" color={colors.primaryBlue} />
+              </View>
+            ) : (
+              <View>
+                <View style={currentStyles.MedsView}>
+                  <Text style={currentStyles.safeTextStyle}>Safe</Text>
+                  <View style={commonStyles.mt8}>
+                    <ShieldPlusIcon color={colors.green} size={25} />
+                  </View>
+                  <Text style={currentStyles.totalMedsTextStyle}>
+                    ({safeMeds.length} medicines)
+                  </Text>
                 </View>
-                <Text style={currentStyles.totalMedsTextStyle}>
-                  ({safeMeds.length} medicines)
-                </Text>
-              </View>
 
-              {/* Safe Medicine cards     */}
-              <View style={[commonStyles.mt25]}>
-                <FlatList
-                  data={safeMeds}
-                  renderItem={({ item, index }) => {
-                    return (
-                      <View style={{ marginBottom: 10 }}>
-                        <MedicineCard
-                          expiryDate={item.expiry_date}
-                          medicineName={item.medicine_name}
-                          category={item.category}
-                          color={colors.green}
-                          onPress={() => {
-                            navigation.navigate('MedicineDetailsScreen', {
-                              medicineDetails: {
-                                id: item.id,
-                              },
-                            });
-                          }}
-                        />
-                      </View>
-                    );
-                  }}
-                  keyExtractor={(item, index) => item.id}
-                  horizontal
-                  ItemSeparatorComponent={() => (
-                    <View style={commonStyles.ml20} />
-                  )}
-                  showsHorizontalScrollIndicator={false}
-                />
-              </View>
-
-              <View style={currentStyles.MedsView}>
-                <Text style={currentStyles.nearExpiryTextStyle}>
-                  Near Expiry
-                </Text>
-                <View style={commonStyles.mt8}>
-                  <AlertTriangleIcon color={colors.darkYellow} size={25} />
+                {/* Safe Medicine cards     */}
+                <View style={[commonStyles.mt25]}>
+                  <FlatList
+                    data={safeMeds}
+                    renderItem={({ item, index }) => {
+                      return (
+                        <View style={{ marginBottom: 10 }}>
+                          <MedicineCard
+                            expiryDate={item.expiry_date}
+                            medicineName={item.medicine_name}
+                            category={item.category}
+                            color={colors.green}
+                            onPress={() => {
+                              navigation.navigate('MedicineDetailsScreen', {
+                                medicineDetails: {
+                                  id: item.id,
+                                },
+                              });
+                            }}
+                          />
+                        </View>
+                      );
+                    }}
+                    keyExtractor={(item, index) => item.id}
+                    horizontal
+                    ItemSeparatorComponent={() => (
+                      <View style={commonStyles.ml20} />
+                    )}
+                    showsHorizontalScrollIndicator={false}
+                  />
                 </View>
-                <Text style={currentStyles.totalMedsTextStyle}>
-                  ({nearExpiryMeds.length} medicines)
-                </Text>
-              </View>
 
-              {/* Near Expiry */}
-              <View style={[commonStyles.mt25]}>
-                <FlatList
-                  data={nearExpiryMeds}
-                  renderItem={({ item, index }) => {
-                    return (
-                      <View style={{ marginBottom: 10 }}>
-                        <MedicineCard
-                          expiryDate={item.expiry_date}
-                          medicineName={item.medicine_name}
-                          category={item.category}
-                          color={colors.darkYellow}
-                          onPress={() => {
-                            navigation.navigate('MedicineDetailsScreen', {
-                              medicineDetails: {
-                                id: item.id,
-                              },
-                            });
-                          }}
-                        />
-                      </View>
-                    );
-                  }}
-                  keyExtractor={(item, index) => item.id}
-                  horizontal
-                  ItemSeparatorComponent={() => (
-                    <View style={commonStyles.ml20} />
-                  )}
-                  showsHorizontalScrollIndicator={false}
-                />
-              </View>
-
-              <View style={currentStyles.MedsView}>
-                <Text style={currentStyles.expiredTextStyle}>Expired</Text>
-                <View style={commonStyles.mt8}>
-                  <CircleAlertIcon color={colors.error} size={25} />
+                <View style={currentStyles.MedsView}>
+                  <Text style={currentStyles.nearExpiryTextStyle}>
+                    Near Expiry
+                  </Text>
+                  <View style={commonStyles.mt8}>
+                    <AlertTriangleIcon color={colors.darkYellow} size={25} />
+                  </View>
+                  <Text style={currentStyles.totalMedsTextStyle}>
+                    ({nearExpiryMeds.length} medicines)
+                  </Text>
                 </View>
-                <Text style={currentStyles.totalMedsTextStyle}>
-                  ({expiredMeds.length} medicines)
-                </Text>
-              </View>
 
-              {/* Expired */}
-              <View style={[commonStyles.mt25]}>
-                <FlatList
-                  data={expiredMeds}
-                  renderItem={({ item, index }) => {
-                    return (
-                      <View style={{ marginBottom: 10 }}>
-                        <MedicineCard
-                          expiryDate={item.expiry_date}
-                          medicineName={item.medicine_name}
-                          category={item.category}
-                          color={colors.error}
-                          onPress={() => {
-                            navigation.navigate('MedicineDetailsScreen', {
-                              medicineDetails: {
-                                id: item.id,
-                              },
-                            });
-                          }}
-                        />
-                      </View>
-                    );
-                  }}
-                  keyExtractor={(item, index) => item.id}
-                  horizontal
-                  ItemSeparatorComponent={() => (
-                    <View style={commonStyles.ml20} />
-                  )}
-                  showsHorizontalScrollIndicator={false}
-                />
+                {/* Near Expiry */}
+                <View style={[commonStyles.mt25]}>
+                  <FlatList
+                    data={nearExpiryMeds}
+                    renderItem={({ item, index }) => {
+                      return (
+                        <View style={{ marginBottom: 10 }}>
+                          <MedicineCard
+                            expiryDate={item.expiry_date}
+                            medicineName={item.medicine_name}
+                            category={item.category}
+                            color={colors.darkYellow}
+                            onPress={() => {
+                              navigation.navigate('MedicineDetailsScreen', {
+                                medicineDetails: {
+                                  id: item.id,
+                                },
+                              });
+                            }}
+                          />
+                        </View>
+                      );
+                    }}
+                    keyExtractor={(item, index) => item.id}
+                    horizontal
+                    ItemSeparatorComponent={() => (
+                      <View style={commonStyles.ml20} />
+                    )}
+                    showsHorizontalScrollIndicator={false}
+                  />
+                </View>
+
+                <View style={currentStyles.MedsView}>
+                  <Text style={currentStyles.expiredTextStyle}>Expired</Text>
+                  <View style={commonStyles.mt8}>
+                    <CircleAlertIcon color={colors.error} size={25} />
+                  </View>
+                  <Text style={currentStyles.totalMedsTextStyle}>
+                    ({expiredMeds.length} medicines)
+                  </Text>
+                </View>
+
+                {/* Expired */}
+                <View style={[commonStyles.mt25]}>
+                  <FlatList
+                    data={expiredMeds}
+                    renderItem={({ item, index }) => {
+                      return (
+                        <View style={{ marginBottom: 10 }}>
+                          <MedicineCard
+                            expiryDate={item.expiry_date}
+                            medicineName={item.medicine_name}
+                            category={item.category}
+                            color={colors.error}
+                            onPress={() => {
+                              navigation.navigate('MedicineDetailsScreen', {
+                                medicineDetails: {
+                                  id: item.id,
+                                },
+                              });
+                            }}
+                          />
+                        </View>
+                      );
+                    }}
+                    keyExtractor={(item, index) => item.id}
+                    horizontal
+                    ItemSeparatorComponent={() => (
+                      <View style={commonStyles.ml20} />
+                    )}
+                    showsHorizontalScrollIndicator={false}
+                  />
+                </View>
               </View>
+            )
+          ) : isLoading ? (
+            <View style={commonStyles.mt30}>
+              <ActivityIndicator size="large" color={colors.primaryBlue} />
             </View>
           ) : (
             <View
