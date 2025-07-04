@@ -49,4 +49,20 @@ export const styles = () =>
       textDecorationLine: 'underline',
       textDecorationColor: colors.primaryBlue,
     },
+    buttonView: {
+      marginTop: normalize(30, 'height'),
+      rowGap: normalize(15),
+    },
+    notRequiredStyle: {
+      width: '100%',
+      backgroundColor: colors.pureWhite,
+      borderWidth: 1,
+      borderColor: colors.error,
+      elevation: 0,
+    },
+    notRequiredLabelStyle: {
+      ...fonts.medium,
+      color: colors.pureBlack,
+      fontSize: normalize(15),
+    },
   });

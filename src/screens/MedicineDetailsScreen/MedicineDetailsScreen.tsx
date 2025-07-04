@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Alert } from 'react-native';
 import React, { useState } from 'react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
@@ -134,6 +134,25 @@ const MedicineDetailsScreen = () => {
     } catch (error) {
       setIsLoading(false);
     }
+  };
+
+  const alertMethod = (medicineName: string) => {
+    Alert.alert(
+      'Warning',
+      `This action will mark ${medicineName} as not required and the quantity will be updated to 0, you can change it afterwards. Continue?`,
+      [
+        {
+          text: 'Yes',
+          onPress: () => {
+            //add func
+          },
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+    );
   };
 
   useFocusEffect(
@@ -294,7 +313,16 @@ const MedicineDetailsScreen = () => {
                 }}
               />
             </View>
-            <View style={commonStyles.mt30}>
+            <View style={currentStyles.buttonView}>
+              <Button
+                label="Mark as Not Required"
+                mainStyle={[currentStyles.notRequiredStyle]}
+                labelStyle={currentStyles.notRequiredLabelStyle}
+                onPress={() => {
+                  alertMethod(values.medicine_name);
+                }}
+                showActivityIndicator={isLoading}
+              />
               <Button
                 label="Save medicine details"
                 mainStyle={commonStyles.w100per}
