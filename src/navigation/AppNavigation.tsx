@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { Text } from 'react-native';
 import {
   BriefcaseMedical,
+  HeartPlusIcon,
   HomeIcon,
   PillBottleIcon,
   User,
@@ -14,6 +15,7 @@ import {
   AuthStackParamList,
   DashboardStackParamList,
   MainStackParamList,
+  MedicationProfileStack,
   ProfileStackParamList,
   UnAuthStackParamList,
 } from 'src/navigation/types';
@@ -30,6 +32,7 @@ import MedicineDetailsScreen from 'src/screens/MedicineDetailsScreen';
 import AddMedicineScreen from 'src/screens/AddMedicineScreen';
 import { database } from 'src/Database/database';
 import LoadingScreen from 'src/screens/LoadingScreen';
+import MedicationProfilesScreen from 'src/screens/MedicationProfilesScreen';
 
 const AppNavigation = () => {
   const UnAuthStack = createNativeStackNavigator<UnAuthStackParamList>();
@@ -39,6 +42,8 @@ const AppNavigation = () => {
   const AllMedicineStack =
     createNativeStackNavigator<AllMedicineStackParamList>();
   const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
+  const MedicineProfileStack =
+    createNativeStackNavigator<MedicationProfileStack>();
 
   const UnAuthStackScreens = () => (
     <UnAuthStack.Navigator
@@ -129,6 +134,19 @@ const AppNavigation = () => {
     </ProfileStack.Navigator>
   );
 
+  const MedicineProfileStackScreens = () => (
+    <MedicineProfileStack.Navigator initialRouteName="MedicationProfilesScreen">
+      <MedicineProfileStack.Screen
+        name="MedicationProfilesScreen"
+        component={MedicationProfilesScreen}
+        options={{
+          headerShown: true,
+          header: () => <Header title="My Health Profiles" />,
+        }}
+      />
+    </MedicineProfileStack.Navigator>
+  );
+
   const AuthStackScreens = () => (
     <AuthStack.Navigator
       initialRouteName="DashboardStackScreens"
@@ -149,8 +167,8 @@ const AppNavigation = () => {
             return (
               <Text
                 style={{
-                  ...fonts.regular,
-                  fontSize: normalize(14),
+                  ...fonts.medium,
+                  fontSize: normalize(12),
                   // color: focused ? colors.pureWhite : colors.primaryBlue,
                   color: colors.primaryBlue,
                 }}
@@ -179,8 +197,8 @@ const AppNavigation = () => {
             return (
               <Text
                 style={{
-                  ...fonts.regular,
-                  fontSize: normalize(14),
+                  ...fonts.medium,
+                  fontSize: normalize(12),
                   // color: focused ? colors.pureWhite : colors.primaryBlue,
                   color: colors.primaryBlue,
                 }}
@@ -200,6 +218,36 @@ const AppNavigation = () => {
         }}
       />
       <AuthStack.Screen
+        name="MedicationProfileStackScreens"
+        component={MedicineProfileStackScreens}
+        options={{
+          headerShown: false,
+          tabBarLabel: ({ focused }) => {
+            return (
+              <Text
+                style={{
+                  ...fonts.medium,
+                  fontSize: normalize(12),
+                  // color: focused ? colors.pureWhite : colors.primaryBlue,
+                  color: colors.primaryBlue,
+                }}
+                numberOfLines={1}
+              >
+                Health Profiles
+              </Text>
+            );
+          },
+          tabBarIcon: ({ focused }) => {
+            return (
+              <HeartPlusIcon
+                size={18}
+                color={focused ? colors.primaryBlue : colors.pureBlack}
+              />
+            );
+          },
+        }}
+      />
+      <AuthStack.Screen
         name="ProfileStackScreens"
         component={ProfileStackScreens}
         options={{
@@ -208,8 +256,8 @@ const AppNavigation = () => {
             return (
               <Text
                 style={{
-                  ...fonts.regular,
-                  fontSize: normalize(14),
+                  ...fonts.medium,
+                  fontSize: normalize(12),
                   // color: focused ? colors.pureWhite : colors.primaryBlue,
                   color: colors.primaryBlue,
                 }}
