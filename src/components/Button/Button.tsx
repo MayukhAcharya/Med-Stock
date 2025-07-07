@@ -39,8 +39,8 @@ const Button = (props: buttonProps) => {
       style={[currentStyles.buttonDisableStyle, mainStyle]}
       disabled={true}
     >
-      <View style={commonStyles.row}>
-        <View style={commonStyles.mr10}>{icon ? icon : null}</View>
+      <View style={[commonStyles.row, commonStyles.aic]}>
+        {icon ? <View style={commonStyles.mr10}>{icon}</View> : null}
 
         <Text style={[currentStyles.buttonLabelStyle, labelStyle]}>
           {label}
@@ -56,8 +56,8 @@ const Button = (props: buttonProps) => {
       {showActivityIndicator ? (
         <ActivityIndicator size={'small'} color={colors.pureWhite} />
       ) : (
-        <View style={commonStyles.row}>
-          <View style={commonStyles.mr10}>{icon ? icon : null}</View>
+        <View style={[commonStyles.row, commonStyles.aic]}>
+          {icon ? <View style={commonStyles.mr10}>{icon}</View> : null}
 
           <Text style={[currentStyles.buttonLabelStyle, labelStyle]}>
             {label}
