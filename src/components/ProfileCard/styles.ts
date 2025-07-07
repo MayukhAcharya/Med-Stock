@@ -5,12 +5,6 @@ import normalize from 'src/config/normalize';
 
 export const styles = () =>
   StyleSheet.create({
-    container: {
-      flex: 1,
-      paddingHorizontal: normalize(12),
-      paddingVertical: normalize(16, 'height'),
-      backgroundColor: colors.pureWhite,
-    },
     boxContainer: {
       width: normalize(170, 'width'),
       borderWidth: 1,
@@ -34,24 +28,5 @@ export const styles = () =>
       fontSize: normalize(16),
       color: colors.pureBlack,
       textAlign: 'center',
-    },
-    plusIconPressStyle: {
-      width: normalize(56),
-      height: normalize(56),
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: normalize(28),
-    },
-    fabButtonStyle: {
-      position: 'absolute',
-      right: normalize(20),
-      bottom: normalize(30),
-      backgroundColor: colors.primaryBlue,
-      width: normalize(56),
-      height: normalize(56),
-      borderRadius: normalize(28),
-      justifyContent: 'center',
-      alignItems: 'center',
-      elevation: 5,
     },
   });

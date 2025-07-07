@@ -9,8 +9,8 @@ export const styles = () =>
     },
     fab: {
       position: 'absolute',
-      right: 20,
-      bottom: 30,
+      right: normalize(20),
+      bottom: normalize(30),
       backgroundColor: colors.primaryBlue,
       width: normalize(56),
       height: normalize(56),

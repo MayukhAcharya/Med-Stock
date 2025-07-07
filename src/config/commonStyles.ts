@@ -336,6 +336,9 @@ export const commonStyles = StyleSheet.create({
   w55Per: {
     width: '55%',
   },
+  w65per: {
+    width: '65%',
+  },
   w75per: {
     width: '75%',
   },
@@ -362,5 +365,8 @@ export const commonStyles = StyleSheet.create({
   },
   rowGap6: {
     rowGap: normalize(6),
+  },
+  rowGap10: {
+    rowGap: normalize(10),
   },
 });

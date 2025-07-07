@@ -31,10 +31,6 @@ const genderOptions = [
     label: 'Female',
     value: 'Female',
   },
-  {
-    label: 'Prefer not to say',
-    value: 'noSay',
-  },
 ];
 
 const ProfileScreen = () => {

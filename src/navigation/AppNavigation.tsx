@@ -155,6 +155,7 @@ const AppNavigation = () => {
         tabBarStyle: {
           backgroundColor: colors.pureWhite,
           height: 55,
+          // bottom:0
         },
       }}
     >
