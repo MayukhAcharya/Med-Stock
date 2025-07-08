@@ -25,11 +25,11 @@ export const styles = () =>
     },
     inputContainer: {
       marginTop: normalize(15, 'height'),
-      rowGap: normalize(20, 'height'),
+      rowGap: normalize(25, 'height'),
     },
     addButtonMainStyle: {
       width: normalize(106),
-      marginTop: normalize(15, 'height'),
+      marginTop: normalize(18, 'height'),
     },
     reviewMedicinesMainStyle: {
       width: '100%',
@@ -50,5 +50,10 @@ export const styles = () =>
     labelStyle: {
       color: colors.pureBlack,
       fontSize: normalize(13),
+    },
+    duplicateMedicineTextStyle: {
+      ...fonts.regular,
+      fontSize: normalize(13),
+      color: colors.error,
     },
   });
