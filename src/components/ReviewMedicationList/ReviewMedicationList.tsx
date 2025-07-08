@@ -6,72 +6,31 @@ import {
   TouchableOpacity,
   FlatList,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { colors } from 'src/config/colors';
 import { styles } from 'src/components/ReviewMedicationList/styles';
 import { X } from 'lucide-react-native';
 import { commonStyles } from 'src/config/commonStyles';
 
+type medicineDataTypes = {
+  medicineName: string;
+  medicineId: string;
+};
+
 type reviewMedicationListProps = {
   isVisible: boolean;
   onClose: () => void;
+  medicationList: medicineDataTypes[];
+  onUpdation: (array: medicineDataTypes[]) => void;
 };
-
-const dummyData = [
-  {
-    id: '1',
-    medicineName: 'Calpol-650',
-  },
-  {
-    id: '2',
-    medicineName: 'Famoccid-40',
-  },
-  {
-    id: '3',
-    medicineName: 'Ofloxacin-50',
-  },
-  {
-    id: '4',
-    medicineName: 'O2',
-  },
-  {
-    id: '5',
-    medicineName: 'Resumen',
-  },
-  {
-    id: '6',
-    medicineName: 'Resumen',
-  },
-  {
-    id: '7',
-    medicineName: 'Resumen',
-  },
-  {
-    id: '8',
-    medicineName: 'Resumen',
-  },
-  {
-    id: '9',
-    medicineName: 'Resumen',
-  },
-  {
-    id: '10',
-    medicineName: 'Resumen',
-  },
-  {
-    id: '11',
-    medicineName: 'Resumen',
-  },
-  {
-    id: '12',
-    medicineName: 'Resumen',
-  },
-];
 
 const ReviewMedicationList = (props: reviewMedicationListProps) => {
   const currentStyles = styles();
-  const { onClose, isVisible } = props;
+  const { onClose, isVisible, medicationList, onUpdation } = props;
+
+  const [medicineArray, setMedicineArray] =
+    useState<medicineDataTypes[]>(medicationList);
 
   const tableHeader = () => (
     <View style={currentStyles.flatlistHeaderContainer}>
@@ -83,6 +42,20 @@ const ReviewMedicationList = (props: reviewMedicationListProps) => {
       </View>
     </View>
   );
+
+  const emptyField = () => (
+    <View style={currentStyles.emptyFieldTextStyle}>
+      <Text style={currentStyles.noMedsTextStyle}>No Medicines Found!</Text>
+    </View>
+  );
+
+  const removeItems = (id: string) => {
+    const filteredItems = medicineArray.filter(item => item.medicineId !== id);
+
+    setMedicineArray(filteredItems);
+    onUpdation(filteredItems);
+  };
+
   return (
     <Modal
       transparent
@@ -111,7 +84,7 @@ const ReviewMedicationList = (props: reviewMedicationListProps) => {
             </View>
             <View style={currentStyles.flatlistContainer}>
               <FlatList
-                data={dummyData}
+                data={medicineArray}
                 renderItem={({ item, index }) => {
                   return (
                     <View style={currentStyles.flatlistInnerContainer}>
@@ -119,7 +92,7 @@ const ReviewMedicationList = (props: reviewMedicationListProps) => {
                         style={[currentStyles.tableColumn, commonStyles.w45Per]}
                       >
                         <Text style={currentStyles.flatlistTextStyle}>
-                          {item.id}.
+                          {index + 1}.
                         </Text>
                       </View>
                       <View
@@ -129,14 +102,19 @@ const ReviewMedicationList = (props: reviewMedicationListProps) => {
                           {item.medicineName}
                         </Text>
                       </View>
-                      <TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => {
+                          removeItems(item.medicineId);
+                        }}
+                      >
                         <X size={20} color={colors.grey} />
                       </TouchableOpacity>
                     </View>
                   );
                 }}
                 ListHeaderComponent={tableHeader}
-                keyExtractor={item => item.id}
+                keyExtractor={item => item.medicineId}
+                ListEmptyComponent={emptyField}
               />
             </View>
           </View>

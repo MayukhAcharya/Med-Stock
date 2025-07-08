@@ -25,7 +25,8 @@ export const styles = () =>
       backgroundColor: colors.pureWhite,
       borderRadius: normalize(12),
       paddingHorizontal: normalize(12),
-      paddingVertical: normalize(14, 'height'),
+      paddingTop: normalize(14, 'height'),
+      paddingBottom: normalize(25, 'height'),
       alignItems: 'center',
     },
     reviewMedicineTextStyle: {
@@ -70,6 +71,16 @@ export const styles = () =>
       fontSize: normalize(16),
     },
     flatlistTextStyle: {
+      ...fonts.regular,
+      color: colors.pureBlack,
+      fontSize: normalize(16),
+    },
+    emptyFieldTextStyle: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: normalize(60, 'height'),
+    },
+    noMedsTextStyle: {
       ...fonts.regular,
       color: colors.pureBlack,
       fontSize: normalize(16),
