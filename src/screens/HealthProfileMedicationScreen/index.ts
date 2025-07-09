@@ -1,0 +1,2 @@
+import HealthProfileMedicationScreen from 'src/screens/HealthProfileMedicationScreen/HealthProfileMedicationScreen';
+export default HealthProfileMedicationScreen;

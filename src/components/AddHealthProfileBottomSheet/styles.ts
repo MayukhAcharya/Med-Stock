@@ -28,7 +28,7 @@ export const styles = () =>
       rowGap: normalize(25, 'height'),
     },
     addButtonMainStyle: {
-      width: normalize(106),
+      width: normalize(96),
       marginTop: normalize(18, 'height'),
     },
     reviewMedicinesMainStyle: {
@@ -55,5 +55,15 @@ export const styles = () =>
       ...fonts.regular,
       fontSize: normalize(13),
       color: colors.error,
+    },
+    boxContainer: {
+      width: '100%',
+      borderWidth: 1,
+      paddingVertical: normalize(15, 'height'),
+      paddingHorizontal: normalize(10),
+      borderColor: colors.borderColor,
+      borderRadius: normalize(12),
+      backgroundColor: colors.offWhite,
+      rowGap: normalize(10),
     },
   });

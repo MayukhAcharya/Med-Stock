@@ -16,6 +16,7 @@ import { commonStyles } from 'src/config/commonStyles';
 type medicineDataTypes = {
   medicineName: string;
   medicineId: string;
+  medicationTime: string;
 };
 
 type reviewMedicationListProps = {
@@ -34,7 +35,7 @@ const ReviewMedicationList = (props: reviewMedicationListProps) => {
 
   const tableHeader = () => (
     <View style={currentStyles.flatlistHeaderContainer}>
-      <View style={[currentStyles.tableColumn, commonStyles.w45Per]}>
+      <View style={[currentStyles.tableColumn, commonStyles.w30Per]}>
         <Text style={currentStyles.flatlistHeaderTextStyle}>Sr No.</Text>
       </View>
       <View style={[currentStyles.tableColumn, commonStyles.w45Per]}>
@@ -89,17 +90,20 @@ const ReviewMedicationList = (props: reviewMedicationListProps) => {
                   return (
                     <View style={currentStyles.flatlistInnerContainer}>
                       <View
-                        style={[currentStyles.tableColumn, commonStyles.w45Per]}
+                        style={[currentStyles.tableColumn, commonStyles.w30Per]}
                       >
                         <Text style={currentStyles.flatlistTextStyle}>
                           {index + 1}.
                         </Text>
                       </View>
                       <View
-                        style={[currentStyles.tableColumn, commonStyles.w45Per]}
+                        style={[currentStyles.tableColumn, commonStyles.w65per]}
                       >
-                        <Text style={currentStyles.flatlistTextStyle}>
-                          {item.medicineName}
+                        <Text
+                          style={currentStyles.flatlistTextStyle}
+                          numberOfLines={1}
+                        >
+                          {item.medicineName} ({item.medicationTime})
                         </Text>
                       </View>
                       <TouchableOpacity

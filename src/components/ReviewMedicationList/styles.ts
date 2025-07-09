@@ -35,7 +35,7 @@ export const styles = () =>
       fontSize: normalize(14),
     },
     flatlistContainer: {
-      width: normalize(250, 'width'),
+      width: normalize(280, 'width'),
       borderWidth: 1,
       borderColor: colors.borderColor,
       marginTop: normalize(15, 'height'),

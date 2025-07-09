@@ -163,6 +163,9 @@ export const commonStyles = StyleSheet.create({
   w308: {
     width: normalize(308, 'width'),
   },
+  w312: {
+    width: normalize(312, 'width'),
+  },
   w330: {
     width: normalize(330, 'width'),
   },
