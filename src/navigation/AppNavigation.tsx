@@ -33,6 +33,7 @@ import AddMedicineScreen from 'src/screens/AddMedicineScreen';
 import { database } from 'src/Database/database';
 import LoadingScreen from 'src/screens/LoadingScreen';
 import MedicationProfilesScreen from 'src/screens/MedicationProfilesScreen';
+import HealthProfileMedicationScreen from 'src/screens/HealthProfileMedicationScreen';
 
 const AppNavigation = () => {
   const UnAuthStack = createNativeStackNavigator<UnAuthStackParamList>();
@@ -144,6 +145,16 @@ const AppNavigation = () => {
           header: () => <Header title="My Health Profiles" />,
         }}
       />
+      <MedicineProfileStack.Screen
+        name="HealthProfileMedicationScreen"
+        component={HealthProfileMedicationScreen}
+        options={{
+          headerShown: true,
+          header: () => (
+            <Header title="Mayukh's Medications" showBackIcon={true} />
+          ),
+        }}
+      />
     </MedicineProfileStack.Navigator>
   );
 
@@ -155,7 +166,6 @@ const AppNavigation = () => {
         tabBarStyle: {
           backgroundColor: colors.pureWhite,
           height: 55,
-          // bottom:0
         },
       }}
     >

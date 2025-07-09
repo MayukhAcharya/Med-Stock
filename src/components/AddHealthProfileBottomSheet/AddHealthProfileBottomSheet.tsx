@@ -24,11 +24,13 @@ type formikTypes = {
   gender: string;
   medicineName: string;
   id: string;
+  medicationTime: string;
 };
 
 type medicineDataTypes = {
   medicineName: string;
   medicineId: string;
+  medicationTime: string;
 };
 
 type medicineData = {
@@ -50,6 +52,37 @@ const genderOptions = [
   {
     label: 'Female',
     value: 'Female',
+  },
+];
+
+const medicineIntakeOptions = [
+  {
+    label: 'Anytime',
+    value: 'Anytime',
+  },
+  {
+    label: 'Before Breakfast',
+    value: 'Before breakfast',
+  },
+  {
+    label: 'After Breakfast',
+    value: 'After breakfast',
+  },
+  {
+    label: 'Before Lunch',
+    value: 'Before lunch',
+  },
+  {
+    label: 'After Lunch',
+    value: 'After lunch',
+  },
+  {
+    label: 'Before Dinner',
+    value: 'Before Dinner',
+  },
+  {
+    label: 'After Dinner',
+    value: 'After Dinner',
   },
 ];
 
@@ -131,6 +164,7 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
               profileName: '',
               id: '',
               medicineName: '',
+              medicationTime: '',
             }}
             onSubmit={addHealthProfileMethod}
           >
@@ -175,61 +209,85 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
                       setFieldValue('gender', item.label);
                     }}
                   />
-                  <View
-                    style={[
-                      commonStyles.row,
-                      commonStyles.spaceBetween,
-                      commonStyles.aic,
-                    ]}
-                  >
-                    <CustomDropdown
-                      label="Add Medicine"
-                      list={allMedicines}
-                      allStyle={commonStyles.w218}
-                      borderColor={colors.borderColor}
-                      selectedValue={values.medicineName}
-                      placeholder="Calpol-650"
-                      onValueSelect={item => {
-                        setFieldValue('medicineName', item.label);
-                        setFieldValue('id', item.value);
-                      }}
-                      dropdownMainStyle={{
-                        maxHeight: normalize(150, 'height'),
-                      }}
-                      isError={
-                        addMedicineMethod(values, setFieldValue) === false
-                      }
-                    />
-
-                    <Button
-                      label="Add"
-                      mainStyle={currentStyles.addButtonMainStyle}
-                      onPress={() => {
-                        if (addMedicineMethod(values, setFieldValue)) {
-                          setMedicineArray([
-                            ...medicineArray,
-                            {
-                              medicineName: values.medicineName,
-                              medicineId: values.id,
-                            },
-                          ]);
-                          setFieldValue('medicineName', '');
-                          setFieldValue('id', '');
+                  <View style={currentStyles.boxContainer}>
+                    <View>
+                      <CustomDropdown
+                        label="Add Medicine"
+                        list={allMedicines}
+                        allStyle={commonStyles.w312}
+                        borderColor={colors.borderColor}
+                        selectedValue={values.medicineName}
+                        placeholder="Calpol-650"
+                        onValueSelect={item => {
+                          setFieldValue('medicineName', item.label);
+                          setFieldValue('id', item.value);
+                        }}
+                        dropdownMainStyle={{
+                          maxHeight: normalize(150, 'height'),
+                        }}
+                        isError={
+                          addMedicineMethod(values, setFieldValue) === false
                         }
-                      }}
-                      disable={
-                        values.id === '' ||
-                        addMedicineMethod(values, setFieldValue) === false
-                      }
-                    />
+                        errorContainer={
+                          addMedicineMethod(values, setFieldValue) === false ? (
+                            <Text>Cannot add Duplicate Medicine</Text>
+                          ) : null
+                        }
+                        style={{ backgroundColor: colors.pureWhite }}
+                      />
+                    </View>
+                    <View
+                      style={[
+                        commonStyles.row,
+                        commonStyles.spaceBetween,
+                        commonStyles.aic,
+                      ]}
+                    >
+                      <CustomDropdown
+                        label="Medication Time"
+                        list={medicineIntakeOptions}
+                        allStyle={commonStyles.w218}
+                        borderColor={colors.borderColor}
+                        selectedValue={values.medicationTime}
+                        placeholder="Before Lunch"
+                        onValueSelect={item => {
+                          setFieldValue('medicationTime', item.label);
+                        }}
+                        dropdownMainStyle={{
+                          maxHeight: normalize(150, 'height'),
+                        }}
+                        isError={
+                          addMedicineMethod(values, setFieldValue) === false
+                        }
+                        style={{ backgroundColor: colors.pureWhite }}
+                      />
+                      <Button
+                        label="Add"
+                        mainStyle={currentStyles.addButtonMainStyle}
+                        onPress={() => {
+                          if (addMedicineMethod(values, setFieldValue)) {
+                            setMedicineArray([
+                              ...medicineArray,
+                              {
+                                medicineName: values.medicineName,
+                                medicineId: values.id,
+                                medicationTime: values.medicationTime,
+                              },
+                            ]);
+                            setFieldValue('medicineName', '');
+                            setFieldValue('id', '');
+                            setFieldValue('medicationTime', '');
+                          }
+                        }}
+                        disable={
+                          values.id === '' ||
+                          values.medicationTime === '' ||
+                          addMedicineMethod(values, setFieldValue) === false
+                        }
+                      />
+                    </View>
                   </View>
                 </View>
-                {addMedicineMethod(values, setFieldValue) === false ? (
-                  <Text style={currentStyles.duplicateMedicineTextStyle}>
-                    Cannot add Duplicate medicine
-                  </Text>
-                ) : null}
-
                 <View style={commonStyles.mt10}>
                   <Text style={currentStyles.totalQuantityTextStyle}>
                     Total Medicines: {medicineArray.length}

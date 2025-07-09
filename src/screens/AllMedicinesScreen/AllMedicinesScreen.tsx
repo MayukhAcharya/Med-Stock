@@ -18,6 +18,7 @@ import { database } from 'src/Database/database';
 import { ReusableDateFormatter } from 'src/utils/FormattedDate';
 import { colors } from 'src/config/colors';
 import { PlusCircleIcon, PlusIcon } from 'lucide-react-native';
+import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
 
 type navigationPropsForAllMedicines = NativeStackNavigationProp<
   AllMedicineStackParamList,
@@ -89,36 +90,38 @@ const AllMedicinesScreen = () => {
 
   return (
     <>
-      <View style={currentStyles.container}>
-        <View style={commonStyles.aic}>
-          <FlatList
-            data={allMedicines}
-            renderItem={({ item, index }) => {
-              return (
-                <MedicineListCard
-                  expiryDate={ReusableDateFormatter(item.expiry_date)}
-                  medicineName={item.medicine_name}
-                  quantity={item.quantity}
-                  category={item.category}
-                  onPress={() => {
-                    navigation.navigate('MedicineDetailsScreen', {
-                      medicineDetails: {
-                        id: item.id,
-                      },
-                    });
-                  }}
-                />
-              );
-            }}
-            keyExtractor={item => item.id}
-            ItemSeparatorComponent={() => <View style={commonStyles.mt20} />}
-            showsVerticalScrollIndicator={false}
-            ListEmptyComponent={EmptyComponent}
-          />
-        </View>
+      <BackgroundFill showDesign={false}>
+        <View style={currentStyles.container}>
+          <View style={commonStyles.aic}>
+            <FlatList
+              data={allMedicines}
+              renderItem={({ item, index }) => {
+                return (
+                  <MedicineListCard
+                    expiryDate={ReusableDateFormatter(item.expiry_date)}
+                    medicineName={item.medicine_name}
+                    quantity={item.quantity}
+                    category={item.category}
+                    onPress={() => {
+                      navigation.navigate('MedicineDetailsScreen', {
+                        medicineDetails: {
+                          id: item.id,
+                        },
+                      });
+                    }}
+                  />
+                );
+              }}
+              keyExtractor={item => item.id}
+              ItemSeparatorComponent={() => <View style={commonStyles.mt20} />}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={EmptyComponent}
+            />
+          </View>
 
-        <FloatingButton />
-      </View>
+          <FloatingButton />
+        </View>
+      </BackgroundFill>
     </>
   );
 };
