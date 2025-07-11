@@ -46,4 +46,5 @@ export type ProfileStackParamList = {
 export type MedicationProfileStack = {
   MedicationProfilesScreen: undefined;
   HealthProfileMedicationScreen: undefined;
+  EditMedicationScreen: undefined;
 };

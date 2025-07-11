@@ -67,7 +67,7 @@ const MedicineListCard = (props: medicineListProps) => {
 
           {isHealthProfile ? (
             <Text style={currentStyles.quantityTextStyle}>
-              Medication Time: {medicationTime}{' '}
+              {medicationTime}{' '}
             </Text>
           ) : (
             <Text style={currentStyles.quantityTextStyle}>
