@@ -1,43 +1,57 @@
-import { View, Text, FlatList, Pressable, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Pressable,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
+import { Edit, Trash2Icon } from 'lucide-react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { styles } from 'src/screens/HealthProfileMedicationScreen/styles';
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
 import { commonStyles } from 'src/config/commonStyles';
 import MedicineListCard from 'src/components/MedicineListCard/MedicineListCard';
-import { Edit, Trash2Icon } from 'lucide-react-native';
 import { colors } from 'src/config/colors';
+import { MedicationProfileStack } from 'src/navigation/types';
+import { useNavigation } from '@react-navigation/native';
+
+type navigationPropsForMedication =
+  NativeStackNavigationProp<MedicationProfileStack>;
 
 const dummyData = [
   {
     id: '1',
-    medicineName: 'Calpol',
+    medicineName: 'Calpol1',
     category: 'Tablet',
   },
   {
     id: '2',
-    medicineName: 'Calpol',
+    medicineName: 'Calpol2',
     category: 'Tablet',
   },
   {
     id: '3',
-    medicineName: 'Calpol',
+    medicineName: 'Calpol3',
     category: 'Tablet',
   },
   {
     id: '4',
-    medicineName: 'Calpol',
+    medicineName: 'Calpol4',
     category: 'Tablet',
   },
   {
     id: '5',
-    medicineName: 'Calpol',
+    medicineName: 'Calpol5',
     category: 'Tablet',
   },
 ];
 
 const HealthProfileMedicationScreen = () => {
   const currentStyles = styles();
+  const navigation = useNavigation<navigationPropsForMedication>();
 
   const handleDeleteIcon = () => {
     Alert.alert(
@@ -79,22 +93,25 @@ const HealthProfileMedicationScreen = () => {
         </View>
         <View style={commonStyles.flex1}>
           <View style={currentStyles.fabButtonStyle2}>
-            <Pressable
+            <TouchableOpacity
               onPress={() => {
                 handleDeleteIcon();
               }}
               style={currentStyles.plusIconPressStyle}
             >
               <Trash2Icon color={colors.pureWhite} />
-            </Pressable>
+            </TouchableOpacity>
           </View>
           <View style={currentStyles.fabButtonStyle}>
-            <Pressable
-              onPress={() => {}}
+            <TouchableOpacity
+              onPress={() => {
+                console.log('Pressed');
+                navigation.navigate('EditMedicationScreen');
+              }}
               style={currentStyles.plusIconPressStyle}
             >
               <Edit color={colors.pureWhite} />
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

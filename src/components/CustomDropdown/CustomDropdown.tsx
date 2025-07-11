@@ -85,6 +85,7 @@ const CustomDropdown = (props: dropdownProps) => {
       {isOpen ? (
         <ScrollView
           style={[currentStyles.dropdownMainStyle, dropdownMainStyle]}
+          nestedScrollEnabled={true}
         >
           {list.map((item, index) => {
             return (

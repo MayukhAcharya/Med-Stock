@@ -34,6 +34,7 @@ import { database } from 'src/Database/database';
 import LoadingScreen from 'src/screens/LoadingScreen';
 import MedicationProfilesScreen from 'src/screens/MedicationProfilesScreen';
 import HealthProfileMedicationScreen from 'src/screens/HealthProfileMedicationScreen';
+import EditMedicationScreen from 'src/screens/EditMedicationScreen';
 
 const AppNavigation = () => {
   const UnAuthStack = createNativeStackNavigator<UnAuthStackParamList>();
@@ -153,6 +154,14 @@ const AppNavigation = () => {
           header: () => (
             <Header title="Mayukh's Medications" showBackIcon={true} />
           ),
+        }}
+      />
+      <MedicineProfileStack.Screen
+        name="EditMedicationScreen"
+        component={EditMedicationScreen}
+        options={{
+          headerShown: true,
+          header: () => <Header title="Edit Medication" showBackIcon={true} />,
         }}
       />
     </MedicineProfileStack.Navigator>
