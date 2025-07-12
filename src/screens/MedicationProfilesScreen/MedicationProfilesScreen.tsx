@@ -2,6 +2,7 @@ import { View, Text, Image, Pressable } from 'react-native';
 import React, { useState } from 'react';
 import { PlusIcon } from 'lucide-react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { styles } from 'src/screens/MedicationProfilesScreen/styles';
 import { commonStyles } from 'src/config/commonStyles';
@@ -9,8 +10,8 @@ import ProfileCard from 'src/components/ProfileCard/ProfileCard';
 import { colors } from 'src/config/colors';
 import AddHealthProfileBottomSheet from 'src/components/AddHealthProfileBottomSheet/AddHealthProfileBottomSheet';
 import { MedicationProfileStack } from 'src/navigation/types';
-import { useNavigation } from '@react-navigation/native';
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
+import { database } from 'src/Database/database';
 
 type navigationPropsForHealthProfile = NativeStackNavigationProp<
   MedicationProfileStack,
@@ -23,6 +24,30 @@ const MedicationProfilesScreen = () => {
 
   const [showHealthProfileModal, setShowHealthProfileModal] =
     useState<boolean>(false);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const getHealthProfilesMethod = () => {
+    setIsLoading(true);
+    try {
+      const healthProfileData = database.get('healthProfiles');
+      healthProfileData
+        .query()
+        .observe()
+        .forEach(item => {
+          console.log(item);
+        });
+    } catch (error) {
+      setIsLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const unsubscribe = getHealthProfilesMethod();
+      return () => unsubscribe;
+    }, []),
+  );
   return (
     <>
       <BackgroundFill>

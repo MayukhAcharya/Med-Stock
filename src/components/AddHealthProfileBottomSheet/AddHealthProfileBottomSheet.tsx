@@ -1,6 +1,7 @@
-import { View, Text, Modal, Pressable, StatusBar } from 'react-native';
+import { View, Text, Modal, StatusBar } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { EditIcon } from 'lucide-react-native';
+import * as yup from 'yup';
 
 import { styles } from 'src/components/AddHealthProfileBottomSheet/styles';
 import { commonStyles } from 'src/config/commonStyles';
@@ -12,6 +13,9 @@ import ReviewMedicationList from 'src/components/ReviewMedicationList/ReviewMedi
 import { Formik } from 'formik';
 import { database } from 'src/Database/database';
 import normalize from 'src/config/normalize';
+import TimeComponent from '../TimeComponent/TimeComponent';
+import { fieldRegex, timeoutConstant } from 'src/constants/constants';
+import HealthProfile from 'src/Database/healthProfileModel';
 
 type addHealthProfileProps = {
   onClose: () => void;
@@ -24,13 +28,15 @@ type formikTypes = {
   gender: string;
   medicineName: string;
   id: string;
-  medicationTime: string;
+  medicationTime: any;
+  category?: any;
 };
 
 type medicineDataTypes = {
   medicineName: string;
   medicineId: string;
   medicationTime: string;
+  category: any;
 };
 
 type medicineData = {
@@ -55,37 +61,6 @@ const genderOptions = [
   },
 ];
 
-const medicineIntakeOptions = [
-  {
-    label: 'Anytime',
-    value: 'Anytime',
-  },
-  {
-    label: 'Before Breakfast',
-    value: 'Before breakfast',
-  },
-  {
-    label: 'After Breakfast',
-    value: 'After breakfast',
-  },
-  {
-    label: 'Before Lunch',
-    value: 'Before lunch',
-  },
-  {
-    label: 'After Lunch',
-    value: 'After lunch',
-  },
-  {
-    label: 'Before Dinner',
-    value: 'Before Dinner',
-  },
-  {
-    label: 'After Dinner',
-    value: 'After Dinner',
-  },
-];
-
 const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
   const { onClose, isVisible } = props;
   const currentStyles = styles();
@@ -93,6 +68,54 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
   const [reviewMeds, setReviewMeds] = useState<boolean>(false);
   const [medicineArray, setMedicineArray] = useState<medicineDataTypes[]>([]);
   const [allMedicines, setAllMedicines] = useState<medicineData[]>([]);
+  const [hasArray, setHasArray] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const maleAvatars = [
+    require('src/assets/img/male1.png'),
+    require('src/assets/img/male2.png'),
+    require('src/assets/img/male3.png'),
+    require('src/assets/img/male4.png'),
+  ];
+
+  const femaleAvatars = [
+    require('src/assets/img/female1.png'),
+    require('src/assets/img/female2.png'),
+    require('src/assets/img/female3.png'),
+    require('src/assets/img/female4.png'),
+  ];
+
+  const validationSchema = yup.object().shape({
+    profileName: yup
+      .string()
+      .matches(fieldRegex, 'No special characters are allowed')
+      .required('Name of Profile is required')
+      .test(
+        'blank-space',
+        'No blank spaces are allowed',
+        (text: any) => text && text.trim().length !== 0,
+      ),
+    medicationType: yup
+      .string()
+      .matches(fieldRegex, 'No special characters are allowed')
+      .required('Type of medication is required')
+      .test(
+        'blank-space',
+        'No blank spaces are allowed',
+        (text: any) => text && text.trim().length !== 0,
+      ),
+    gender: yup.string().required('gender is required'),
+  });
+
+  const getRandomImageMethod = (gender: string) => {
+    if (gender === 'Male') {
+      const randomIndex = Math.floor(Math.random() * maleAvatars.length);
+      return maleAvatars[randomIndex];
+    } else {
+      const randomIndex = Math.floor(Math.random() * femaleAvatars.length);
+      return femaleAvatars[randomIndex];
+    }
+  };
 
   const getMedicineDataMethod = () => {
     try {
@@ -131,7 +154,25 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
   };
 
   const addHealthProfileMethod = (values: formikTypes) => {
-    console.log(values);
+    setIsLoading(true);
+    try {
+      setTimeout(async () => {
+        await database.write(async () => {
+          await database
+            .get<HealthProfile>('healthProfiles')
+            .create(healthProfile => {
+              healthProfile.profileName = values.profileName;
+              healthProfile.medicationType = values.medicationType;
+              healthProfile.gender = values.gender;
+              healthProfile.genderAvatar = getRandomImageMethod(values.gender);
+              healthProfile.medicineArray = JSON.stringify(medicineArray);
+            });
+        });
+      }, timeoutConstant);
+      onClose();
+    } catch (error) {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -150,7 +191,7 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
         barStyle={'light-content'}
         translucent
       />
-      <Pressable style={currentStyles.container}>
+      <View style={currentStyles.container}>
         <View style={currentStyles.subContainer}>
           <View style={commonStyles.aic}>
             <Text style={currentStyles.addHealthProfileStyle}>
@@ -164,9 +205,11 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
               profileName: '',
               id: '',
               medicineName: '',
-              medicationTime: '',
+              category: '',
+              medicationTime: new Date(),
             }}
             onSubmit={addHealthProfileMethod}
+            validationSchema={validationSchema}
           >
             {({
               values,
@@ -175,6 +218,7 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
               errors,
               dirty,
               handleSubmit,
+              touched,
             }) => (
               <>
                 <View style={currentStyles.inputContainer}>
@@ -186,6 +230,16 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
                       value={values.profileName}
                       placeholder="Name"
                       onChangeText={handleChange('profileName')}
+                      isError={
+                        errors.profileName && touched.profileName ? true : false
+                      }
+                      errorContainer={
+                        errors.profileName && touched.profileName ? (
+                          <>
+                            <Text>{errors.profileName}</Text>
+                          </>
+                        ) : null
+                      }
                     />
                     <CustomTextInput
                       label="Type of medication"
@@ -194,6 +248,18 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
                       value={values.medicationType}
                       placeholder="Fever/Infection"
                       onChangeText={handleChange('medicationType')}
+                      isError={
+                        errors.medicationType && touched.medicationType
+                          ? true
+                          : false
+                      }
+                      errorContainer={
+                        errors.medicationType && touched.medicationType ? (
+                          <>
+                            <Text>{errors.medicationType}</Text>
+                          </>
+                        ) : null
+                      }
                     />
                   </View>
                   <CustomDropdown
@@ -208,6 +274,14 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
                     onValueSelect={item => {
                       setFieldValue('gender', item.label);
                     }}
+                    isError={errors.gender && touched.gender ? true : false}
+                    errorContainer={
+                      errors.gender && touched.gender ? (
+                        <>
+                          <Text>{errors.gender}</Text>
+                        </>
+                      ) : null
+                    }
                   />
                   <View style={currentStyles.boxContainer}>
                     <View>
@@ -221,6 +295,7 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
                         onValueSelect={item => {
                           setFieldValue('medicineName', item.label);
                           setFieldValue('id', item.value);
+                          setFieldValue('category', item.category);
                         }}
                         dropdownMainStyle={{
                           maxHeight: normalize(150, 'height'),
@@ -243,18 +318,14 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
                         commonStyles.aic,
                       ]}
                     >
-                      <CustomDropdown
+                      <TimeComponent
                         label="Medication Time"
-                        list={medicineIntakeOptions}
                         allStyle={commonStyles.w218}
                         borderColor={colors.borderColor}
-                        selectedValue={values.medicationTime}
+                        value={values.medicationTime}
                         placeholder="Before Lunch"
-                        onValueSelect={item => {
-                          setFieldValue('medicationTime', item.label);
-                        }}
-                        dropdownMainStyle={{
-                          maxHeight: normalize(150, 'height'),
+                        onChange={time => {
+                          setFieldValue('medicationTime', time);
                         }}
                         isError={
                           addMedicineMethod(values, setFieldValue) === false
@@ -271,27 +342,48 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
                               {
                                 medicineName: values.medicineName,
                                 medicineId: values.id,
-                                medicationTime: values.medicationTime,
+                                medicationTime:
+                                  values.medicationTime.toLocaleTimeString(
+                                    'en-IN',
+                                    {
+                                      hour: 'numeric',
+                                      minute: 'numeric',
+                                      hour12: true,
+                                    },
+                                  ),
+                                category: values.category,
                               },
                             ]);
                             setFieldValue('medicineName', '');
                             setFieldValue('id', '');
                             setFieldValue('medicationTime', '');
+                            setFieldValue('category', '');
+                            setHasArray(false);
                           }
                         }}
                         disable={
                           values.id === '' ||
-                          values.medicationTime === '' ||
                           addMedicineMethod(values, setFieldValue) === false
                         }
                       />
                     </View>
                   </View>
                 </View>
-                <View style={commonStyles.mt10}>
+                <View
+                  style={[
+                    commonStyles.mt10,
+                    commonStyles.row,
+                    commonStyles.spaceBetween,
+                  ]}
+                >
                   <Text style={currentStyles.totalQuantityTextStyle}>
                     Total Medicines: {medicineArray.length}
                   </Text>
+                  {hasArray ? (
+                    <Text style={currentStyles.errorText}>
+                      At least one medicine is required
+                    </Text>
+                  ) : null}
                 </View>
                 <View style={[commonStyles.mt30, commonStyles.rowGap10]}>
                   <Button
@@ -306,14 +398,21 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
                   <Button
                     label="Save Health Profile"
                     mainStyle={commonStyles.w100per}
-                    onPress={() => {}}
+                    onPress={() => {
+                      if (medicineArray.length > 0) {
+                        handleSubmit();
+                      } else {
+                        setHasArray(true);
+                      }
+                    }}
+                    disable={!dirty}
                   />
                 </View>
               </>
             )}
           </Formik>
         </View>
-      </Pressable>
+      </View>
       {reviewMeds ? (
         <ReviewMedicationList
           isVisible={reviewMeds}

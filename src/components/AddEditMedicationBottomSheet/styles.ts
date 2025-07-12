@@ -26,10 +26,8 @@ export const styles = () =>
     inputContainer: {
       marginTop: normalize(30, 'height'),
       rowGap: normalize(30, 'height'),
-      flexDirection: 'row',
-      justifyContent: 'space-between',
     },
     bottomContainerMargin: {
-      marginTop: normalize(70, 'height'),
+      marginTop: normalize(30, 'height'),
     },
   });

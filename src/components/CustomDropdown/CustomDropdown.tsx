@@ -87,35 +87,41 @@ const CustomDropdown = (props: dropdownProps) => {
           style={[currentStyles.dropdownMainStyle, dropdownMainStyle]}
           nestedScrollEnabled={true}
         >
-          {list.map((item, index) => {
-            return (
-              <TouchableOpacity
-                onPress={() => {
-                  onValueSelect(item);
-                  setIsOpen(false);
-                }}
-                key={index}
-                style={currentStyles.flatlistView}
-              >
-                <Text style={currentStyles.itemLabelStyle}>{item.label}</Text>
-                <View>
-                  {item.label === 'Tablet' ? (
-                    <PillIcon />
-                  ) : item.label === 'Syrup' ? (
-                    <PillBottleIcon />
-                  ) : item.label === 'Bandage' ? (
-                    <BandageIcon />
-                  ) : item.label === 'Ointment' ? (
-                    <OintmentIcon />
-                  ) : item.value === 'drop' ? (
-                    <DropletsIcon />
-                  ) : item.value === 'syringe' ? (
-                    <SyringeIcon />
-                  ) : null}
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+          {list.length > 0 ? (
+            list.map((item, index) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    onValueSelect(item);
+                    setIsOpen(false);
+                  }}
+                  key={index}
+                  style={currentStyles.flatlistView}
+                >
+                  <Text style={currentStyles.itemLabelStyle}>{item.label}</Text>
+                  <View>
+                    {item.label === 'Tablet' ? (
+                      <PillIcon />
+                    ) : item.label === 'Syrup' ? (
+                      <PillBottleIcon />
+                    ) : item.label === 'Bandage' ? (
+                      <BandageIcon />
+                    ) : item.label === 'Ointment' ? (
+                      <OintmentIcon />
+                    ) : item.value === 'drop' ? (
+                      <DropletsIcon />
+                    ) : item.value === 'syringe' ? (
+                      <SyringeIcon />
+                    ) : null}
+                  </View>
+                </TouchableOpacity>
+              );
+            })
+          ) : (
+            <View style={currentStyles.emptyContainer}>
+              <Text style={currentStyles.emptyTextStyle}>No Data found!</Text>
+            </View>
+          )}
         </ScrollView>
       ) : null}
     </View>
