@@ -9,7 +9,6 @@ export const styles = () =>
       flex: 1,
       paddingHorizontal: normalize(12),
       paddingVertical: normalize(16, 'height'),
-      justifyContent: 'space-between',
     },
     inputContainer: {
       rowGap: normalize(16),

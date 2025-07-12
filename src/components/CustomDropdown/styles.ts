@@ -32,4 +32,14 @@ export const styles = () =>
       fontSize: normalize(16),
       color: colors.pureBlack,
     },
+    emptyContainer: {
+      height: normalize(60, 'height'),
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    emptyTextStyle: {
+      ...fonts.regular,
+      fontSize: normalize(16),
+      color: colors.pureBlack,
+    },
   });

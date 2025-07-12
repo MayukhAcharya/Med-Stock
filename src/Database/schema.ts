@@ -56,5 +56,30 @@ export const schema = appSchema({
         },
       ],
     }),
+    tableSchema({
+      name: 'healthProfiles',
+      columns: [
+        {
+          name: 'profile_name',
+          type: 'string',
+        },
+        {
+          name: 'medication_type',
+          type: 'string',
+        },
+        {
+          name: 'gender',
+          type: 'string',
+        },
+        {
+          name: 'gender_avatar',
+          type: 'string',
+        },
+        {
+          name: 'medicine_array',
+          type: 'string',
+        },
+      ],
+    }),
   ],
 });

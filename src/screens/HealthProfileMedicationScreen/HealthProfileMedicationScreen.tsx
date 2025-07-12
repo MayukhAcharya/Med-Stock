@@ -6,7 +6,7 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { Edit, Trash2Icon } from 'lucide-react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -105,7 +105,6 @@ const HealthProfileMedicationScreen = () => {
           <View style={currentStyles.fabButtonStyle}>
             <TouchableOpacity
               onPress={() => {
-                console.log('Pressed');
                 navigation.navigate('EditMedicationScreen');
               }}
               style={currentStyles.plusIconPressStyle}

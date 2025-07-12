@@ -25,7 +25,7 @@ export const styles = () =>
     },
     inputContainer: {
       marginTop: normalize(15, 'height'),
-      rowGap: normalize(25, 'height'),
+      rowGap: normalize(20, 'height'),
     },
     addButtonMainStyle: {
       width: normalize(96),
@@ -65,5 +65,10 @@ export const styles = () =>
       borderRadius: normalize(12),
       backgroundColor: colors.offWhite,
       rowGap: normalize(10),
+    },
+    errorText: {
+      ...fonts.regular,
+      color: colors.error,
+      fontSize: normalize(14),
     },
   });

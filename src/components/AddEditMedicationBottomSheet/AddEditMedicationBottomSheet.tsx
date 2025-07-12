@@ -9,6 +9,7 @@ import CustomDropdown from '../CustomDropdown/CustomDropdown';
 import { database } from 'src/Database/database';
 import normalize from 'src/config/normalize';
 import Button from '../Button/Button';
+import TimeComponent from '../TimeComponent/TimeComponent';
 
 type addEditMedicationProps = {
   onClose: () => void;
@@ -25,37 +26,6 @@ type medicineData = {
   label: string;
   value: string;
 };
-
-const medicineIntakeOptions = [
-  {
-    label: 'Anytime',
-    value: 'Anytime',
-  },
-  {
-    label: 'Before Breakfast',
-    value: 'Before breakfast',
-  },
-  {
-    label: 'After Breakfast',
-    value: 'After breakfast',
-  },
-  {
-    label: 'Before Lunch',
-    value: 'Before lunch',
-  },
-  {
-    label: 'After Lunch',
-    value: 'After lunch',
-  },
-  {
-    label: 'Before Dinner',
-    value: 'Before Dinner',
-  },
-  {
-    label: 'After Dinner',
-    value: 'After Dinner',
-  },
-];
 
 const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
   const currentStyles = styles();
@@ -114,7 +84,7 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
             <CustomDropdown
               label="Add Medicine"
               list={allMedicines}
-              allStyle={commonStyles.w153}
+              allStyle={commonStyles.w100per}
               borderColor={colors.borderColor}
               selectedValue=""
               placeholder="Calpol-650"
@@ -124,17 +94,13 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
               }}
               style={{ backgroundColor: colors.pureWhite }}
             />
-            <CustomDropdown
+            <TimeComponent
               label="Medication Time"
-              list={medicineIntakeOptions}
-              allStyle={commonStyles.w153}
+              allStyle={commonStyles.w100per}
               borderColor={colors.borderColor}
-              selectedValue=""
               placeholder="Before Lunch"
-              onValueSelect={item => {}}
-              dropdownMainStyle={{
-                maxHeight: normalize(125, 'height'),
-              }}
+              value={new Date()}
+              onChange={time => {}}
               style={{ backgroundColor: colors.pureWhite }}
             />
           </View>

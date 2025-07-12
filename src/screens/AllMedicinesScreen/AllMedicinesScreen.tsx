@@ -53,6 +53,7 @@ const AllMedicinesScreen = () => {
           item.forEach(data => {
             temp.push(data._raw);
           });
+          console.log(temp);
           setAllMedicines(temp);
 
           setIsLoading(false);

@@ -1,4 +1,9 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+} from 'react-native';
 import React, { useState } from 'react';
 import { PlusCircleIcon } from 'lucide-react-native';
 import { Formik } from 'formik';
@@ -117,7 +122,6 @@ const AddMedicineScreen = () => {
       setTimeout(async () => {
         await database.write(async () => {
           await database.get<Medicine>('medicines').create(medicine => {
-            // WHEN USER ADDS THIS IT SHOULD NOT GO BACK
             medicine.medicineName = values.medicineName;
             medicine.category = values.category;
             medicine.expiryDate = date.toISOString();
@@ -319,7 +323,7 @@ const AddMedicineScreen = () => {
                 </View>
               ) : null}
             </View>
-            <View>
+            <View style={commonStyles.mt30}>
               <Button
                 label="Save and add another Medicine"
                 mainStyle={commonStyles.w100per}

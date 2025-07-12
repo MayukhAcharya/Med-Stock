@@ -16,7 +16,8 @@ import { commonStyles } from 'src/config/commonStyles';
 type medicineDataTypes = {
   medicineName: string;
   medicineId: string;
-  medicationTime: string;
+  medicationTime: any;
+  category: any;
 };
 
 type reviewMedicationListProps = {
