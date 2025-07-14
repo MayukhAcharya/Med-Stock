@@ -37,6 +37,7 @@ type medicineDataTypes = {
   medicineId: string;
   medicationTime: string;
   category: any;
+  id: string;
 };
 
 type medicineData = {
@@ -71,19 +72,7 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
   const [hasArray, setHasArray] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const maleAvatars = [
-    require('src/assets/img/male1.png'),
-    require('src/assets/img/male2.png'),
-    require('src/assets/img/male3.png'),
-    require('src/assets/img/male4.png'),
-  ];
-
-  const femaleAvatars = [
-    require('src/assets/img/female1.png'),
-    require('src/assets/img/female2.png'),
-    require('src/assets/img/female3.png'),
-    require('src/assets/img/female4.png'),
-  ];
+  const numbers = ['1', '2', '3', '4'];
 
   const validationSchema = yup.object().shape({
     profileName: yup
@@ -109,11 +98,11 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
 
   const getRandomImageMethod = (gender: string) => {
     if (gender === 'Male') {
-      const randomIndex = Math.floor(Math.random() * maleAvatars.length);
-      return maleAvatars[randomIndex];
+      const randomIndex = Math.floor(Math.random() * numbers.length);
+      return numbers[randomIndex];
     } else {
-      const randomIndex = Math.floor(Math.random() * femaleAvatars.length);
-      return femaleAvatars[randomIndex];
+      const randomIndex = Math.floor(Math.random() * numbers.length);
+      return numbers[randomIndex];
     }
   };
 
@@ -142,14 +131,11 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
     }
   };
 
-  const addMedicineMethod = (values: formikTypes, setFieldValue: any) => {
-    const findDuplicate = medicineArray.find(
-      item => item.medicineId === values.id,
-    );
-    if (!findDuplicate) {
-      return true;
-    } else {
+  const addMedicineMethod = (values: formikTypes) => {
+    if (!values.id) {
       return false;
+    } else {
+      return true;
     }
   };
 
@@ -300,14 +286,6 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
                         dropdownMainStyle={{
                           maxHeight: normalize(150, 'height'),
                         }}
-                        isError={
-                          addMedicineMethod(values, setFieldValue) === false
-                        }
-                        errorContainer={
-                          addMedicineMethod(values, setFieldValue) === false ? (
-                            <Text>Cannot add Duplicate Medicine</Text>
-                          ) : null
-                        }
                         style={{ backgroundColor: colors.pureWhite }}
                       />
                     </View>
@@ -323,20 +301,17 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
                         allStyle={commonStyles.w218}
                         borderColor={colors.borderColor}
                         value={values.medicationTime}
-                        placeholder="Before Lunch"
+                        placeholder="8:40 am"
                         onChange={time => {
                           setFieldValue('medicationTime', time);
                         }}
-                        isError={
-                          addMedicineMethod(values, setFieldValue) === false
-                        }
                         style={{ backgroundColor: colors.pureWhite }}
                       />
                       <Button
                         label="Add"
                         mainStyle={currentStyles.addButtonMainStyle}
                         onPress={() => {
-                          if (addMedicineMethod(values, setFieldValue)) {
+                          if (addMedicineMethod(values)) {
                             setMedicineArray([
                               ...medicineArray,
                               {
@@ -352,19 +327,16 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
                                     },
                                   ),
                                 category: values.category,
+                                id: `${values.id}${new Date().getTime()}`,
                               },
                             ]);
                             setFieldValue('medicineName', '');
                             setFieldValue('id', '');
-                            setFieldValue('medicationTime', '');
                             setFieldValue('category', '');
                             setHasArray(false);
                           }
                         }}
-                        disable={
-                          values.id === '' ||
-                          addMedicineMethod(values, setFieldValue) === false
-                        }
+                        disable={values.id === ''}
                       />
                     </View>
                   </View>

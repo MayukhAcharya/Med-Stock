@@ -18,6 +18,7 @@ type medicineDataTypes = {
   medicineId: string;
   medicationTime: any;
   category: any;
+  id: string;
 };
 
 type reviewMedicationListProps = {
@@ -118,7 +119,7 @@ const ReviewMedicationList = (props: reviewMedicationListProps) => {
                   );
                 }}
                 ListHeaderComponent={tableHeader}
-                keyExtractor={item => item.medicineId}
+                keyExtractor={item => item.id}
                 ListEmptyComponent={emptyField}
               />
             </View>

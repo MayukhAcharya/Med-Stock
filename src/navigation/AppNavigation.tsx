@@ -149,12 +149,15 @@ const AppNavigation = () => {
       <MedicineProfileStack.Screen
         name="HealthProfileMedicationScreen"
         component={HealthProfileMedicationScreen}
-        options={{
+        options={({ route }) => ({
           headerShown: true,
           header: () => (
-            <Header title="Mayukh's Medications" showBackIcon={true} />
+            <Header
+              title={`${route.params.medicationsData.profileName}'s Meds`}
+              showBackIcon={true}
+            />
           ),
-        }}
+        })}
       />
       <MedicineProfileStack.Screen
         name="EditMedicationScreen"
@@ -162,6 +165,14 @@ const AppNavigation = () => {
         options={{
           headerShown: true,
           header: () => <Header title="Edit Medication" showBackIcon={true} />,
+        }}
+      />
+      <MedicineProfileStack.Screen
+        name="MedicineDetailsScreen"
+        component={MedicineDetailsScreen}
+        options={{
+          headerShown: true,
+          header: () => <Header title="Medicine Details" showBackIcon={true} />,
         }}
       />
     </MedicineProfileStack.Navigator>

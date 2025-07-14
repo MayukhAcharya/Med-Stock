@@ -27,7 +27,7 @@ export const styles = () =>
       backgroundColor: colors.pureWhite,
       borderWidth: 2,
       elevation: 0,
-      borderColor: colors.borderColor,
+      borderColor: colors.grey,
       borderStyle: 'dashed',
     },
     addMedicineLabelStyle: {

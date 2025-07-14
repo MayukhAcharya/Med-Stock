@@ -54,4 +54,41 @@ export const styles = () =>
       alignItems: 'center',
       elevation: 5,
     },
+    flatlistInnerView: {
+      justifyContent: 'space-between',
+      flex: 1,
+      marginBottom: 16,
+    },
+    healthProfileExplainTextStyle: {
+      ...fonts.regular,
+      color: colors.pureBlack,
+      fontSize: normalize(18),
+      textAlign: 'center',
+      lineHeight: normalize(25),
+    },
+    healthExplainBox: {
+      marginTop: normalize(30, 'height'),
+      marginBottom: normalize(20, 'height'),
+      alignItems: 'center',
+    },
+    heartImageStyle: {
+      resizeMode: 'cover',
+      width: normalize(200, 'width'),
+      height: normalize(200, 'height'),
+      borderRadius: normalize(8),
+    },
+    manageTextStyle: {
+      ...fonts.bold,
+      color: colors.pureBlack,
+      fontSize: normalize(28),
+    },
+    hereTextStyle: {
+      ...fonts.regular,
+      color: colors.primaryBlue,
+      fontSize: normalize(18),
+      textAlign: 'center',
+      textDecorationLine: 'underline',
+      textDecorationColor: colors.primaryBlue,
+      lineHeight: normalize(25),
+    },
   });

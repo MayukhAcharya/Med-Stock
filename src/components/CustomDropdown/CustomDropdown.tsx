@@ -41,6 +41,7 @@ type dropdownProps = {
   onValueSelect: (item: any) => void;
   dropdownMainStyle?: StyleProp<ViewStyle>;
   labelSyle?: StyleProp<TextStyle>;
+  disable?: boolean;
 };
 
 const CustomDropdown = (props: dropdownProps) => {
@@ -59,11 +60,12 @@ const CustomDropdown = (props: dropdownProps) => {
     dropdownMainStyle,
     labelSyle,
     onValueSelect,
+    disable = false,
   } = props;
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
     <View ref={dropdownRef}>
-      <TouchableOpacity onPress={() => setIsOpen!(!isOpen)}>
+      <TouchableOpacity onPress={() => setIsOpen!(!isOpen)} disabled={disable}>
         <CustomTextInput
           allStyle={[allStyle]}
           value={selectedValue}

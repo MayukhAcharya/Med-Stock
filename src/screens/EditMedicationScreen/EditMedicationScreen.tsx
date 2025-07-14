@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Alert } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { styles } from 'src/screens/EditMedicationScreen/styles';
@@ -12,6 +12,11 @@ import { Edit, PlusIcon, Trash2Icon } from 'lucide-react-native';
 import Button from 'src/components/Button/Button';
 import CustomTextInput from 'src/components/CustomTextInput/CustomTextInput';
 import AddEditMedicationBottomSheet from 'src/components/AddEditMedicationBottomSheet/AddEditMedicationBottomSheet';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { MedicationProfileStack } from 'src/navigation/types';
+import HealthProfile from 'src/Database/healthProfileModel';
+
+type routeProps = RouteProp<MedicationProfileStack, 'EditMedicationScreen'>;
 
 type medicineData = {
   category: string;
@@ -25,95 +30,63 @@ type medicineData = {
 };
 
 type medicationTypes = {
-  id: string;
   medicineName: string;
+  medicineId: string;
+  medicationTime: any;
   category: string;
-  medicationTime: string;
+  id: string;
 };
-
-const dummyData = [
-  {
-    id: '1',
-    medicineName: 'Calpol1',
-    category: 'Tablet',
-    medicationTime: 'After Dinner',
-  },
-  {
-    id: '2',
-    medicineName: 'Calpol2',
-    category: 'Tablet',
-    medicationTime: 'After Dinner',
-  },
-  {
-    id: '3',
-    medicineName: 'Calpol3',
-    category: 'Tablet',
-    medicationTime: 'After Dinner',
-  },
-  {
-    id: '4',
-    medicineName: 'Calpol4',
-    category: 'Tablet',
-    medicationTime: 'After Dinner',
-  },
-  {
-    id: '5',
-    medicineName: 'Calpol5',
-    category: 'Tablet',
-    medicationTime: 'After Dinner',
-  },
-  {
-    id: '6',
-    medicineName: 'Calpol5',
-    category: 'Tablet',
-    medicationTime: 'After Dinner',
-  },
-  {
-    id: '7',
-    medicineName: 'Calpol5',
-    category: 'Tablet',
-    medicationTime: 'After Dinner',
-  },
-  {
-    id: '8',
-    medicineName: 'Calpol5',
-    category: 'Tablet',
-    medicationTime: 'After Dinner',
-  },
-  {
-    id: '9',
-    medicineName: 'Calpol5',
-    category: 'Tablet',
-    medicationTime: 'After Dinner',
-  },
-  {
-    id: '10',
-    medicineName: 'Calpol5',
-    category: 'Tablet',
-    medicationTime: 'After Dinner',
-  },
-  {
-    id: '11',
-    medicineName: 'Calpol5',
-    category: 'Tablet',
-    medicationTime: 'After Dinner',
-  },
-];
 
 const EditMedicationScreen = () => {
   const currentStyles = styles();
-  const flatlistRef = useRef(null);
+  const flatlistRef = useRef<FlatList>(null);
+  const route = useRoute<routeProps>();
 
-  const [medicationData, setMedicationData] =
-    useState<medicationTypes[]>(dummyData);
   const [isEdit, setEdit] = useState<boolean>(false);
+  const [allMedications, setAllMedications] = useState<medicationTypes[]>(
+    route.params.editMedicationData.medication,
+  );
+  const [medicineEditData, setMedicineEditData] = useState<medicationTypes>({
+    category: '',
+    medicationTime: new Date(),
+    medicineId: '',
+    medicineName: '',
+    id: '',
+  });
+  const [addMedicationData, setAddMedicationData] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const deleteMeicationMethod = (id: string) => {
+    const filteredData = allMedications.filter(item => item.id !== id);
+
+    setAllMedications(filteredData);
+    updateMedicationsMethod(filteredData);
+  };
+
+  const updateMedicationsMethod = async (medications: medicationTypes[]) => {
+    setIsLoading(true);
+    try {
+      const medicationUpdate = await database
+        .get<HealthProfile>('healthProfiles')
+        .find(route.params.editMedicationData.id);
+      await database.write(async () => {
+        await medicationUpdate.update(medicationDb => {
+          medicationDb.medicineArray = JSON.stringify(medications);
+        });
+      });
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <BackgroundFill showDesign={false} backgroundColor="white">
       <View style={currentStyles.container}>
         <View style={{ maxHeight: normalize(500, 'height') }}>
           <FlatList
-            data={medicationData}
+            ref={flatlistRef}
+            data={allMedications}
             renderItem={({ item, index }) => (
               <View style={[currentStyles.boxContainer]}>
                 <CustomTextInput
@@ -130,7 +103,7 @@ const EditMedicationScreen = () => {
                   allStyle={commonStyles.w138}
                   borderColor={colors.borderColor}
                   value={item.medicationTime}
-                  placeholder="Before Lunch"
+                  placeholder="8:40 am"
                   style={{ backgroundColor: colors.pureWhite }}
                   editable={false}
                 />
@@ -138,18 +111,41 @@ const EditMedicationScreen = () => {
                   <TouchableOpacity
                     style={commonStyles.mt16}
                     onPress={() => {
+                      setMedicineEditData(item);
                       setEdit(true);
                     }}
                   >
                     <Edit />
                   </TouchableOpacity>
-                  <TouchableOpacity style={commonStyles.mt16}>
-                    <Trash2Icon color={colors.error} />
-                  </TouchableOpacity>
+                  {allMedications.length !== 1 ? (
+                    <TouchableOpacity
+                      style={commonStyles.mt16}
+                      onPress={() => {
+                        Alert.alert(
+                          'Are you sure?',
+                          `Do you want to remove ${item.medicineName} from your medications?`,
+                          [
+                            {
+                              text: 'Yes',
+                              onPress: () => {
+                                deleteMeicationMethod(item.id);
+                              },
+                            },
+                            {
+                              text: 'No',
+                              style: 'cancel',
+                            },
+                          ],
+                        );
+                      }}
+                    >
+                      <Trash2Icon color={colors.error} />
+                    </TouchableOpacity>
+                  ) : null}
                 </View>
               </View>
             )}
-            keyExtractor={item => item.id}
+            keyExtractor={(item, index) => `${item.medicineId}${index}`}
             ItemSeparatorComponent={() => <View style={commonStyles.mt10} />}
           />
         </View>
@@ -160,16 +156,9 @@ const EditMedicationScreen = () => {
             mainStyle={currentStyles.addMedicineStyle}
             labelStyle={currentStyles.addMedicineLabelStyle}
             icon={<PlusIcon size={20} />}
-            onPress={() => {}}
-          />
-          <Button
-            label="Save Details"
-            mainStyle={[
-              commonStyles.w100per,
-              commonStyles.mt10,
-              commonStyles.aic,
-            ]}
-            onPress={() => {}}
+            onPress={() => {
+              setAddMedicationData(true);
+            }}
           />
         </View>
       </View>
@@ -177,6 +166,31 @@ const EditMedicationScreen = () => {
         <AddEditMedicationBottomSheet
           onClose={() => setEdit(false)}
           isVisible={isEdit}
+          medicineObject={medicineEditData}
+          onSaveArray={data => {
+            setAllMedications(data);
+            updateMedicationsMethod(data);
+          }}
+          onSave={() => {}}
+          allMedicineArray={allMedications}
+        />
+      ) : null}
+      {addMedicationData ? (
+        <AddEditMedicationBottomSheet
+          onClose={() => {
+            setAddMedicationData(false);
+          }}
+          isVisible={addMedicationData}
+          onSave={data => {
+            setAllMedications([...allMedications, data]);
+            flatlistRef.current?.scrollToIndex({
+              animated: true,
+              index: allMedications.length - 1,
+            });
+            const medicationData = [...allMedications, data];
+            updateMedicationsMethod(medicationData);
+          }}
+          onSaveArray={() => {}}
         />
       ) : null}
     </BackgroundFill>
