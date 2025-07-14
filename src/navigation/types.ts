@@ -42,9 +42,30 @@ export type ProfileStackParamList = {
   ProfileScreen: undefined;
 };
 
+type healthProfileMedicationsType = {
+  id: string;
+  profileName: string;
+};
+
+type medicationsTypes = {
+  medicineName: string;
+  medicineId: string;
+  medicationTime: string;
+  category: string;
+  id: string;
+};
+
+type editMedicationTypes = {
+  id: string;
+  medication: medicationsTypes[];
+};
+
 //MEDICATION PROFILES STACK
 export type MedicationProfileStack = {
   MedicationProfilesScreen: undefined;
-  HealthProfileMedicationScreen: undefined;
-  EditMedicationScreen: undefined;
+  HealthProfileMedicationScreen: {
+    medicationsData: healthProfileMedicationsType;
+  };
+  EditMedicationScreen: { editMedicationData: editMedicationTypes };
+  MedicineDetailsScreen: { medicineDetails: medicineParams };
 };

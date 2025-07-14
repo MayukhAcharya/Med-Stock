@@ -4,17 +4,11 @@ import React, { useEffect, useState } from 'react';
 import { styles } from 'src/components/AddEditMedicationBottomSheet/styles';
 import { colors } from 'src/config/colors';
 import { commonStyles } from 'src/config/commonStyles';
-import CustomTextInput from '../CustomTextInput/CustomTextInput';
-import CustomDropdown from '../CustomDropdown/CustomDropdown';
+import CustomDropdown from 'src/components/CustomDropdown/CustomDropdown';
 import { database } from 'src/Database/database';
 import normalize from 'src/config/normalize';
-import Button from '../Button/Button';
-import TimeComponent from '../TimeComponent/TimeComponent';
-
-type addEditMedicationProps = {
-  onClose: () => void;
-  isVisible: boolean;
-};
+import Button from 'src/components/Button/Button';
+import TimeComponent from 'src/components/TimeComponent/TimeComponent';
 
 type medicineData = {
   category: string;
@@ -27,11 +21,48 @@ type medicineData = {
   value: string;
 };
 
+type medicationTypes = {
+  medicineName: string;
+  medicineId: string;
+  medicationTime: any;
+  category: string;
+  id: string;
+};
+
+type addEditMedicationProps = {
+  onClose: () => void;
+  isVisible: boolean;
+  medicineObject?: medicationTypes | any;
+  allMedicineArray?: medicationTypes[];
+  onSave: (data: medicationTypes) => void;
+  onSaveArray: (data: medicationTypes[]) => void;
+};
+
 const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
   const currentStyles = styles();
-  const { isVisible = false, onClose } = props;
+  const {
+    isVisible = false,
+    onClose,
+    medicineObject,
+    onSave,
+    allMedicineArray,
+    onSaveArray,
+  } = props;
 
   const [allMedicines, setAllMedicines] = useState<medicineData[]>([]);
+  const [medicineData, setMedicineData] = useState<medicationTypes>({
+    category: medicineObject ? medicineObject.category : '',
+    medicationTime: medicineObject
+      ? medicineObject.medicationTime
+      : new Date().toLocaleTimeString('en-IN', {
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true,
+        }),
+    medicineId: medicineObject ? medicineObject.medicineId : '',
+    medicineName: medicineObject ? medicineObject.medicineName : '',
+    id: medicineObject ? medicineObject.id : '',
+  });
 
   const getMedicineDataMethod = () => {
     try {
@@ -58,6 +89,56 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
     }
   };
 
+  const handleDisable = () => {
+    if (medicineObject) {
+      if (medicineObject.medicineId === medicineData.medicineId) {
+        if (medicineObject.medicationTime === medicineData.medicationTime) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    } else {
+      if (medicineData.medicineId === '') {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const handleSave = () => {
+    if (medicineObject) {
+      const updatedArray = allMedicineArray
+        ? allMedicineArray?.map(item => {
+            if (item.id === medicineData.id) {
+              return {
+                ...item,
+                medicationTime: medicineData.medicationTime,
+                medicineName: medicineData.medicineName,
+                medicineId: medicineData.medicineId,
+                category: medicineData.category,
+              };
+            } else {
+              return {
+                ...item,
+              };
+            }
+          })
+        : [];
+      onSaveArray(updatedArray);
+    } else {
+      const addObject = {
+        medicineName: medicineData.medicineName,
+        medicineId: medicineData.medicineId,
+        medicationTime: medicineData.medicationTime,
+        category: medicineData.category,
+        id: `${medicineData.medicineId}${new Date().getTime()}`,
+      };
+
+      onSave(addObject);
+    }
+  };
+
   useEffect(() => {
     getMedicineDataMethod();
   }, []);
@@ -77,18 +158,25 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
         <View style={currentStyles.subContainer}>
           <View style={commonStyles.aic}>
             <Text style={currentStyles.HeaderTextStyle}>
-              Edit/Add Medication
+              {medicineObject ? 'Edit' : 'Add'} Medication
             </Text>
           </View>
           <View style={currentStyles.inputContainer}>
             <CustomDropdown
-              label="Add Medicine"
+              label={`${medicineObject ? 'Edit' : 'Add'} Medicine`}
               list={allMedicines}
               allStyle={commonStyles.w100per}
               borderColor={colors.borderColor}
-              selectedValue=""
+              selectedValue={medicineData.medicineName}
               placeholder="Calpol-650"
-              onValueSelect={item => {}}
+              onValueSelect={item => {
+                setMedicineData(prev => ({
+                  ...prev,
+                  category: item.category,
+                  medicineId: item.value,
+                  medicineName: item.label,
+                }));
+              }}
               dropdownMainStyle={{
                 maxHeight: normalize(125, 'height'),
               }}
@@ -99,16 +187,29 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
               allStyle={commonStyles.w100per}
               borderColor={colors.borderColor}
               placeholder="Before Lunch"
-              value={new Date()}
-              onChange={time => {}}
+              value={medicineData.medicationTime}
+              onChange={time => {
+                setMedicineData(prev => ({
+                  ...prev,
+                  medicationTime: time.toLocaleTimeString('en-IN', {
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true,
+                  }),
+                }));
+              }}
               style={{ backgroundColor: colors.pureWhite }}
             />
           </View>
           <View style={currentStyles.bottomContainerMargin}>
             <Button
-              label="Save Changes"
+              label="Save Medicine"
               mainStyle={commonStyles.w100per}
-              onPress={() => {}}
+              onPress={() => {
+                handleSave();
+                onClose();
+              }}
+              disable={handleDisable()}
             />
           </View>
         </View>

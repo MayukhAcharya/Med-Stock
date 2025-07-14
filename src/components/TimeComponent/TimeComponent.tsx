@@ -60,7 +60,7 @@ const TimeComponent = (props: timeProps) => {
   };
 
   function convertTimestampToTime(date: Date) {
-    if (!date || !(date instanceof Date)) return '';
+    if (!date || !(date instanceof Date)) return value;
     return date.toLocaleTimeString('en-IN', {
       hour: 'numeric',
       minute: 'numeric',
