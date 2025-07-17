@@ -6,7 +6,6 @@ import {
   BriefcaseMedical,
   HeartPlusIcon,
   HomeIcon,
-  PillBottleIcon,
   User,
 } from 'lucide-react-native';
 
@@ -173,6 +172,14 @@ const AppNavigation = () => {
         options={{
           headerShown: true,
           header: () => <Header title="Medicine Details" showBackIcon={true} />,
+        }}
+      />
+      <MedicineProfileStack.Screen
+        name="AddMedicineScreen"
+        component={AddMedicineScreen}
+        options={{
+          headerShown: true,
+          header: () => <Header title="Add Medicine" showBackIcon={true} />,
         }}
       />
     </MedicineProfileStack.Navigator>
