@@ -1,7 +1,8 @@
-import { View, Text, Modal, StatusBar } from 'react-native';
+import { View, Text, Modal, StatusBar, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { EditIcon } from 'lucide-react-native';
 import * as yup from 'yup';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { styles } from 'src/components/AddHealthProfileBottomSheet/styles';
 import { commonStyles } from 'src/config/commonStyles';
@@ -13,9 +14,15 @@ import ReviewMedicationList from 'src/components/ReviewMedicationList/ReviewMedi
 import { Formik } from 'formik';
 import { database } from 'src/Database/database';
 import normalize from 'src/config/normalize';
-import TimeComponent from '../TimeComponent/TimeComponent';
+import TimeComponent from 'src/components/TimeComponent/TimeComponent';
 import { fieldRegex, timeoutConstant } from 'src/constants/constants';
 import HealthProfile from 'src/Database/healthProfileModel';
+import SearchDropdown from 'src/components/SearchDropdown/SearchDropdown';
+import { MedicationProfileStack } from 'src/navigation/types';
+import { useNavigation } from '@react-navigation/native';
+
+type navigationPropsForHealthProfile =
+  NativeStackNavigationProp<MedicationProfileStack>;
 
 type addHealthProfileProps = {
   onClose: () => void;
@@ -65,12 +72,15 @@ const genderOptions = [
 const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
   const { onClose, isVisible } = props;
   const currentStyles = styles();
+  const navigation = useNavigation<navigationPropsForHealthProfile>();
 
   const [reviewMeds, setReviewMeds] = useState<boolean>(false);
   const [medicineArray, setMedicineArray] = useState<medicineDataTypes[]>([]);
   const [allMedicines, setAllMedicines] = useState<medicineData[]>([]);
+  const [filterData, setFilterData] = useState<medicineData[]>(allMedicines);
   const [hasArray, setHasArray] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchString, setSearchString] = useState<string>('');
 
   const numbers = ['1', '2', '3', '4'];
 
@@ -139,7 +149,7 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
     }
   };
 
-  const addHealthProfileMethod = (values: formikTypes) => {
+  const addHealthProfileMethod = async (values: formikTypes) => {
     setIsLoading(true);
     try {
       setTimeout(async () => {
@@ -158,6 +168,59 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
       onClose();
     } catch (error) {
       setIsLoading(false);
+    }
+  };
+
+  const searchMethod = (searchString: string) => {
+    const searchedData = allMedicines.filter(item =>
+      item.medicine_name.toLowerCase().includes(searchString.toLowerCase()),
+    );
+
+    setFilterData(searchedData);
+  };
+
+  const manageListToDisplay = () => {
+    if (searchString && filterData) {
+      return filterData;
+    } else {
+      return allMedicines;
+    }
+  };
+
+  const handleAlertMethod = (values: formikTypes) => {
+    Alert.alert(
+      'Warning!',
+      'All your changes will be lost! Save your health profile?',
+      [
+        {
+          text: 'Yes',
+          onPress: () => {
+            checkFieldAndSaveMethod(values);
+          },
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+    );
+  };
+
+  const checkFieldAndSaveMethod = async (values: formikTypes) => {
+    if (values.profileName && values.medicationType && values.gender) {
+      await addHealthProfileMethod(values);
+      navigation.navigate('AddMedicineScreen');
+    } else {
+      Alert.alert('Warning!', 'Please fill in the required fields first.', [
+        {
+          text: 'Yes',
+          style: 'cancel',
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ]);
     }
   };
 
@@ -271,9 +334,9 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
                   />
                   <View style={currentStyles.boxContainer}>
                     <View>
-                      <CustomDropdown
+                      <SearchDropdown
                         label="Add Medicine"
-                        list={allMedicines}
+                        list={manageListToDisplay()}
                         allStyle={commonStyles.w312}
                         borderColor={colors.borderColor}
                         selectedValue={values.medicineName}
@@ -282,11 +345,24 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
                           setFieldValue('medicineName', item.label);
                           setFieldValue('id', item.value);
                           setFieldValue('category', item.category);
+                          setSearchString('');
+                          setFilterData([]);
                         }}
                         dropdownMainStyle={{
-                          maxHeight: normalize(150, 'height'),
+                          maxHeight: normalize(200, 'height'),
+                        }}
+                        onChangeText={text => {
+                          setSearchString(text);
+                          searchMethod(text);
                         }}
                         style={{ backgroundColor: colors.pureWhite }}
+                        onAddPress={() => {
+                          if (medicineArray.length > 0) {
+                            handleAlertMethod(values);
+                          } else {
+                            //navigate to add screen
+                          }
+                        }}
                       />
                     </View>
                     <View

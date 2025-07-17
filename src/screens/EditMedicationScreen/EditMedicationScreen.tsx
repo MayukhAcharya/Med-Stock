@@ -152,7 +152,7 @@ const EditMedicationScreen = () => {
 
         <View style={commonStyles.mt30}>
           <Button
-            label="Add Medicine"
+            label="Add Medication"
             mainStyle={currentStyles.addMedicineStyle}
             labelStyle={currentStyles.addMedicineLabelStyle}
             icon={<PlusIcon size={20} />}

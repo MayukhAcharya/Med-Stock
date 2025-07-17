@@ -1,14 +1,20 @@
 import { View, Text, Modal, StatusBar, Pressable } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 
 import { styles } from 'src/components/AddEditMedicationBottomSheet/styles';
 import { colors } from 'src/config/colors';
 import { commonStyles } from 'src/config/commonStyles';
-import CustomDropdown from 'src/components/CustomDropdown/CustomDropdown';
 import { database } from 'src/Database/database';
 import normalize from 'src/config/normalize';
 import Button from 'src/components/Button/Button';
 import TimeComponent from 'src/components/TimeComponent/TimeComponent';
+import SearchDropdown from '../SearchDropdown/SearchDropdown';
+import { MedicationProfileStack } from 'src/navigation/types';
+import { useNavigation } from '@react-navigation/native';
+
+type navigationPropsForHealthProfile =
+  NativeStackNavigationProp<MedicationProfileStack>;
 
 type medicineData = {
   category: string;
@@ -48,8 +54,10 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
     allMedicineArray,
     onSaveArray,
   } = props;
+  const navigation = useNavigation<navigationPropsForHealthProfile>();
 
   const [allMedicines, setAllMedicines] = useState<medicineData[]>([]);
+  const [filterData, setFilterData] = useState<medicineData[]>(allMedicines);
   const [medicineData, setMedicineData] = useState<medicationTypes>({
     category: medicineObject ? medicineObject.category : '',
     medicationTime: medicineObject
@@ -63,6 +71,7 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
     medicineName: medicineObject ? medicineObject.medicineName : '',
     id: medicineObject ? medicineObject.id : '',
   });
+  const [searchString, setSearchString] = useState<string>('');
 
   const getMedicineDataMethod = () => {
     try {
@@ -139,6 +148,22 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
     }
   };
 
+  const searchMethod = (searchString: string) => {
+    const searchedData = allMedicines.filter(item =>
+      item.medicine_name.toLowerCase().includes(searchString.toLowerCase()),
+    );
+
+    setFilterData(searchedData);
+  };
+
+  const manageListToDisplay = () => {
+    if (searchString && filterData) {
+      return filterData;
+    } else {
+      return allMedicines;
+    }
+  };
+
   useEffect(() => {
     getMedicineDataMethod();
   }, []);
@@ -162,9 +187,9 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
             </Text>
           </View>
           <View style={currentStyles.inputContainer}>
-            <CustomDropdown
+            <SearchDropdown
               label={`${medicineObject ? 'Edit' : 'Add'} Medicine`}
-              list={allMedicines}
+              list={manageListToDisplay()}
               allStyle={commonStyles.w100per}
               borderColor={colors.borderColor}
               selectedValue={medicineData.medicineName}
@@ -176,11 +201,20 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
                   medicineId: item.value,
                   medicineName: item.label,
                 }));
+                setSearchString('');
+                setFilterData([]);
               }}
               dropdownMainStyle={{
-                maxHeight: normalize(125, 'height'),
+                maxHeight: normalize(175, 'height'),
               }}
               style={{ backgroundColor: colors.pureWhite }}
+              onChangeText={text => {
+                searchMethod(text);
+                setSearchString(text);
+              }}
+              onAddPress={() => {
+                navigation.navigate('AddMedicineScreen');
+              }}
             />
             <TimeComponent
               label="Medication Time"

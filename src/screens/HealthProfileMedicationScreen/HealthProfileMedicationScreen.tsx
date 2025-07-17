@@ -142,7 +142,8 @@ const HealthProfileMedicationScreen = () => {
               }}
               style={currentStyles.plusIconPressStyle}
             >
-              <Trash2Icon color={colors.pureWhite} />
+              <Trash2Icon color={colors.pureWhite} size={22} />
+              <Text style={currentStyles.fabButtonTextStyle}>Delete</Text>
             </TouchableOpacity>
           </View>
           <View style={currentStyles.fabButtonStyle}>
@@ -157,7 +158,8 @@ const HealthProfileMedicationScreen = () => {
               }}
               style={currentStyles.plusIconPressStyle}
             >
-              <Edit color={colors.pureWhite} />
+              <Edit color={colors.pureWhite} size={22} />
+              <Text style={currentStyles.fabButtonTextStyle}>Edit</Text>
             </TouchableOpacity>
           </View>
         </View>
