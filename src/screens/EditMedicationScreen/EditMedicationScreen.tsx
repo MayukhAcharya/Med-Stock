@@ -173,6 +173,7 @@ const EditMedicationScreen = () => {
           }}
           onSave={() => {}}
           allMedicineArray={allMedications}
+          id={route.params.editMedicationData.id}
         />
       ) : null}
       {addMedicationData ? (
@@ -191,6 +192,7 @@ const EditMedicationScreen = () => {
             updateMedicationsMethod(medicationData);
           }}
           onSaveArray={() => {}}
+          id={route.params.editMedicationData.id}
         />
       ) : null}
     </BackgroundFill>

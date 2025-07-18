@@ -1,5 +1,5 @@
 import { View, Text, Modal, StatusBar, Alert } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { EditIcon } from 'lucide-react-native';
 import * as yup from 'yup';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -73,6 +73,7 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
   const { onClose, isVisible } = props;
   const currentStyles = styles();
   const navigation = useNavigation<navigationPropsForHealthProfile>();
+  const idRef = useRef('');
 
   const [reviewMeds, setReviewMeds] = useState<boolean>(false);
   const [medicineArray, setMedicineArray] = useState<medicineDataTypes[]>([]);
@@ -81,6 +82,7 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
   const [hasArray, setHasArray] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchString, setSearchString] = useState<string>('');
+  const [id, setId] = useState<string>('');
 
   const numbers = ['1', '2', '3', '4'];
 
@@ -152,19 +154,20 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
   const addHealthProfileMethod = async (values: formikTypes) => {
     setIsLoading(true);
     try {
-      setTimeout(async () => {
-        await database.write(async () => {
-          await database
-            .get<HealthProfile>('healthProfiles')
-            .create(healthProfile => {
-              healthProfile.profileName = values.profileName;
-              healthProfile.medicationType = values.medicationType;
-              healthProfile.gender = values.gender;
-              healthProfile.genderAvatar = getRandomImageMethod(values.gender);
-              healthProfile.medicineArray = JSON.stringify(medicineArray);
-            });
-        });
-      }, timeoutConstant);
+      await database.write(async () => {
+        await database
+          .get<HealthProfile>('healthProfiles')
+          .create(healthProfile => {
+            healthProfile.profileName = values.profileName;
+            healthProfile.medicationType = values.medicationType;
+            healthProfile.gender = values.gender;
+            healthProfile.genderAvatar = getRandomImageMethod(values.gender);
+            healthProfile.medicineArray = JSON.stringify(medicineArray);
+          })
+          .then(res => {
+            idRef.current = res._raw.id;
+          });
+      });
       onClose();
     } catch (error) {
       setIsLoading(false);
@@ -187,6 +190,26 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
     }
   };
 
+  const checkFieldAndSaveMethod = async (values: formikTypes) => {
+    if (values.profileName && values.medicationType && values.gender) {
+      await addHealthProfileMethod(values);
+      navigation.navigate('AddMedicineScreen', {
+        medicationData: {
+          isHealthProfile: true,
+          id: idRef.current,
+          allMedicineArray: medicineArray,
+        },
+      });
+    } else {
+      Alert.alert('Warning!', 'Please fill in the required fields first.', [
+        {
+          text: 'OK',
+          style: 'cancel',
+        },
+      ]);
+    }
+  };
+
   const handleAlertMethod = (values: formikTypes) => {
     Alert.alert(
       'Warning!',
@@ -201,27 +224,16 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
         {
           text: 'No',
           style: 'cancel',
+          onPress: () => {
+            navigation.navigate('AddMedicineScreen', {
+              medicationData: {
+                isHealthProfile: false,
+              },
+            });
+          },
         },
       ],
     );
-  };
-
-  const checkFieldAndSaveMethod = async (values: formikTypes) => {
-    if (values.profileName && values.medicationType && values.gender) {
-      await addHealthProfileMethod(values);
-      navigation.navigate('AddMedicineScreen');
-    } else {
-      Alert.alert('Warning!', 'Please fill in the required fields first.', [
-        {
-          text: 'Yes',
-          style: 'cancel',
-        },
-        {
-          text: 'No',
-          style: 'cancel',
-        },
-      ]);
-    }
   };
 
   useEffect(() => {
@@ -360,7 +372,11 @@ const AddHealthProfileBottomSheet = (props: addHealthProfileProps) => {
                           if (medicineArray.length > 0) {
                             handleAlertMethod(values);
                           } else {
-                            //navigate to add screen
+                            navigation.navigate('AddMedicineScreen', {
+                              medicationData: {
+                                isHealthProfile: false,
+                              },
+                            });
                           }
                         }}
                       />

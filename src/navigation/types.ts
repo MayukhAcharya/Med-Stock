@@ -60,6 +60,19 @@ type editMedicationTypes = {
   medication: medicationsTypes[];
 };
 
+type medicationTypes = {
+  medicineName: string;
+  medicineId: string;
+  medicationTime: any;
+  category: string;
+  id: string;
+};
+type allMedicineTypes = {
+  isHealthProfile: boolean;
+  id?: any;
+  allMedicineArray?: medicationTypes[];
+};
+
 //MEDICATION PROFILES STACK
 export type MedicationProfileStack = {
   MedicationProfilesScreen: undefined;
@@ -68,5 +81,5 @@ export type MedicationProfileStack = {
   };
   EditMedicationScreen: { editMedicationData: editMedicationTypes };
   MedicineDetailsScreen: { medicineDetails: medicineParams };
-  AddMedicineScreen: undefined;
+  AddMedicineScreen: { medicationData: allMedicineTypes };
 };
