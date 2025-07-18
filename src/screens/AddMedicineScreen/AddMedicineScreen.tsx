@@ -4,11 +4,11 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { PlusCircleIcon } from 'lucide-react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import notifee from '@notifee/react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
 import { styles } from 'src/screens/AddMedicineScreen/styles';
@@ -19,20 +19,17 @@ import Button from 'src/components/Button/Button';
 import UsesBottomSheet from 'src/components/UsesBottomSheet/UsesBottomSheet';
 import CustomDropdown from 'src/components/CustomDropdown/CustomDropdown';
 import DateComponent from 'src/components/DateComponent/DateComponent';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import {
   AllMedicineStackParamList,
   DashboardStackParamList,
+  MedicationProfileStack,
 } from 'src/navigation/types';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import {
-  fieldRegex,
-  numberFieldRegex,
-  timeoutConstant,
-} from 'src/constants/constants';
+import { fieldRegex, numberFieldRegex } from 'src/constants/constants';
 import { database } from 'src/Database/database';
 import Medicine from 'src/Database/medicineModel';
 import normalize from 'src/config/normalize';
+import HealthProfile from 'src/Database/healthProfileModel';
 
 type navigationPropsForAddMedicine = NativeStackNavigationProp<
   AllMedicineStackParamList,
@@ -41,6 +38,11 @@ type navigationPropsForAddMedicine = NativeStackNavigationProp<
 
 type routePropForDashboard = RouteProp<
   DashboardStackParamList,
+  'AddMedicineScreen'
+>;
+
+type routePropForHealthProfile = RouteProp<
+  MedicationProfileStack,
   'AddMedicineScreen'
 >;
 
@@ -77,6 +79,14 @@ type addMedicineFormikTypes = {
   category: string;
 };
 
+type medicationTypes = {
+  medicineName: string;
+  medicineId: string;
+  medicationTime: any;
+  category: string;
+  id: string;
+};
+
 type usesType = {
   use: string;
 };
@@ -85,14 +95,25 @@ const AddMedicineScreen = () => {
   const currentStyles = styles();
   const navigation = useNavigation<navigationPropsForAddMedicine>();
   const dashboardRoute = useRoute<routePropForDashboard>();
+  const healthProfileRoute = useRoute<routePropForHealthProfile>();
+  const idRef = useRef('');
 
   const [showUsesModal, setUsesModal] = useState<boolean>(false);
   const [date, setDate] = useState<Date>(new Date());
   const [uses, setUses] = useState<usesType[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState({
+    isSaveLoading: false,
+    isSaveAnotherLoading: false,
+  });
   const [saveOrSaveAnother, setSaveOrSaveAnother] = useState<
     'Save' | 'Save another'
   >('Save');
+  const [allMedicineArray, setAllMedicineArray] = useState<medicationTypes[]>(
+    healthProfileRoute.params &&
+      healthProfileRoute.params.medicationData.allMedicineArray
+      ? healthProfileRoute.params.medicationData.allMedicineArray
+      : [],
+  );
 
   const validationSchema = yup.object().shape({
     medicineName: yup
@@ -117,23 +138,42 @@ const AddMedicineScreen = () => {
   });
 
   const addMedicineSubmitMethod = async (values: addMedicineFormikTypes) => {
-    setIsLoading(true);
+    setIsLoading(prev => ({
+      ...prev,
+      isSaveLoading: true,
+    }));
     try {
-      setTimeout(async () => {
-        await database.write(async () => {
-          await database.get<Medicine>('medicines').create(medicine => {
+      await database.write(async () => {
+        await database
+          .get<Medicine>('medicines')
+          .create(medicine => {
             medicine.medicineName = values.medicineName;
             medicine.category = values.category;
             medicine.expiryDate = date.toISOString();
             medicine.uses = JSON.stringify(uses);
             medicine.quantity = values.quantity;
+          })
+          .then(res => {
+            idRef.current = res._raw.id;
           });
-        });
-      }, timeoutConstant);
-      setIsLoading(false);
+      });
+      if (
+        healthProfileRoute.params &&
+        healthProfileRoute.params.medicationData &&
+        healthProfileRoute.params.medicationData.isHealthProfile
+      ) {
+        await updateMedicationsMethod(values, idRef.current);
+      }
       navigation.goBack();
+      setIsLoading(prev => ({
+        ...prev,
+        isSaveLoading: false,
+      }));
     } catch (error) {
-      setIsLoading(false);
+      setIsLoading(prev => ({
+        ...prev,
+        isSaveLoading: false,
+      }));
     }
   };
 
@@ -141,19 +181,32 @@ const AddMedicineScreen = () => {
     values: addMedicineFormikTypes,
     resetForm: any,
   ) => {
-    setIsLoading(true);
+    setIsLoading(prev => ({
+      ...prev,
+      isSaveAnotherLoading: true,
+    }));
     try {
-      setTimeout(async () => {
-        await database.write(async () => {
-          await database.get<Medicine>('medicines').create(medicine => {
+      await database.write(async () => {
+        await database
+          .get<Medicine>('medicines')
+          .create(medicine => {
             medicine.medicineName = values.medicineName;
             medicine.category = values.category;
             medicine.expiryDate = date.toISOString();
             medicine.uses = JSON.stringify(uses);
             medicine.quantity = values.quantity;
+          })
+          .then(res => {
+            idRef.current = res._raw.id;
           });
-        });
-      }, timeoutConstant);
+      });
+      if (
+        healthProfileRoute.params &&
+        healthProfileRoute.params.medicationData &&
+        healthProfileRoute.params.medicationData.isHealthProfile
+      ) {
+        await updateMedicationsMethod(values, idRef.current);
+      }
       resetForm({
         values: {
           medicine_name: '',
@@ -163,9 +216,53 @@ const AddMedicineScreen = () => {
           quantity: '',
         },
       });
-      setIsLoading(false);
+      setIsLoading(prev => ({
+        ...prev,
+        isSaveAnotherLoading: false,
+      }));
     } catch (error) {
-      setIsLoading(false);
+      setIsLoading(prev => ({
+        ...prev,
+        isSaveAnotherLoading: false,
+      }));
+    }
+  };
+
+  const updateMedicationsMethod = async (
+    values: addMedicineFormikTypes,
+    id: string,
+  ) => {
+    const newMedicineObject = {
+      medicineName: values.medicineName,
+      medicineId: id,
+      medicationTime: new Date().toLocaleTimeString('en-IN', {
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+      }),
+      category: values.category,
+      id: `${id}${new Date().getTime()}`,
+    };
+    const updatedMedicineArray = [...allMedicineArray, newMedicineObject];
+    setAllMedicineArray(updatedMedicineArray);
+    try {
+      const medicationUpdate = await database
+        .get<HealthProfile>('healthProfiles')
+        .find(healthProfileRoute?.params?.medicationData?.id);
+      await database.write(async () => {
+        await medicationUpdate.update(medicationDb => {
+          medicationDb.medicineArray = JSON.stringify(updatedMedicineArray);
+        });
+      });
+      setIsLoading(prev => ({
+        isSaveAnotherLoading: false,
+        isSaveLoading: false,
+      }));
+    } catch (error) {
+      setIsLoading(prev => ({
+        isSaveAnotherLoading: false,
+        isSaveLoading: false,
+      }));
     }
   };
 
@@ -310,6 +407,7 @@ const AddMedicineScreen = () => {
                 </View>
               </View>
               {dashboardRoute.params &&
+              dashboardRoute.params.addMedicineDetails &&
               dashboardRoute.params.addMedicineDetails.isFirstAdd ? (
                 <View style={commonStyles.mt16}>
                   <Text style={currentStyles.noteTextStyle}>
@@ -323,30 +421,57 @@ const AddMedicineScreen = () => {
                 </View>
               ) : null}
             </View>
-            <View style={commonStyles.mt30}>
-              <Button
-                label="Save and add another Medicine"
-                mainStyle={commonStyles.w100per}
-                icon={<PlusCircleIcon color={colors.pureWhite} />}
-                onPress={() => {
-                  setSaveOrSaveAnother('Save another');
-                  handleSubmit();
-                }}
-                showActivityIndicator={isLoading}
-              />
-              <View style={commonStyles.mt16}>
+            {healthProfileRoute.params &&
+            healthProfileRoute.params.medicationData &&
+            healthProfileRoute.params.medicationData.isHealthProfile ? (
+              <View style={commonStyles.mt30}>
                 <Button
-                  label="Add Medicine"
+                  label={`Save and add another medication to profile`}
+                  mainStyle={commonStyles.w100per}
+                  onPress={() => {
+                    setSaveOrSaveAnother('Save another');
+                    handleSubmit();
+                  }}
+                  showActivityIndicator={isLoading.isSaveAnotherLoading}
+                />
+                <View style={commonStyles.mt16}>
+                  <Button
+                    label={`Add Medication to profile`}
+                    mainStyle={commonStyles.w100per}
+                    onPress={() => {
+                      setSaveOrSaveAnother('Save');
+                      handleSubmit();
+                    }}
+                    showActivityIndicator={isLoading.isSaveLoading}
+                  />
+                </View>
+              </View>
+            ) : (
+              <View style={commonStyles.mt30}>
+                <Button
+                  label="Save and add another Medicine"
                   mainStyle={commonStyles.w100per}
                   icon={<PlusCircleIcon color={colors.pureWhite} />}
                   onPress={() => {
-                    setSaveOrSaveAnother('Save');
+                    setSaveOrSaveAnother('Save another');
                     handleSubmit();
                   }}
-                  showActivityIndicator={isLoading}
+                  showActivityIndicator={isLoading.isSaveAnotherLoading}
                 />
+                <View style={commonStyles.mt16}>
+                  <Button
+                    label="Add Medicine"
+                    mainStyle={commonStyles.w100per}
+                    icon={<PlusCircleIcon color={colors.pureWhite} />}
+                    onPress={() => {
+                      setSaveOrSaveAnother('Save');
+                      handleSubmit();
+                    }}
+                    showActivityIndicator={isLoading.isSaveLoading}
+                  />
+                </View>
               </View>
-            </View>
+            )}
           </View>
         )}
       </Formik>

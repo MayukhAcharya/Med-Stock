@@ -42,6 +42,7 @@ type addEditMedicationProps = {
   allMedicineArray?: medicationTypes[];
   onSave: (data: medicationTypes) => void;
   onSaveArray: (data: medicationTypes[]) => void;
+  id: string;
 };
 
 const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
@@ -53,6 +54,7 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
     onSave,
     allMedicineArray,
     onSaveArray,
+    id,
   } = props;
   const navigation = useNavigation<navigationPropsForHealthProfile>();
 
@@ -213,7 +215,12 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
                 setSearchString(text);
               }}
               onAddPress={() => {
-                navigation.navigate('AddMedicineScreen');
+                navigation.navigate('AddMedicineScreen', {
+                  medicationData: {
+                    isHealthProfile: true,
+                    id: id,
+                  },
+                });
               }}
             />
             <TimeComponent
