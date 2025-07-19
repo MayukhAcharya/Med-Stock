@@ -7,21 +7,8 @@ export const styles = () =>
   StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: 'flex-end',
-      backgroundColor: colors.backgroundTransparent,
-    },
-    subContainer: {
-      width: '100%',
-      backgroundColor: colors.pureWhite,
-      borderTopLeftRadius: normalize(12),
-      borderTopRightRadius: normalize(12),
-      paddingHorizontal: normalize(18),
+      paddingHorizontal: normalize(12),
       paddingVertical: normalize(16, 'height'),
-    },
-    addHealthProfileStyle: {
-      ...fonts.medium,
-      color: colors.pureBlack,
-      fontSize: normalize(18),
     },
     inputContainer: {
       marginTop: normalize(15, 'height'),

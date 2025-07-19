@@ -9,4 +9,6 @@ export default class HealthProfile extends Model {
   @field('gender') gender!: string;
   @field('gender_avatar') genderAvatar!: string;
   @field('medicine_array') medicineArray!: string;
+  @field('start_date') startDate!: string;
+  @field('end_date') endDate!: string;
 }

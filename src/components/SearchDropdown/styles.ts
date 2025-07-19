@@ -1,22 +1,26 @@
 import { StyleSheet } from 'react-native';
 import { colors } from 'src/config/colors';
 import { fonts } from 'src/config/fonts';
-import normalize, { height } from 'src/config/normalize';
+import normalize, { height, width } from 'src/config/normalize';
 
 export const styles = () =>
   StyleSheet.create({
+    container: {
+      flex: 1,
+      paddingTop: width / 3,
+      backgroundColor: colors.backgroundTransparent,
+      alignItems: 'center',
+    },
     dropdownMainStyle: {
       borderColor: colors.borderColor,
       borderWidth: 1,
-      right: 0,
-      position: 'absolute',
-      left: 0,
-      top: normalize(64, 'height'),
       backgroundColor: colors.pureWhite,
-      maxHeight: height / 2,
+      maxHeight: normalize(358, 'height'),
       borderRadius: normalize(12),
       elevation: 5,
       zIndex: 1,
+      width: normalize(328, 'width'),
+      paddingVertical: normalize(16, 'height'),
     },
     secondInputStyle: {
       width: normalize(300, 'width'),
@@ -54,5 +58,14 @@ export const styles = () =>
       fontSize: normalize(16),
       color: colors.primaryBlue,
       textDecorationLine: 'underline',
+    },
+    crossIconStyle: {
+      width: normalize(30),
+      height: normalize(30),
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: colors.error,
+      borderRadius: normalize(30),
+      marginBottom: normalize(26, 'height'),
     },
   });

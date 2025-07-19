@@ -82,4 +82,5 @@ export type MedicationProfileStack = {
   EditMedicationScreen: { editMedicationData: editMedicationTypes };
   MedicineDetailsScreen: { medicineDetails: medicineParams };
   AddMedicineScreen: { medicationData: allMedicineTypes };
+  AddHealthProfileScreen: undefined;
 };
