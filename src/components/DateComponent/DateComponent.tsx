@@ -20,7 +20,6 @@ import {
   X,
 } from 'lucide-react-native';
 import { colors } from 'src/config/colors';
-import normalize from 'src/config/normalize';
 
 type dateProps = {
   value: any;

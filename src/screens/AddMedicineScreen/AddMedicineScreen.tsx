@@ -110,6 +110,7 @@ const AddMedicineScreen = () => {
   >('Save');
   const [allMedicineArray, setAllMedicineArray] = useState<medicationTypes[]>(
     healthProfileRoute.params &&
+      healthProfileRoute.params.medicationData &&
       healthProfileRoute.params.medicationData.allMedicineArray
       ? healthProfileRoute.params.medicationData.allMedicineArray
       : [],

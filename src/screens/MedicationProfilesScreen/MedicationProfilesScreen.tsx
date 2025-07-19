@@ -39,9 +39,6 @@ const MedicationProfilesScreen = () => {
   const currentStyles = styles();
   const navigation = useNavigation<navigationPropsForHealthProfile>();
 
-  const [showHealthProfileModal, setShowHealthProfileModal] =
-    useState<boolean>(false);
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [healthProfile, setHealthProfile] = useState<healthProfileTypes[]>([]);
 
@@ -96,7 +93,7 @@ const MedicationProfilesScreen = () => {
                 <Text
                   style={currentStyles.hereTextStyle}
                   onPress={() => {
-                    setShowHealthProfileModal(true);
+                    navigation.navigate('AddHealthProfileScreen');
                   }}
                 >
                   here
@@ -178,7 +175,7 @@ const MedicationProfilesScreen = () => {
             <View style={currentStyles.fabButtonStyle}>
               <Pressable
                 onPress={() => {
-                  setShowHealthProfileModal(true);
+                  navigation.navigate('AddHealthProfileScreen');
                 }}
                 style={currentStyles.plusIconPressStyle}
               >
@@ -186,12 +183,6 @@ const MedicationProfilesScreen = () => {
               </Pressable>
             </View>
           </View>
-          {showHealthProfileModal ? (
-            <AddHealthProfileBottomSheet
-              onClose={() => setShowHealthProfileModal(false)}
-              isVisible={showHealthProfileModal}
-            />
-          ) : null}
         </View>
       </BackgroundFill>
     </>

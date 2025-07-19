@@ -79,6 +79,14 @@ export const schema = appSchema({
           name: 'medicine_array',
           type: 'string',
         },
+        {
+          name: 'start_date',
+          type: 'string',
+        },
+        {
+          name: 'end_date',
+          type: 'string',
+        },
       ],
     }),
   ],
