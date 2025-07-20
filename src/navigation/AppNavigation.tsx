@@ -153,7 +153,7 @@ const AppNavigation = () => {
           headerShown: true,
           header: () => (
             <Header
-              title={`${route.params.medicationsData.profileName}'s Meds`}
+              title={`${route.params.medicationsData.medicationName} Meds`}
               showBackIcon={true}
             />
           ),

@@ -43,13 +43,33 @@ type medicationsTypes = {
   id: string;
 };
 
+type healthProfileTypes = {
+  end_date: string;
+  gender: string;
+  gender_avatar: string;
+  id: string;
+  medication_type: string;
+  profile_name: string;
+  start_date: string;
+  medicine_array: any;
+};
+
 const HealthProfileMedicationScreen = () => {
   const currentStyles = styles();
   const navigation = useNavigation<navigationPropsForMedication>();
   const route = useRoute<routeProps>();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [medications, setMedications] = useState<medicationsTypes[]>([]);
+  const [medications, setMedications] = useState<healthProfileTypes>({
+    end_date: '',
+    gender: '',
+    gender_avatar: '',
+    id: '',
+    medication_type: '',
+    medicine_array: '[]',
+    profile_name: '',
+    start_date: '',
+  });
 
   const getMedicationsMethod = async () => {
     setIsLoading(true);
@@ -57,7 +77,7 @@ const HealthProfileMedicationScreen = () => {
       .get('healthProfiles')
       .find(route.params?.medicationsData.id);
     const data: any = medications._raw;
-    setMedications(JSON.parse(data.medicine_array));
+    setMedications(data);
     setIsLoading(false);
   };
 
@@ -111,7 +131,7 @@ const HealthProfileMedicationScreen = () => {
       <View style={currentStyles.container}>
         <View style={commonStyles.aic}>
           <FlatList
-            data={medications}
+            data={JSON.parse(medications.medicine_array)}
             renderItem={({ item, index }) => {
               return (
                 <MedicineListCard
@@ -152,7 +172,11 @@ const HealthProfileMedicationScreen = () => {
                 navigation.navigate('EditMedicationScreen', {
                   editMedicationData: {
                     id: route.params.medicationsData.id,
-                    medication: medications,
+                    medication: JSON.parse(medications.medicine_array),
+                    startDate: medications.start_date,
+                    endDate: medications.end_date,
+                    medicationType: medications.medication_type,
+                    profileName: medications.profile_name,
                   },
                 });
               }}

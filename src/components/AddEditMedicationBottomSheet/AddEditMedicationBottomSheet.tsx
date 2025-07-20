@@ -207,7 +207,7 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
                 setFilterData([]);
               }}
               dropdownMainStyle={{
-                maxHeight: normalize(175, 'height'),
+                maxHeight: normalize(300, 'height'),
               }}
               style={{ backgroundColor: colors.pureWhite }}
               onChangeText={text => {
@@ -219,8 +219,14 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
                   medicationData: {
                     isHealthProfile: true,
                     id: id,
+                    allMedicineArray: allMedicineArray,
                   },
                 });
+                onClose();
+              }}
+              onClose={() => {
+                setFilterData([]);
+                setSearchString('');
               }}
             />
             <TimeComponent

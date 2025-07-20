@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { PlusIcon } from 'lucide-react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -16,10 +16,10 @@ import { styles } from 'src/screens/MedicationProfilesScreen/styles';
 import { commonStyles } from 'src/config/commonStyles';
 import ProfileCard from 'src/components/ProfileCard/ProfileCard';
 import { colors } from 'src/config/colors';
-import AddHealthProfileBottomSheet from 'src/components/AddHealthProfileBottomSheet/AddHealthProfileBottomSheet';
 import { MedicationProfileStack } from 'src/navigation/types';
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
 import { database } from 'src/Database/database';
+import LottieView from 'lottie-react-native';
 
 type navigationPropsForHealthProfile = NativeStackNavigationProp<
   MedicationProfileStack,
@@ -38,6 +38,7 @@ type healthProfileTypes = {
 const MedicationProfilesScreen = () => {
   const currentStyles = styles();
   const navigation = useNavigation<navigationPropsForHealthProfile>();
+  const healthProfileRef = useRef<LottieView>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [healthProfile, setHealthProfile] = useState<healthProfileTypes[]>([]);
@@ -62,6 +63,16 @@ const MedicationProfilesScreen = () => {
     }
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (healthProfileRef.current) {
+        healthProfileRef?.current?.pause();
+      }
+    }, 30000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   useFocusEffect(
     React.useCallback(() => {
       const unsubscribe = getHealthProfilesMethod();
@@ -76,9 +87,12 @@ const MedicationProfilesScreen = () => {
           <ActivityIndicator size="large" color={colors.primaryBlue} />
         ) : (
           <View style={currentStyles.healthExplainBox}>
-            <Image
-              source={require('src/assets/img/heart.png')}
+            <LottieView
+              ref={healthProfileRef}
+              source={require('src/assets/lottie/HealthProfile.json')}
               style={currentStyles.heartImageStyle}
+              autoPlay
+              loop
             />
             <View style={commonStyles.mt20}>
               <Text style={currentStyles.manageTextStyle}>
@@ -158,6 +172,7 @@ const MedicationProfilesScreen = () => {
                           medicationsData: {
                             id: item.id,
                             profileName: item.profile_name,
+                            medicationName: item.medication_type,
                           },
                         });
                       }}

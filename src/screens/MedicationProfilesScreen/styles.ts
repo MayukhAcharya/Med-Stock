@@ -72,10 +72,8 @@ export const styles = () =>
       alignItems: 'center',
     },
     heartImageStyle: {
-      resizeMode: 'cover',
       width: normalize(200, 'width'),
       height: normalize(200, 'height'),
-      borderRadius: normalize(8),
     },
     manageTextStyle: {
       ...fonts.bold,
