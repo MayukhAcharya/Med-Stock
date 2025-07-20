@@ -103,12 +103,14 @@ const MedicineDetailsScreen = () => {
   });
 
   const getMedicineDetailsData = async () => {
-    const medicineDetails = await database
-      .get('medicines')
-      .find(route.params?.medicineDetails.id);
-    const data: any = medicineDetails._raw;
-    setFieldValues(data);
-    setUses(JSON.parse(data.uses));
+    try {
+      const medicineDetails = await database
+        .get('medicines')
+        .find(route.params?.medicineDetails.id);
+      const data: any = medicineDetails._raw;
+      setFieldValues(data);
+      setUses(JSON.parse(data.uses));
+    } catch (error) {}
   };
 
   const updateMedicineDetailsMethod = (values: medicineDataTypes) => {
@@ -177,6 +179,7 @@ const MedicineDetailsScreen = () => {
           handleSubmit,
           errors,
           touched,
+          dirty,
         }) => (
           <View style={currentStyles.container}>
             <View style={currentStyles.inputContainer}>
@@ -330,6 +333,7 @@ const MedicineDetailsScreen = () => {
                   handleSubmit();
                 }}
                 showActivityIndicator={isLoading}
+                disable={!dirty}
               />
             </View>
           </View>

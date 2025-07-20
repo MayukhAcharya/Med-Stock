@@ -1,33 +1,22 @@
 import { View, Text, TouchableOpacity, FlatList, Alert } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
+import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
+import { Edit, PlusIcon, Trash2Icon } from 'lucide-react-native';
 
 import { styles } from 'src/screens/EditMedicationScreen/styles';
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
 import { database } from 'src/Database/database';
 import { colors } from 'src/config/colors';
 import { commonStyles } from 'src/config/commonStyles';
-import CustomDropdown from 'src/components/CustomDropdown/CustomDropdown';
 import normalize from 'src/config/normalize';
-import { Edit, PlusIcon, Trash2Icon } from 'lucide-react-native';
 import Button from 'src/components/Button/Button';
 import CustomTextInput from 'src/components/CustomTextInput/CustomTextInput';
 import AddEditMedicationBottomSheet from 'src/components/AddEditMedicationBottomSheet/AddEditMedicationBottomSheet';
-import { RouteProp, useRoute } from '@react-navigation/native';
 import { MedicationProfileStack } from 'src/navigation/types';
 import HealthProfile from 'src/Database/healthProfileModel';
+import DateComponent from 'src/components/DateComponent/DateComponent';
 
 type routeProps = RouteProp<MedicationProfileStack, 'EditMedicationScreen'>;
-
-type medicineData = {
-  category: string;
-  expiry_date: string;
-  id: string;
-  medicine_name: string;
-  quantity: string;
-  uses: string;
-  label: string;
-  value: string;
-};
 
 type medicationTypes = {
   medicineName: string;
@@ -55,6 +44,12 @@ const EditMedicationScreen = () => {
   });
   const [addMedicationData, setAddMedicationData] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [fromDate, setFromDate] = useState<Date>(
+    new Date(route.params.editMedicationData.startDate),
+  );
+  const [toDate, setToDate] = useState<Date>(
+    new Date(route.params.editMedicationData.endDate),
+  );
 
   const deleteMeicationMethod = (id: string) => {
     const filteredData = allMedications.filter(item => item.id !== id);
@@ -80,10 +75,106 @@ const EditMedicationScreen = () => {
     }
   };
 
+  const updatedMedicationDate = async (startDate: Date, endDate: Date) => {
+    setIsLoading(true);
+    try {
+      const medicationUpdate = await database
+        .get<HealthProfile>('healthProfiles')
+        .find(route.params.editMedicationData.id);
+      await database.write(async () => {
+        await medicationUpdate.update(medicationDb => {
+          medicationDb.startDate = startDate.toISOString();
+          medicationDb.endDate = endDate.toISOString();
+        });
+      });
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
+  };
+
+  const getMedicationsMethod = async () => {
+    setIsLoading(true);
+    const medications = await database
+      .get('healthProfiles')
+      .find(route.params?.editMedicationData.id);
+    const data: any = medications._raw;
+    setAllMedications(JSON.parse(data.medicine_array));
+    setIsLoading(false);
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const unsubscribe = getMedicationsMethod();
+      return () => unsubscribe;
+    }, []),
+  );
+
   return (
     <BackgroundFill showDesign={false} backgroundColor="white">
       <View style={currentStyles.container}>
-        <View style={{ maxHeight: normalize(500, 'height') }}>
+        <View>
+          <View style={[commonStyles.row, commonStyles.spaceBetween]}>
+            <CustomTextInput
+              label="Profile Name"
+              allStyle={commonStyles.w45Per}
+              borderColor={colors.borderColor}
+              value={route.params.editMedicationData.profileName}
+              placeholder="Name"
+              editable={false}
+              style={{ backgroundColor: colors.borderColor }}
+            />
+            <CustomTextInput
+              label="Medication Type"
+              allStyle={commonStyles.w45Per}
+              borderColor={colors.borderColor}
+              value={route.params.editMedicationData.medicationType}
+              placeholder="Name"
+              editable={false}
+              style={{ backgroundColor: colors.borderColor }}
+            />
+          </View>
+          <View
+            style={[
+              commonStyles.row,
+              commonStyles.spaceBetween,
+              commonStyles.mt16,
+            ]}
+          >
+            <DateComponent
+              label="Start Date"
+              borderColor={colors.borderColor}
+              value={fromDate}
+              placeholder="date"
+              allStyle={commonStyles.w160}
+              style={{ backgroundColor: colors.pureWhite }}
+              labelSyle={currentStyles.labelStyle}
+              onChange={date => {
+                setFromDate(date);
+                updatedMedicationDate(date, toDate);
+              }}
+            />
+            <DateComponent
+              label="End Date"
+              borderColor={colors.borderColor}
+              value={toDate}
+              placeholder="date"
+              allStyle={commonStyles.w160}
+              style={{ backgroundColor: colors.pureWhite }}
+              labelSyle={currentStyles.labelStyle}
+              onChange={date => {
+                setToDate(date);
+                updatedMedicationDate(fromDate, date);
+              }}
+            />
+          </View>
+        </View>
+        <View
+          style={{
+            maxHeight: normalize(400, 'height'),
+            marginTop: normalize(20, 'height'),
+          }}
+        >
           <FlatList
             ref={flatlistRef}
             data={allMedications}
@@ -193,6 +284,7 @@ const EditMedicationScreen = () => {
           }}
           onSaveArray={() => {}}
           id={route.params.editMedicationData.id}
+          allMedicineArray={allMedications}
         />
       ) : null}
     </BackgroundFill>

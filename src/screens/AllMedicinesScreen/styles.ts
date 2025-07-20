@@ -24,4 +24,20 @@ export const styles = () =>
       fontSize: normalize(20),
       color: colors.pureBlack,
     },
+    noMedicinesTextStyle: {
+      ...fonts.medium,
+      fontSize: normalize(22),
+      color: colors.extraDarkBlue,
+    },
+    detailTextStyle: {
+      ...fonts.regular,
+      fontSize: normalize(16),
+      color: colors.grey,
+      textAlign: 'center',
+    },
+    medsStyle: {
+      width: normalize(250, 'width'),
+      height: normalize(250, 'height'),
+      marginTop: normalize(60, 'height'),
+    },
   });

@@ -5,7 +5,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import LottieView from 'lottie-react-native';
 
 import { styles } from 'src/screens/AllMedicinesScreen/styles';
 import MedicineListCard from 'src/components/MedicineListCard/MedicineListCard';
@@ -17,7 +18,6 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { database } from 'src/Database/database';
 import { ReusableDateFormatter } from 'src/utils/FormattedDate';
 import { colors } from 'src/config/colors';
-import { PlusCircleIcon, PlusIcon } from 'lucide-react-native';
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
 
 type navigationPropsForAllMedicines = NativeStackNavigationProp<
@@ -37,6 +37,7 @@ type medicineDataTypes = {
 const AllMedicinesScreen = () => {
   const currentStyles = styles();
   const navigation = useNavigation<navigationPropsForAllMedicines>();
+  const medsRef = useRef<LottieView>(null);
 
   const [allMedicines, setAllMedicines] = useState<medicineDataTypes[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -61,6 +62,16 @@ const AllMedicinesScreen = () => {
     }
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (medsRef.current) {
+        medsRef?.current?.pause();
+      }
+    }, 30000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   useFocusEffect(
     React.useCallback(() => {
       const unsubscribe = getMedicineDataMethod();
@@ -72,17 +83,25 @@ const AllMedicinesScreen = () => {
     return isLoading ? (
       <ActivityIndicator size="large" color={colors.primaryBlue} />
     ) : (
-      <View
-        style={[commonStyles.aic, commonStyles.justifyCenter, commonStyles.row]}
-      >
-        <Text style={currentStyles.instructionTextStyle}>Press the </Text>
-        <View style={currentStyles.plusIconStyle}>
-          <PlusIcon color={colors.pureWhite} size={15} />
+      <View style={[commonStyles.aic, commonStyles.justifyCenter]}>
+        <LottieView
+          ref={medsRef}
+          source={require('src/assets/lottie/Meds.json')}
+          autoPlay
+          loop
+          style={currentStyles.medsStyle}
+        />
+        <View>
+          <Text style={currentStyles.noMedicinesTextStyle}>
+            No Medicines Yet
+          </Text>
         </View>
-        <Text style={currentStyles.instructionTextStyle}>
-          {' '}
-          to add your first medicine
-        </Text>
+        <View style={[commonStyles.mt20, commonStyles.w93Per]}>
+          <Text style={currentStyles.detailTextStyle}>
+            Press the '+' button below to add your first medicine and stay on
+            top of your health.
+          </Text>
+        </View>
       </View>
     );
   };

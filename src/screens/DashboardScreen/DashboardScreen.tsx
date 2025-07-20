@@ -11,7 +11,7 @@ import {
   PlusCircleIcon,
   ShieldPlusIcon,
 } from 'lucide-react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { styles } from 'src/screens/DashboardScreen/styles';
@@ -24,6 +24,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { database } from 'src/Database/database';
 import Button from 'src/components/Button/Button';
 import { ReusableDateFormatter } from 'src/utils/FormattedDate';
+import LottieView from 'lottie-react-native';
 
 type navigationPropsForDashboard = NativeStackNavigationProp<
   DashboardStackParamList,
@@ -42,6 +43,7 @@ type medicineDataTypes = {
 const DashboardScreen = () => {
   const currentStyles = styles();
   const navigation = useNavigation<navigationPropsForDashboard>();
+  const emptyAnimationRef = useRef<LottieView>(null);
 
   const [profileName, setProfileName] = useState<string>('');
   const [allMedicines, setAllMedicines] = useState<medicineDataTypes[]>([]);
@@ -115,6 +117,16 @@ const DashboardScreen = () => {
     setIsLoading(false);
   };
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (emptyAnimationRef.current) {
+        emptyAnimationRef?.current?.pause();
+      }
+    }, 30000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   useFocusEffect(
     React.useCallback(() => {
       const unsubscribe = getProfileDataMethod();
@@ -136,7 +148,7 @@ const DashboardScreen = () => {
             <Text style={currentStyles.detailTextStyle}>
               {allMedicines.length > 0
                 ? "Here's an overview of all your medicines"
-                : "Let's get started by adding your first medicine"}
+                : null}
             </Text>
           </View>
           {allMedicines.length > 0 ? (
@@ -294,11 +306,28 @@ const DashboardScreen = () => {
             </View>
           ) : (
             <View
-              style={[commonStyles.mt30, commonStyles.aic, commonStyles.flex1]}
+              style={[commonStyles.mt18, commonStyles.aic, commonStyles.flex1]}
             >
+              <LottieView
+                ref={emptyAnimationRef}
+                source={require('src/assets/lottie/Empty.json')}
+                autoPlay
+                loop
+                style={currentStyles.emptyStyle}
+              />
+              <View>
+                <Text style={currentStyles.noMedicinesTextStyle}>
+                  No Medicines Added Yet
+                </Text>
+              </View>
+              <View style={commonStyles.mt10}>
+                <Text style={currentStyles.getStartedTextStyle}>
+                  Let's get started by adding your first medicine
+                </Text>
+              </View>
               <Button
                 label="Add Medicine"
-                mainStyle={commonStyles.w75per}
+                mainStyle={[commonStyles.w75per, commonStyles.mt18]}
                 icon={<PlusCircleIcon color={colors.pureWhite} size={20} />}
                 labelStyle={currentStyles.addButtonLabelStyle}
                 onPress={() => {

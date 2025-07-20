@@ -49,4 +49,18 @@ export const styles = () =>
     addButtonLabelStyle: {
       fontSize: normalize(14),
     },
+    noMedicinesTextStyle: {
+      ...fonts.medium,
+      fontSize: normalize(22),
+      color: colors.extraDarkBlue,
+    },
+    getStartedTextStyle: {
+      ...fonts.regular,
+      fontSize: normalize(16),
+      color: colors.grey,
+    },
+    emptyStyle: {
+      width: normalize(300, 'width'),
+      height: normalize(300, 'height'),
+    },
   });

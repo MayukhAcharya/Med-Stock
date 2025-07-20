@@ -45,6 +45,7 @@ export type ProfileStackParamList = {
 type healthProfileMedicationsType = {
   id: string;
   profileName: string;
+  medicationName: string;
 };
 
 type medicationsTypes = {
@@ -58,6 +59,10 @@ type medicationsTypes = {
 type editMedicationTypes = {
   id: string;
   medication: medicationsTypes[];
+  startDate: any;
+  endDate: any;
+  profileName: string;
+  medicationType: string;
 };
 
 type medicationTypes = {

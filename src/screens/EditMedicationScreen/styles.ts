@@ -35,4 +35,8 @@ export const styles = () =>
       color: colors.pureBlack,
       fontSize: normalize(16),
     },
+    labelStyle: {
+      color: colors.pureBlack,
+      fontSize: normalize(13),
+    },
   });
