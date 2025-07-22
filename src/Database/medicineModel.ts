@@ -10,4 +10,5 @@ export default class Medicine extends Model {
   @field('expiry_date') expiryDate!: string;
   @field('uses') uses!: string;
   @field('notes') notes!: string;
+  @field('mark_as_required') markAsRequired!: boolean;
 }

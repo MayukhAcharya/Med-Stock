@@ -172,7 +172,13 @@ const SearchDropdown = (props: searchDrodpownProps) => {
                         onValueSelect(item);
                         setIsOpen(false);
                       }}
-                      style={currentStyles.flatlistView}
+                      style={[
+                        currentStyles.flatlistView,
+                        {
+                          opacity: item.mark_as_required ? 1 : 0.5,
+                        },
+                      ]}
+                      disabled={!item.mark_as_required}
                     >
                       <Text style={currentStyles.itemLabelStyle}>
                         {item.label}

@@ -32,6 +32,7 @@ type dateProps = {
   label: string;
   onChange: (date: Date) => void;
   labelSyle?: StyleProp<TextStyle>;
+  disable?: boolean;
 };
 
 const DateComponent = (props: dateProps) => {
@@ -48,6 +49,7 @@ const DateComponent = (props: dateProps) => {
     labelSyle,
     onChange,
     style,
+    disable = false,
   } = props;
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -74,7 +76,7 @@ const DateComponent = (props: dateProps) => {
 
   return (
     <View ref={dateRef}>
-      <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
+      <TouchableOpacity onPress={() => setIsOpen(!isOpen)} disabled={disable}>
         <CustomTextInput
           allStyle={[allStyle]}
           value={formattedDate}

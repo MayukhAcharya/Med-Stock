@@ -54,6 +54,11 @@ export const schema = appSchema({
           type: 'string',
           isOptional: true,
         },
+        {
+          name: 'mark_as_required',
+          type: 'boolean',
+          isOptional: true,
+        },
       ],
     }),
     tableSchema({

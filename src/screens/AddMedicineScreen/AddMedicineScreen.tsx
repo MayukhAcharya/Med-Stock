@@ -1,14 +1,10 @@
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-} from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import React, { useRef, useState } from 'react';
 import { PlusCircleIcon } from 'lucide-react-native';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
 import { styles } from 'src/screens/AddMedicineScreen/styles';
@@ -24,12 +20,17 @@ import {
   DashboardStackParamList,
   MedicationProfileStack,
 } from 'src/navigation/types';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { fieldRegex, numberFieldRegex } from 'src/constants/constants';
+import {
+  fieldRegex,
+  firstMedicineAddBody,
+  firstMedicineAddNotificationTitle,
+  numberFieldRegex,
+} from 'src/constants/constants';
 import { database } from 'src/Database/database';
 import Medicine from 'src/Database/medicineModel';
 import normalize from 'src/config/normalize';
 import HealthProfile from 'src/Database/healthProfileModel';
+import { onDisplayNotification } from 'src/utils/DisplayNotification';
 
 type navigationPropsForAddMedicine = NativeStackNavigationProp<
   AllMedicineStackParamList,
@@ -97,6 +98,7 @@ const AddMedicineScreen = () => {
   const dashboardRoute = useRoute<routePropForDashboard>();
   const healthProfileRoute = useRoute<routePropForHealthProfile>();
   const idRef = useRef('');
+  const countRef = useRef(0);
 
   const [showUsesModal, setUsesModal] = useState<boolean>(false);
   const [date, setDate] = useState<Date>(new Date());
@@ -153,6 +155,7 @@ const AddMedicineScreen = () => {
             medicine.expiryDate = date.toISOString();
             medicine.uses = JSON.stringify(uses);
             medicine.quantity = values.quantity;
+            medicine.markAsRequired = true;
           })
           .then(res => {
             idRef.current = res._raw.id;
@@ -165,6 +168,17 @@ const AddMedicineScreen = () => {
       ) {
         await updateMedicationsMethod(values, idRef.current);
       }
+      if (
+        dashboardRoute.params &&
+        dashboardRoute.params.addMedicineDetails &&
+        dashboardRoute.params.addMedicineDetails.isFirstAdd
+      ) {
+        await onDisplayNotification(
+          firstMedicineAddNotificationTitle,
+          firstMedicineAddBody,
+        );
+      }
+
       navigation.goBack();
       setIsLoading(prev => ({
         ...prev,
@@ -196,9 +210,11 @@ const AddMedicineScreen = () => {
             medicine.expiryDate = date.toISOString();
             medicine.uses = JSON.stringify(uses);
             medicine.quantity = values.quantity;
+            medicine.markAsRequired = true;
           })
           .then(res => {
             idRef.current = res._raw.id;
+            countRef.current = countRef.current + 1;
           });
       });
       if (
@@ -207,6 +223,18 @@ const AddMedicineScreen = () => {
         healthProfileRoute.params.medicationData.isHealthProfile
       ) {
         await updateMedicationsMethod(values, idRef.current);
+      }
+      if (
+        dashboardRoute.params &&
+        dashboardRoute.params.addMedicineDetails &&
+        dashboardRoute.params.addMedicineDetails.isFirstAdd
+      ) {
+        if (countRef.current === 1) {
+          await onDisplayNotification(
+            firstMedicineAddNotificationTitle,
+            firstMedicineAddBody,
+          );
+        }
       }
       resetForm({
         values: {

@@ -6,6 +6,7 @@ export type medicineDataTypes = {
   quantity: string;
   uses: string;
   notes: string;
+  mark_as_required: boolean;
 };
 
 export const initialValues: medicineDataTypes = {
@@ -16,4 +17,5 @@ export const initialValues: medicineDataTypes = {
   quantity: '',
   uses: '',
   notes: '',
+  mark_as_required: true,
 };
