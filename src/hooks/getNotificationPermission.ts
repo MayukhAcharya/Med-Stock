@@ -4,8 +4,8 @@ export const getNotificationPermission = async () => {
   const settings = await notifee.getNotificationSettings();
 
   if (settings.authorizationStatus == AuthorizationStatus.AUTHORIZED) {
-    console.log('Notification permissions has been authorized');
+    return 'Authorized';
   } else if (settings.authorizationStatus == AuthorizationStatus.DENIED) {
-    console.log('Notification permissions has been denied');
+    return 'Denied';
   }
 };

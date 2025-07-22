@@ -6,6 +6,7 @@ import {
   FlatList,
   ActivityIndicator,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { PlusIcon } from 'lucide-react-native';
@@ -42,6 +43,7 @@ const MedicationProfilesScreen = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [healthProfile, setHealthProfile] = useState<healthProfileTypes[]>([]);
+  const [hasMeds, setHasMeds] = useState<boolean>(false);
 
   const getHealthProfilesMethod = () => {
     setIsLoading(true);
@@ -63,6 +65,39 @@ const MedicationProfilesScreen = () => {
     }
   };
 
+  const getMedicineDataMethod = () => {
+    setIsLoading(true);
+    try {
+      const medicineData = database.get('medicines');
+      medicineData
+        .query()
+        .observe()
+        .forEach(item => {
+          let temp: any = [];
+          item.forEach(data => {
+            temp.push(data._raw);
+          });
+          setHasMeds(temp.length > 0 ? true : false);
+          setIsLoading(false);
+        });
+    } catch (error) {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAlert = () => {
+    Alert.alert(
+      'Warning',
+      'Please add a Medicine first to get started with Medicine Profile!',
+      [
+        {
+          text: 'OK',
+          style: 'cancel',
+        },
+      ],
+    );
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (healthProfileRef.current) {
@@ -76,7 +111,11 @@ const MedicationProfilesScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       const unsubscribe = getHealthProfilesMethod();
-      return () => unsubscribe;
+      const allMedsUnsubscribe = getMedicineDataMethod();
+      return () => {
+        unsubscribe;
+        allMedsUnsubscribe;
+      };
     }, []),
   );
 
@@ -190,7 +229,11 @@ const MedicationProfilesScreen = () => {
             <View style={currentStyles.fabButtonStyle}>
               <Pressable
                 onPress={() => {
-                  navigation.navigate('AddHealthProfileScreen');
+                  if (hasMeds) {
+                    navigation.navigate('AddHealthProfileScreen');
+                  } else {
+                    handleAlert();
+                  }
                 }}
                 style={currentStyles.plusIconPressStyle}
               >

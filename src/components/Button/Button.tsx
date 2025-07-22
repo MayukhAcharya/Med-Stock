@@ -21,6 +21,7 @@ type buttonProps = {
   labelStyle?: StyleProp<TextStyle>;
   showActivityIndicator?: boolean;
   icon?: ReactNode;
+  indicatorColor?: string;
 };
 
 const Button = (props: buttonProps) => {
@@ -33,6 +34,7 @@ const Button = (props: buttonProps) => {
     labelStyle,
     showActivityIndicator = false,
     icon,
+    indicatorColor = colors.pureWhite,
   } = props;
   return disable ? (
     <TouchableOpacity
@@ -54,7 +56,7 @@ const Button = (props: buttonProps) => {
       disabled={showActivityIndicator === true ? true : false}
     >
       {showActivityIndicator ? (
-        <ActivityIndicator size={'small'} color={colors.pureWhite} />
+        <ActivityIndicator size={'small'} color={indicatorColor} />
       ) : (
         <View style={[commonStyles.row, commonStyles.aic]}>
           {icon ? <View style={commonStyles.mr10}>{icon}</View> : null}

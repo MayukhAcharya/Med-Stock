@@ -134,6 +134,7 @@ const AllMedicinesScreen = () => {
               ItemSeparatorComponent={() => <View style={commonStyles.mt20} />}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={EmptyComponent}
+              removeClippedSubviews={true}
             />
           </View>
 

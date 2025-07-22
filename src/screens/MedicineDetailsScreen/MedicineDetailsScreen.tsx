@@ -76,7 +76,10 @@ const MedicineDetailsScreen = () => {
   const [fieldValues, setFieldValues] =
     useState<medicineDataTypes>(initialValues);
   const [uses, setUses] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState({
+    isSaveLoading: false,
+    isMarkAsRequired: false,
+  });
 
   const validationSchema = yup.object().shape({
     medicine_name: yup
@@ -113,40 +116,79 @@ const MedicineDetailsScreen = () => {
     } catch (error) {}
   };
 
-  const updateMedicineDetailsMethod = (values: medicineDataTypes) => {
-    setIsLoading(true);
+  const updateMedicineDetailsMethod = async (values: medicineDataTypes) => {
+    setIsLoading(prev => ({
+      ...prev,
+      isSaveLoading: true,
+    }));
     try {
-      setTimeout(async () => {
-        const medicineUpdate = await database
-          .get<Medicine>('medicines')
-          .find(route.params?.medicineDetails.id);
-        await database.write(async () => {
-          await medicineUpdate.update(() => {
-            medicineUpdate.medicineName = values.medicine_name;
-            medicineUpdate.category = values.category;
-            medicineUpdate.quantity = values.quantity;
-            medicineUpdate.expiryDate = values.expiry_date;
-            medicineUpdate.uses = JSON.stringify(uses);
-            medicineUpdate.notes = values.notes;
-          });
+      const medicineUpdate = await database
+        .get<Medicine>('medicines')
+        .find(route.params?.medicineDetails.id);
+      await database.write(async () => {
+        await medicineUpdate.update(() => {
+          medicineUpdate.medicineName = values.medicine_name;
+          medicineUpdate.category = values.category;
+          medicineUpdate.quantity = values.quantity;
+          medicineUpdate.expiryDate = values.expiry_date;
+          medicineUpdate.uses = JSON.stringify(uses);
+          medicineUpdate.notes = values.notes;
         });
-        setIsLoading(false);
-        navigation.goBack();
-      }, timeoutConstant);
+      });
+      setIsLoading(prev => ({
+        ...prev,
+        isSaveLoading: false,
+      }));
+      getMedicineDetailsData();
+      navigation.goBack();
     } catch (error) {
-      setIsLoading(false);
+      setIsLoading(prev => ({
+        ...prev,
+        isSaveLoading: false,
+      }));
     }
   };
 
-  const alertMethod = (medicineName: string) => {
+  const markAsRequiredMethod = async (values: medicineDataTypes) => {
+    setIsLoading(prev => ({
+      ...prev,
+      isMarkAsRequired: true,
+    }));
+    try {
+      const medicineUpdate = await database
+        .get<Medicine>('medicines')
+        .find(route.params?.medicineDetails.id);
+      await database.write(async () => {
+        await medicineUpdate.update(() => {
+          medicineUpdate.markAsRequired = values.mark_as_required
+            ? false
+            : true;
+        });
+      });
+      setIsLoading(prev => ({
+        ...prev,
+        isMarkAsRequired: false,
+      }));
+      getMedicineDetailsData();
+    } catch (error) {
+      setIsLoading(prev => ({
+        ...prev,
+        isMarkAsRequired: true,
+      }));
+    }
+  };
+
+  const alertMethod = (values: medicineDataTypes) => {
     Alert.alert(
       'Warning',
-      `This action will mark ${medicineName} as not required and the quantity will be updated to 0, you can change it afterwards. Continue?`,
+      values.mark_as_required
+        ? `This action will mark ${values.medicine_name} as not required and the quantity will be updated to 0 and you will not get notifications when it is expired. Continue?`
+        : `This action will mark ${values.medicine_name} as required and you will get notifications when it is expired.`,
       [
         {
           text: 'Yes',
           onPress: () => {
-            //add func
+            markAsRequiredMethod(values);
           },
         },
         {
@@ -202,6 +244,7 @@ const MedicineDetailsScreen = () => {
                     <Text>{errors.medicine_name}</Text>
                   ) : null
                 }
+                editable={values.mark_as_required}
               />
               <CustomDropdown
                 label="Category(optional)"
@@ -221,6 +264,7 @@ const MedicineDetailsScreen = () => {
                   ) : null
                 }
                 dropdownMainStyle={{ maxHeight: normalize(200, 'height') }}
+                disable={!values.mark_as_required}
               />
               <View style={[commonStyles.row, commonStyles.spaceBetween]}>
                 <CustomTextInput
@@ -251,6 +295,7 @@ const MedicineDetailsScreen = () => {
                       <Text>{errors.quantity}</Text>
                     ) : null
                   }
+                  editable={values.mark_as_required}
                 />
                 <DateComponent
                   label="Expiry Date"
@@ -271,6 +316,7 @@ const MedicineDetailsScreen = () => {
                       <Text>{errors.expiry_date}</Text>
                     ) : null
                   }
+                  disable={!values.mark_as_required}
                 />
               </View>
 
@@ -287,6 +333,7 @@ const MedicineDetailsScreen = () => {
                     onPress={() => {
                       setUsesModal(true);
                     }}
+                    disabled={!values.mark_as_required}
                   >
                     <Text style={currentStyles.editText}>Edit</Text>
                   </TouchableOpacity>
@@ -314,17 +361,23 @@ const MedicineDetailsScreen = () => {
                 onChangeText={text => {
                   handleChange('notes')(text);
                 }}
+                editable={values.mark_as_required}
               />
             </View>
             <View style={currentStyles.buttonView}>
               <Button
-                label="Mark as Not Required"
+                label={
+                  values.mark_as_required
+                    ? 'Mark as Not Required'
+                    : 'Mark as Required'
+                }
                 mainStyle={[currentStyles.notRequiredStyle]}
                 labelStyle={currentStyles.notRequiredLabelStyle}
                 onPress={() => {
-                  alertMethod(values.medicine_name);
+                  alertMethod(values);
                 }}
-                showActivityIndicator={isLoading}
+                showActivityIndicator={isLoading.isMarkAsRequired}
+                indicatorColor={colors.extraDarkBlue}
               />
               <Button
                 label="Save medicine details"
@@ -332,8 +385,8 @@ const MedicineDetailsScreen = () => {
                 onPress={() => {
                   handleSubmit();
                 }}
-                showActivityIndicator={isLoading}
-                disable={!dirty}
+                showActivityIndicator={isLoading.isSaveLoading}
+                disable={!dirty || !values.mark_as_required}
               />
             </View>
           </View>

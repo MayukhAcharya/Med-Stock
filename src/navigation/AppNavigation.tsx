@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { Text } from 'react-native';
+import { PermissionsAndroid, Platform, Text } from 'react-native';
 import {
   BriefcaseMedical,
   HeartPlusIcon,
   HomeIcon,
   User,
 } from 'lucide-react-native';
+import {
+  request,
+  PERMISSIONS,
+  checkNotifications,
+} from 'react-native-permissions';
 
 import {
   AllMedicineStackParamList,
@@ -35,6 +40,7 @@ import MedicationProfilesScreen from 'src/screens/MedicationProfilesScreen';
 import HealthProfileMedicationScreen from 'src/screens/HealthProfileMedicationScreen';
 import EditMedicationScreen from 'src/screens/EditMedicationScreen';
 import AddHealthProfileScreen from 'src/screens/AddHealthProfileScreen';
+import { getNotificationPermission } from 'src/hooks/getNotificationPermission';
 
 const AppNavigation = () => {
   const UnAuthStack = createNativeStackNavigator<UnAuthStackParamList>();
@@ -344,6 +350,13 @@ const AppNavigation = () => {
           setUserType('UnAuthUser');
         }
       });
+  }, []);
+
+  useEffect(() => {
+    const permission = async () => {
+      await getNotificationPermission();
+    };
+    permission();
   }, []);
 
   return (
