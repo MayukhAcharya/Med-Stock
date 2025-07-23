@@ -47,6 +47,11 @@ type routePropForHealthProfile = RouteProp<
   'AddMedicineScreen'
 >;
 
+type routePropforAllMedicine = RouteProp<
+  AllMedicineStackParamList,
+  'AddMedicineScreen'
+>;
+
 const categoryOptions = [
   {
     label: 'Tablet',
@@ -97,6 +102,7 @@ const AddMedicineScreen = () => {
   const navigation = useNavigation<navigationPropsForAddMedicine>();
   const dashboardRoute = useRoute<routePropForDashboard>();
   const healthProfileRoute = useRoute<routePropForHealthProfile>();
+  const allMedicineRoute = useRoute<routePropforAllMedicine>();
   const idRef = useRef('');
   const countRef = useRef(0);
 
@@ -169,9 +175,12 @@ const AddMedicineScreen = () => {
         await updateMedicationsMethod(values, idRef.current);
       }
       if (
-        dashboardRoute.params &&
-        dashboardRoute.params.addMedicineDetails &&
-        dashboardRoute.params.addMedicineDetails.isFirstAdd
+        (dashboardRoute.params &&
+          dashboardRoute.params.addMedicineDetails &&
+          dashboardRoute.params.addMedicineDetails.isFirstAdd) ||
+        (allMedicineRoute.params &&
+          allMedicineRoute.params.addMedicineDetails &&
+          allMedicineRoute.params.addMedicineDetails.isFirstAdd)
       ) {
         await onDisplayNotification(
           firstMedicineAddNotificationTitle,
@@ -225,9 +234,12 @@ const AddMedicineScreen = () => {
         await updateMedicationsMethod(values, idRef.current);
       }
       if (
-        dashboardRoute.params &&
-        dashboardRoute.params.addMedicineDetails &&
-        dashboardRoute.params.addMedicineDetails.isFirstAdd
+        (dashboardRoute.params &&
+          dashboardRoute.params.addMedicineDetails &&
+          dashboardRoute.params.addMedicineDetails.isFirstAdd) ||
+        (allMedicineRoute.params &&
+          allMedicineRoute.params.addMedicineDetails &&
+          allMedicineRoute.params.addMedicineDetails.isFirstAdd)
       ) {
         if (countRef.current === 1) {
           await onDisplayNotification(

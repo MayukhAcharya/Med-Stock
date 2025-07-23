@@ -29,7 +29,12 @@ type navigationPropsToAddMedicine = NativeStackNavigationProp<
   'AddMedicineScreen'
 >;
 
-const FloatingButton = () => {
+type floatinButtonProps = {
+  isFistAdd: boolean;
+};
+
+const FloatingButton = (props: floatinButtonProps) => {
+  const { isFistAdd } = props;
   const currentStyles = styles();
   const firstValue = useSharedValue(0);
   const secondValue = useSharedValue(0);
@@ -112,7 +117,11 @@ const FloatingButton = () => {
           style={currentStyles.smallIconsPressStyle}
           onPress={() => {
             handlePress();
-            navigation.navigate('AddMedicineScreen');
+            navigation.navigate('AddMedicineScreen', {
+              addMedicineDetails: {
+                isFirstAdd: isFistAdd,
+              },
+            });
           }}
         >
           <TextIcon color={colors.pureWhite} />

@@ -352,11 +352,24 @@ const AppNavigation = () => {
       });
   }, []);
 
+  const requestPermssion = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+      );
+
+      if (granted === 'granted') {
+        console.log('granted');
+      } else {
+        console.log('not granted');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    const permission = async () => {
-      await getNotificationPermission();
-    };
-    permission();
+    requestPermssion();
   }, []);
 
   return (

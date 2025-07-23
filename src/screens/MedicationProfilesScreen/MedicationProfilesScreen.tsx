@@ -88,7 +88,7 @@ const MedicationProfilesScreen = () => {
   const handleAlert = () => {
     Alert.alert(
       'Warning',
-      'Please add a Medicine first to get started with Medicine Profile!',
+      'Please add atleast one Medicine to get started with Health profile!',
       [
         {
           text: 'OK',
@@ -141,12 +141,20 @@ const MedicationProfilesScreen = () => {
             <View style={commonStyles.mt20}>
               <Text style={currentStyles.healthProfileExplainTextStyle}>
                 Keep track of who takes what and when—whether it's for you or
-                your family. Just add a profile and set medicine times to stay
-                on top of daily doses with ease! Press{' '}
+                your family. Just add a health profile and set medicine times to
+                stay on top of daily doses with ease! Press{' '}
                 <Text
                   style={currentStyles.hereTextStyle}
                   onPress={() => {
-                    navigation.navigate('AddHealthProfileScreen');
+                    if (hasMeds) {
+                      navigation.navigate('AddHealthProfileScreen', {
+                        addHealthProfileData: {
+                          isFirstAdd: true,
+                        },
+                      });
+                    } else {
+                      handleAlert();
+                    }
                   }}
                 >
                   here
@@ -230,7 +238,11 @@ const MedicationProfilesScreen = () => {
               <Pressable
                 onPress={() => {
                   if (hasMeds) {
-                    navigation.navigate('AddHealthProfileScreen');
+                    navigation.navigate('AddHealthProfileScreen', {
+                      addHealthProfileData: {
+                        isFirstAdd: healthProfile.length > 0 ? false : true,
+                      },
+                    });
                   } else {
                     handleAlert();
                   }

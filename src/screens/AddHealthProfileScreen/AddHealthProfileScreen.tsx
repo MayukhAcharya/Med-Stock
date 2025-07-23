@@ -2,11 +2,12 @@ import { View, Text, Alert } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as yup from 'yup';
+import { EditIcon } from 'lucide-react-native';
 
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
 import { styles } from 'src/screens/AddHealthProfileScreen/styles';
 import { MedicationProfileStack } from 'src/navigation/types';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { fieldRegex } from 'src/constants/constants';
 import { database } from 'src/Database/database';
 import HealthProfile from 'src/Database/healthProfileModel';
@@ -17,14 +18,18 @@ import CustomTextInput from 'src/components/CustomTextInput/CustomTextInput';
 import CustomDropdown from 'src/components/CustomDropdown/CustomDropdown';
 import DateComponent from 'src/components/DateComponent/DateComponent';
 import SearchDropdown from 'src/components/SearchDropdown/SearchDropdown';
-import normalize from 'src/config/normalize';
 import TimeComponent from 'src/components/TimeComponent/TimeComponent';
-import { EditIcon } from 'lucide-react-native';
 import Button from 'src/components/Button/Button';
 import ReviewMedicationList from 'src/components/ReviewMedicationList/ReviewMedicationList';
+import { onDisplayNotification } from 'src/utils/DisplayNotification';
 
 type navigationPropsForHealthProfile =
   NativeStackNavigationProp<MedicationProfileStack>;
+
+type routePropsForHealthProfile = RouteProp<
+  MedicationProfileStack,
+  'AddHealthProfileScreen'
+>;
 
 type formikTypes = {
   profileName: string;
@@ -70,6 +75,7 @@ const AddHealthProfileScreen = () => {
   const currentStyles = styles();
   const navigation = useNavigation<navigationPropsForHealthProfile>();
   const idRef = useRef('');
+  const route = useRoute<routePropsForHealthProfile>();
 
   const [reviewMeds, setReviewMeds] = useState<boolean>(false);
   const [medicineArray, setMedicineArray] = useState<medicineDataTypes[]>([]);
@@ -167,6 +173,17 @@ const AddHealthProfileScreen = () => {
             idRef.current = res._raw.id;
           });
       });
+      if (
+        route.params &&
+        route.params.addHealthProfileData &&
+        route.params.addHealthProfileData.isFirstAdd
+      ) {
+        await onDisplayNotification(
+          `${values.profileName}'s health profile is added!!🎊`,
+          `You're all set! Your health profile is complete - let's keep you on track with your meds!`,
+        );
+      }
+
       navigation.goBack();
     } catch (error) {
       setIsLoading(false);
@@ -374,15 +391,7 @@ const AddHealthProfileScreen = () => {
                       }}
                       style={{ backgroundColor: colors.pureWhite }}
                       onAddPress={() => {
-                        if (medicineArray.length > 0) {
-                          handleAlertMethod(values);
-                        } else {
-                          navigation.navigate('AddMedicineScreen', {
-                            medicationData: {
-                              isHealthProfile: false,
-                            },
-                          });
-                        }
+                        handleAlertMethod(values);
                       }}
                       onClose={() => {
                         setFilterData([]);

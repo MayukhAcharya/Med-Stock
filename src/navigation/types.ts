@@ -34,7 +34,7 @@ export type DashboardStackParamList = {
 export type AllMedicineStackParamList = {
   AllMedicinesScreen: undefined;
   MedicineDetailsScreen: { medicineDetails: medicineParams };
-  AddMedicineScreen: undefined;
+  AddMedicineScreen: { addMedicineDetails: addMedicineParams }; //will be used only for first time
 };
 
 //PROFILE STACK
@@ -78,6 +78,10 @@ type allMedicineTypes = {
   allMedicineArray?: medicationTypes[];
 };
 
+type addHealthProfileTypes = {
+  isFirstAdd: boolean;
+};
+
 //MEDICATION PROFILES STACK
 export type MedicationProfileStack = {
   MedicationProfilesScreen: undefined;
@@ -87,5 +91,5 @@ export type MedicationProfileStack = {
   EditMedicationScreen: { editMedicationData: editMedicationTypes };
   MedicineDetailsScreen: { medicineDetails: medicineParams };
   AddMedicineScreen: { medicationData: allMedicineTypes };
-  AddHealthProfileScreen: undefined;
+  AddHealthProfileScreen: { addHealthProfileData: addHealthProfileTypes };
 };

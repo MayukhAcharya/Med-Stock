@@ -19,6 +19,7 @@ import { database } from 'src/Database/database';
 import { ReusableDateFormatter } from 'src/utils/FormattedDate';
 import { colors } from 'src/config/colors';
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
+import CustomTextInput from 'src/components/CustomTextInput/CustomTextInput';
 
 type navigationPropsForAllMedicines = NativeStackNavigationProp<
   AllMedicineStackParamList,
@@ -111,34 +112,38 @@ const AllMedicinesScreen = () => {
       <BackgroundFill showDesign={false}>
         <View style={currentStyles.container}>
           <View style={commonStyles.aic}>
-            <FlatList
-              data={allMedicines}
-              renderItem={({ item, index }) => {
-                return (
-                  <MedicineListCard
-                    expiryDate={ReusableDateFormatter(item.expiry_date)}
-                    medicineName={item.medicine_name}
-                    quantity={item.quantity}
-                    category={item.category}
-                    onPress={() => {
-                      navigation.navigate('MedicineDetailsScreen', {
-                        medicineDetails: {
-                          id: item.id,
-                        },
-                      });
-                    }}
-                  />
-                );
-              }}
-              keyExtractor={item => item.id}
-              ItemSeparatorComponent={() => <View style={commonStyles.mt20} />}
-              showsVerticalScrollIndicator={false}
-              ListEmptyComponent={EmptyComponent}
-              removeClippedSubviews={true}
-            />
+            <View>
+              <FlatList
+                data={allMedicines}
+                renderItem={({ item, index }) => {
+                  return (
+                    <MedicineListCard
+                      expiryDate={ReusableDateFormatter(item.expiry_date)}
+                      medicineName={item.medicine_name}
+                      quantity={item.quantity}
+                      category={item.category}
+                      onPress={() => {
+                        navigation.navigate('MedicineDetailsScreen', {
+                          medicineDetails: {
+                            id: item.id,
+                          },
+                        });
+                      }}
+                    />
+                  );
+                }}
+                keyExtractor={item => item.id}
+                ItemSeparatorComponent={() => (
+                  <View style={commonStyles.mt20} />
+                )}
+                showsVerticalScrollIndicator={false}
+                ListEmptyComponent={EmptyComponent}
+                removeClippedSubviews={true}
+              />
+            </View>
           </View>
 
-          <FloatingButton />
+          <FloatingButton isFistAdd={allMedicines.length > 0 ? false : true} />
         </View>
       </BackgroundFill>
     </>
