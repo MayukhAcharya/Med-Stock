@@ -1,4 +1,4 @@
-import notifee from '@notifee/react-native';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 
 export const onDisplayNotification = async (
   title: string,
@@ -8,6 +8,8 @@ export const onDisplayNotification = async (
   const channelId = await notifee.createChannel({
     id: 'app',
     name: 'Notification Channel',
+    importance: AndroidImportance.HIGH,
+    sound: 'default',
   });
 
   // Display a notification
