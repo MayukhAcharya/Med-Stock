@@ -76,6 +76,8 @@ type allMedicineTypes = {
   isHealthProfile: boolean;
   id?: any;
   allMedicineArray?: medicationTypes[];
+  startDate?: string;
+  profileName?: string;
 };
 
 type addHealthProfileTypes = {

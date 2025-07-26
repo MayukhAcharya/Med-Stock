@@ -5,6 +5,13 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import notifee, {
+  AndroidImportance,
+  AndroidVisibility,
+  RepeatFrequency,
+  TimestampTrigger,
+  TriggerType,
+} from '@notifee/react-native';
 
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
 import { styles } from 'src/screens/AddMedicineScreen/styles';
@@ -30,7 +37,11 @@ import { database } from 'src/Database/database';
 import Medicine from 'src/Database/medicineModel';
 import normalize from 'src/config/normalize';
 import HealthProfile from 'src/Database/healthProfileModel';
-import { onDisplayNotification } from 'src/utils/DisplayNotification';
+import {
+  addChannelId,
+  onDisplayNotification,
+} from 'src/utils/DisplayNotification';
+import { to24HourFormat } from 'src/utils/convertTime';
 
 type navigationPropsForAddMedicine = NativeStackNavigationProp<
   AllMedicineStackParamList,
@@ -91,6 +102,7 @@ type medicationTypes = {
   medicationTime: any;
   category: string;
   id: string;
+  notificationId?: string;
 };
 
 type usesType = {
@@ -283,6 +295,15 @@ const AddMedicineScreen = () => {
       }),
       category: values.category,
       id: `${id}${new Date().getTime()}`,
+      notificationId: `${
+        healthProfileRoute.params &&
+        healthProfileRoute.params.medicationData &&
+        healthProfileRoute.params.medicationData.profileName
+          ? healthProfileRoute.params &&
+            healthProfileRoute.params.medicationData &&
+            healthProfileRoute.params.medicationData.profileName
+          : ''
+      }${id}${new Date().getTime()}`,
     };
     const updatedMedicineArray = [...allMedicineArray, newMedicineObject];
     setAllMedicineArray(updatedMedicineArray);
@@ -291,9 +312,29 @@ const AddMedicineScreen = () => {
         .get<HealthProfile>('healthProfiles')
         .find(healthProfileRoute?.params?.medicationData?.id);
       await database.write(async () => {
-        await medicationUpdate.update(medicationDb => {
-          medicationDb.medicineArray = JSON.stringify(updatedMedicineArray);
-        });
+        await medicationUpdate
+          .update(medicationDb => {
+            medicationDb.medicineArray = JSON.stringify(updatedMedicineArray);
+          })
+          .then(async res => {
+            await addNotificationOfProfile(
+              updatedMedicineArray,
+              healthProfileRoute.params &&
+                healthProfileRoute.params.medicationData &&
+                healthProfileRoute.params.medicationData.startDate
+                ? healthProfileRoute.params &&
+                    healthProfileRoute.params.medicationData &&
+                    healthProfileRoute.params.medicationData.startDate
+                : '',
+              healthProfileRoute.params &&
+                healthProfileRoute.params.medicationData &&
+                healthProfileRoute.params.medicationData.profileName
+                ? healthProfileRoute.params &&
+                    healthProfileRoute.params.medicationData &&
+                    healthProfileRoute.params.medicationData.profileName
+                : '',
+            );
+          });
       });
       setIsLoading(prev => ({
         isSaveAnotherLoading: false,
@@ -304,6 +345,50 @@ const AddMedicineScreen = () => {
         isSaveAnotherLoading: false,
         isSaveLoading: false,
       }));
+    }
+  };
+
+  const addNotificationOfProfile = async (
+    medicineArray: medicationTypes[],
+    startDate: string,
+    profileName: string,
+  ) => {
+    const date = new Date(startDate);
+
+    //CREATE A TRIGGER NOTIFICATION FOR ALL OF THE MEDICINES IN THE ARRAY
+    for (let [index, item] of medicineArray.entries()) {
+      const { id, medicationTime, medicineName, notificationId } = item;
+      const { hourStr, minuteStr } = to24HourFormat(medicationTime);
+      date.setHours(Number(hourStr));
+      date.setMinutes(Number(minuteStr));
+
+      // Create a time-based trigger
+      const trigger: TimestampTrigger = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: date.getTime(),
+        alarmManager: true,
+        repeatFrequency: RepeatFrequency.DAILY,
+      };
+
+      let channelId = await addChannelId();
+
+      // Create a trigger notification
+      await notifee.createTriggerNotification(
+        {
+          id: notificationId,
+          title: `Reminder for ${profileName}'s medication`,
+          body: `It's ${medicineName} time! Please take your dose now💊`,
+          android: {
+            channelId: channelId,
+            pressAction: {
+              id: 'default',
+            },
+            importance: AndroidImportance.HIGH,
+            visibility: AndroidVisibility.PUBLIC,
+          },
+        },
+        trigger,
+      );
     }
   };
 
