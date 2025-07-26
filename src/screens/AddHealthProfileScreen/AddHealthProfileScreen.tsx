@@ -3,6 +3,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as yup from 'yup';
 import { EditIcon } from 'lucide-react-native';
+import notifee, {
+  AndroidImportance,
+  AndroidVisibility,
+  RepeatFrequency,
+  TimestampTrigger,
+  TriggerType,
+} from '@notifee/react-native';
 
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
 import { styles } from 'src/screens/AddHealthProfileScreen/styles';
@@ -21,7 +28,11 @@ import SearchDropdown from 'src/components/SearchDropdown/SearchDropdown';
 import TimeComponent from 'src/components/TimeComponent/TimeComponent';
 import Button from 'src/components/Button/Button';
 import ReviewMedicationList from 'src/components/ReviewMedicationList/ReviewMedicationList';
-import { onDisplayNotification } from 'src/utils/DisplayNotification';
+import {
+  addChannelId,
+  onDisplayNotification,
+} from 'src/utils/DisplayNotification';
+import { to24HourFormat } from 'src/utils/convertTime';
 
 type navigationPropsForHealthProfile =
   NativeStackNavigationProp<MedicationProfileStack>;
@@ -47,6 +58,7 @@ type medicineDataTypes = {
   medicationTime: string;
   category: any;
   id: string;
+  notificationId?: string;
 };
 
 type medicineData = {
@@ -169,7 +181,12 @@ const AddHealthProfileScreen = () => {
             healthProfile.startDate = fromDate.toISOString();
             healthProfile.endDate = toDate.toISOString();
           })
-          .then(res => {
+          .then(async res => {
+            await addNotificationOfProfile(
+              medicineArray,
+              fromDate.toISOString(),
+              values.profileName,
+            );
             idRef.current = res._raw.id;
           });
       });
@@ -187,6 +204,50 @@ const AddHealthProfileScreen = () => {
       navigation.goBack();
     } catch (error) {
       setIsLoading(false);
+    }
+  };
+
+  const addNotificationOfProfile = async (
+    medicineArray: medicineDataTypes[],
+    startDate: string,
+    profileName: string,
+  ) => {
+    const date = new Date(startDate);
+
+    //CREATE A TRIGGER NOTIFICATION FOR ALL OF THE MEDICINES IN THE ARRAY
+    for (let [index, item] of medicineArray.entries()) {
+      const { id, medicationTime, medicineName, notificationId } = item;
+      const { hourStr, minuteStr } = to24HourFormat(medicationTime);
+      date.setHours(Number(hourStr));
+      date.setMinutes(Number(minuteStr));
+
+      // Create a time-based trigger
+      const trigger: TimestampTrigger = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: date.getTime(),
+        alarmManager: true,
+        repeatFrequency: RepeatFrequency.DAILY,
+      };
+
+      let channelId = await addChannelId();
+
+      // Create a trigger notification
+      await notifee.createTriggerNotification(
+        {
+          id: notificationId,
+          title: `Reminder for ${profileName}'s medication`,
+          body: `It's ${medicineName} time! Please take your dose now💊`,
+          android: {
+            channelId: channelId,
+            pressAction: {
+              id: 'default',
+            },
+            importance: AndroidImportance.HIGH,
+            visibility: AndroidVisibility.PUBLIC,
+          },
+        },
+        trigger,
+      );
     }
   };
 
@@ -214,6 +275,8 @@ const AddHealthProfileScreen = () => {
           isHealthProfile: true,
           id: idRef.current,
           allMedicineArray: medicineArray,
+          profileName: values.profileName,
+          startDate: fromDate.toISOString(),
         },
       });
     } else {
@@ -438,6 +501,9 @@ const AddHealthProfileScreen = () => {
                                 ),
                               category: values.category,
                               id: `${values.id}${new Date().getTime()}`,
+                              notificationId: `${values.profileName}${
+                                values.id
+                              }${new Date().getTime()}`,
                             },
                           ]);
                           setFieldValue('medicineName', '');
