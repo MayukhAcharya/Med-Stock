@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { PermissionsAndroid, Platform, Text } from 'react-native';
+import {
+  Alert,
+  Linking,
+  PermissionsAndroid,
+  Platform,
+  Text,
+} from 'react-native';
 import {
   BriefcaseMedical,
   HeartPlusIcon,
   HomeIcon,
   User,
 } from 'lucide-react-native';
-import {
-  request,
-  PERMISSIONS,
-  checkNotifications,
-} from 'react-native-permissions';
+import notifee from '@notifee/react-native';
 
 import {
   AllMedicineStackParamList,
@@ -41,6 +43,10 @@ import HealthProfileMedicationScreen from 'src/screens/HealthProfileMedicationSc
 import EditMedicationScreen from 'src/screens/EditMedicationScreen';
 import AddHealthProfileScreen from 'src/screens/AddHealthProfileScreen';
 import { getNotificationPermission } from 'src/hooks/getNotificationPermission';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 const AppNavigation = () => {
   const UnAuthStack = createNativeStackNavigator<UnAuthStackParamList>();
@@ -52,6 +58,8 @@ const AppNavigation = () => {
   const ProfileStack = createNativeStackNavigator<ProfileStackParamList>();
   const MedicineProfileStack =
     createNativeStackNavigator<MedicationProfileStack>();
+
+  const insets = useSafeAreaInsets();
 
   const UnAuthStackScreens = () => (
     <UnAuthStack.Navigator
@@ -134,9 +142,7 @@ const AppNavigation = () => {
         component={ProfileScreen}
         options={{
           headerShown: true,
-          header: () => (
-            <Header title="Profile" showBackIcon={true} signout={true} />
-          ),
+          header: () => <Header title="Profile" showBackIcon={true} />,
         }}
       />
     </ProfileStack.Navigator>
@@ -209,7 +215,8 @@ const AppNavigation = () => {
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: colors.pureWhite,
-          height: 55,
+          height: normalize(55) + insets.bottom,
+          paddingBottom: insets.bottom,
         },
       }}
     >
@@ -360,16 +367,56 @@ const AppNavigation = () => {
 
       if (granted === 'granted') {
         console.log('granted');
+        await batteryOptimizationMethod();
       } else {
-        console.log('not granted');
+        Alert.alert('Permission', 'Permission Needed to access Camera', [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Settings',
+            onPress: () => {
+              Linking.openSettings();
+            },
+          },
+        ]);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
+  const batteryOptimizationMethod = async () => {
+    const batteryOptimizationEnabled =
+      await notifee.isBatteryOptimizationEnabled();
+    if (batteryOptimizationEnabled) {
+      Alert.alert(
+        'Restrictions Detected',
+        'To ensure notifications are delivered, please disable battery optimization for the app.',
+        [
+          // 3. launch intent to navigate the user to the appropriate screen
+          {
+            text: 'OK, open settings',
+            onPress: async () =>
+              await notifee.openBatteryOptimizationSettings(),
+          },
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+        ],
+        { cancelable: false },
+      );
+    }
+  };
+
   useEffect(() => {
-    requestPermssion();
+    if (Platform.OS === 'android' && Platform.Version >= 33) {
+      requestPermssion();
+    } else {
+      [batteryOptimizationMethod()];
+    }
   }, []);
 
   return (
