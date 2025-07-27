@@ -58,6 +58,7 @@ export const styles = () =>
       ...fonts.regular,
       fontSize: normalize(16),
       color: colors.grey,
+      textAlign: 'center',
     },
     emptyStyle: {
       width: normalize(300, 'width'),

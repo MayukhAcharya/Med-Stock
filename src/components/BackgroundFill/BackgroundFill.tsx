@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  useColorScheme,
-  StatusBar,
-  SafeAreaView,
-} from 'react-native';
+import { View, Text, useColorScheme, StatusBar } from 'react-native';
 import React, { ReactNode } from 'react';
 import { LinearGradient } from 'react-native-linear-gradient';
 
@@ -76,7 +70,7 @@ const BackgroundFill = (props: backgroundProps) => {
   ) : (
     <>
       {scroll ? (
-        <SafeAreaView style={commonStyles.flex1}>
+        <View style={commonStyles.flex1}>
           <KeyboardAwareScrollView
             style={[commonStyles.flex1, currentStyles.backgroundColor]}
           >
@@ -87,18 +81,16 @@ const BackgroundFill = (props: backgroundProps) => {
             />
             {children}
           </KeyboardAwareScrollView>
-        </SafeAreaView>
+        </View>
       ) : (
-        <SafeAreaView
-          style={[currentStyles.container, currentStyles.backgroundColor]}
-        >
+        <View style={[currentStyles.container, currentStyles.backgroundColor]}>
           <StatusBar
             translucent
             backgroundColor="transparent"
             barStyle={'dark-content'}
           />
           {children}
-        </SafeAreaView>
+        </View>
       )}
     </>
   );
