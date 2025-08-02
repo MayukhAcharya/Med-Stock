@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, FlatList, Alert } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
 import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
 import { Edit, PlusIcon, Trash2Icon } from 'lucide-react-native';
+import notifee from '@notifee/react-native';
 
 import { styles } from 'src/screens/EditMedicationScreen/styles';
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
@@ -24,6 +25,7 @@ type medicationTypes = {
   medicationTime: any;
   category: string;
   id: string;
+  notificationId: string;
 };
 
 const EditMedicationScreen = () => {
@@ -41,6 +43,7 @@ const EditMedicationScreen = () => {
     medicineId: '',
     medicineName: '',
     id: '',
+    notificationId: '',
   });
   const [addMedicationData, setAddMedicationData] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -51,9 +54,9 @@ const EditMedicationScreen = () => {
     new Date(route.params.editMedicationData.endDate),
   );
 
-  const deleteMeicationMethod = (id: string) => {
+  const deleteMeicationMethod = async (id: string, notificationId: string) => {
     const filteredData = allMedications.filter(item => item.id !== id);
-
+    await notifee.cancelNotification(notificationId);
     setAllMedications(filteredData);
     updateMedicationsMethod(filteredData);
   };
@@ -149,10 +152,7 @@ const EditMedicationScreen = () => {
               allStyle={commonStyles.w160}
               style={{ backgroundColor: colors.pureWhite }}
               labelSyle={currentStyles.labelStyle}
-              onChange={date => {
-                setFromDate(date);
-                updatedMedicationDate(date, toDate);
-              }}
+              disable={true}
             />
             <DateComponent
               label="End Date"
@@ -219,7 +219,10 @@ const EditMedicationScreen = () => {
                             {
                               text: 'Yes',
                               onPress: () => {
-                                deleteMeicationMethod(item.id);
+                                deleteMeicationMethod(
+                                  item.id,
+                                  item.notificationId,
+                                );
                               },
                             },
                             {
@@ -285,6 +288,8 @@ const EditMedicationScreen = () => {
           onSaveArray={() => {}}
           id={route.params.editMedicationData.id}
           allMedicineArray={allMedications}
+          profileName={route.params.editMedicationData.profileName}
+          startDate={route.params.editMedicationData.startDate}
         />
       ) : null}
     </BackgroundFill>

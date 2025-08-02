@@ -1,6 +1,13 @@
 import { View, Text, Modal, StatusBar, Pressable } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
+import notifee, {
+  AndroidImportance,
+  AndroidVisibility,
+  RepeatFrequency,
+  TimestampTrigger,
+  TriggerType,
+} from '@notifee/react-native';
 
 import { styles } from 'src/components/AddEditMedicationBottomSheet/styles';
 import { colors } from 'src/config/colors';
@@ -12,6 +19,8 @@ import TimeComponent from 'src/components/TimeComponent/TimeComponent';
 import SearchDropdown from '../SearchDropdown/SearchDropdown';
 import { MedicationProfileStack } from 'src/navigation/types';
 import { useNavigation } from '@react-navigation/native';
+import { to24HourFormat } from 'src/utils/convertTime';
+import { addChannelId } from 'src/utils/DisplayNotification';
 
 type navigationPropsForHealthProfile =
   NativeStackNavigationProp<MedicationProfileStack>;
@@ -33,6 +42,7 @@ type medicationTypes = {
   medicationTime: any;
   category: string;
   id: string;
+  notificationId: string;
 };
 
 type addEditMedicationProps = {
@@ -43,6 +53,8 @@ type addEditMedicationProps = {
   onSave: (data: medicationTypes) => void;
   onSaveArray: (data: medicationTypes[]) => void;
   id: string;
+  profileName?: string;
+  startDate?: string;
 };
 
 const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
@@ -55,6 +67,8 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
     allMedicineArray,
     onSaveArray,
     id,
+    profileName,
+    startDate,
   } = props;
   const navigation = useNavigation<navigationPropsForHealthProfile>();
 
@@ -72,8 +86,56 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
     medicineId: medicineObject ? medicineObject.medicineId : '',
     medicineName: medicineObject ? medicineObject.medicineName : '',
     id: medicineObject ? medicineObject.id : '',
+    notificationId: medicineObject ? medicineObject.notificationId : '',
   });
   const [searchString, setSearchString] = useState<string>('');
+
+  const addNotificationOfProfile = async (
+    medicineData: medicationTypes,
+    startDate: any,
+    profileName: any,
+  ) => {
+    try {
+      const date = new Date(startDate);
+
+      //CREATE A TRIGGER NOTIFICATION FOR ALL OF THE MEDICINES IN THE ARRAY
+      const { hourStr, minuteStr } = to24HourFormat(
+        medicineData.medicationTime,
+      );
+      date.setHours(Number(hourStr));
+      date.setMinutes(Number(minuteStr));
+
+      // Create a time-based trigger
+      const trigger: TimestampTrigger = {
+        type: TriggerType.TIMESTAMP,
+        timestamp: date.getTime(),
+        alarmManager: true,
+        repeatFrequency: RepeatFrequency.DAILY,
+      };
+
+      let channelId = await addChannelId();
+
+      // Create a trigger notification
+      await notifee.createTriggerNotification(
+        {
+          id: medicineData.notificationId,
+          title: `Reminder for ${profileName}'s medication`,
+          body: `It's ${medicineData.medicineName} time! Please take your dose now💊`,
+          android: {
+            channelId: channelId,
+            pressAction: {
+              id: 'default',
+            },
+            importance: AndroidImportance.HIGH,
+            visibility: AndroidVisibility.PUBLIC,
+          },
+        },
+        trigger,
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getMedicineDataMethod = () => {
     try {
@@ -117,7 +179,7 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
     return false;
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (medicineObject) {
       const updatedArray = allMedicineArray
         ? allMedicineArray?.map(item => {
@@ -144,8 +206,11 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
         medicationTime: medicineData.medicationTime,
         category: medicineData.category,
         id: `${medicineData.medicineId}${new Date().getTime()}`,
+        notificationId: `${profileName}${
+          medicineData.medicineId
+        }${new Date().getTime()}`,
       };
-
+      await addNotificationOfProfile(addObject, startDate, profileName);
       onSave(addObject);
     }
   };

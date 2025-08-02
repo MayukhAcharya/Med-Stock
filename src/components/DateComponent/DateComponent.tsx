@@ -30,7 +30,7 @@ type dateProps = {
   isError?: boolean;
   errorContainer?: ReactNode;
   label: string;
-  onChange: (date: Date) => void;
+  onChange?: (date: Date) => void;
   labelSyle?: StyleProp<TextStyle>;
   disable?: boolean;
 };

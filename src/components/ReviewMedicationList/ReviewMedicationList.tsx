@@ -19,6 +19,7 @@ type medicineDataTypes = {
   medicationTime: any;
   category: any;
   id: string;
+  notificationId: string;
 };
 
 type reviewMedicationListProps = {
