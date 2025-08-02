@@ -15,6 +15,7 @@ import {
   useNavigation,
   useRoute,
 } from '@react-navigation/native';
+import notifee from '@notifee/react-native';
 
 import { styles } from 'src/screens/HealthProfileMedicationScreen/styles';
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
@@ -89,6 +90,13 @@ const HealthProfileMedicationScreen = () => {
       await database.write(async () => {
         healthProfile.destroyPermanently();
       });
+
+      const allMedicine = JSON.parse(medications.medicine_array);
+      const notificationIds = allMedicine.map(
+        (item: any) => item.notificationId,
+      );
+      await notifee.cancelAllNotifications(notificationIds); // cancels all the notification Ids so that user will not receive further notification when deleted
+
       navigation.reset({
         routes: [
           {

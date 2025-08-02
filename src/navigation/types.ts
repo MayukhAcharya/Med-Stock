@@ -48,17 +48,9 @@ type healthProfileMedicationsType = {
   medicationName: string;
 };
 
-type medicationsTypes = {
-  medicineName: string;
-  medicineId: string;
-  medicationTime: string;
-  category: string;
-  id: string;
-};
-
 type editMedicationTypes = {
   id: string;
-  medication: medicationsTypes[];
+  medication: medicationTypes[];
   startDate: any;
   endDate: any;
   profileName: string;
@@ -71,6 +63,7 @@ type medicationTypes = {
   medicationTime: any;
   category: string;
   id: string;
+  notificationId: string;
 };
 type allMedicineTypes = {
   isHealthProfile: boolean;

@@ -6,6 +6,10 @@ import { AppRegistry } from 'react-native';
 import App from './src/App';
 import { name as appName } from './app.json';
 import notifee, { EventType, TriggerType } from '@notifee/react-native';
+import BackgroundFetch from 'react-native-background-fetch';
+import { notificationService } from 'src/utils/NotificationService';
+import { getExpiredMedicines } from 'src/utils/getExpiredMedicines';
+import { ReusableDateFormatter } from 'src/utils/FormattedDate';
 
 notifee.onBackgroundEvent(async ({ type, detail }) => {
   const { notification } = detail;
@@ -34,5 +38,25 @@ notifee.onBackgroundEvent(async ({ type, detail }) => {
       break;
   }
 });
+
+const HeadlessTask = async event => {
+  console.log('[HeadlessTask] event:', event.taskId);
+
+  const expiredMedicines = await getExpiredMedicines();
+
+  for (let [index, item] of expiredMedicines.entries()) {
+    const { medicine_name, expiry_date } = item;
+    await notificationService(
+      `${medicine_name} is Expired`,
+      `${medicine_name} expired on ${ReusableDateFormatter(
+        expiry_date,
+      )}. Please discard or replace it.`,
+    );
+  }
+
+  BackgroundFetch.finish(event.taskId);
+};
+
+BackgroundFetch.registerHeadlessTask(HeadlessTask);
 
 AppRegistry.registerComponent(appName, () => App);

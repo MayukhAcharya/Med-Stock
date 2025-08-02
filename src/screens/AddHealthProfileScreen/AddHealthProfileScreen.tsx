@@ -58,7 +58,7 @@ type medicineDataTypes = {
   medicationTime: string;
   category: any;
   id: string;
-  notificationId?: string;
+  notificationId: string;
 };
 
 type medicineData = {

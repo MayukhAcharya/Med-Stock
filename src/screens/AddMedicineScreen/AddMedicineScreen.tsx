@@ -177,6 +177,7 @@ const AddMedicineScreen = () => {
           })
           .then(res => {
             idRef.current = res._raw.id;
+            countRef.current = countRef.current + 1;
           });
       });
       if (
@@ -194,10 +195,12 @@ const AddMedicineScreen = () => {
           allMedicineRoute.params.addMedicineDetails &&
           allMedicineRoute.params.addMedicineDetails.isFirstAdd)
       ) {
-        await onDisplayNotification(
-          firstMedicineAddNotificationTitle,
-          firstMedicineAddBody,
-        );
+        if (countRef.current === 1) {
+          await onDisplayNotification(
+            firstMedicineAddNotificationTitle,
+            firstMedicineAddBody,
+          );
+        }
       }
 
       navigation.goBack();
