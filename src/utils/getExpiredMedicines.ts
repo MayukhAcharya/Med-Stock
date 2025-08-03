@@ -35,8 +35,6 @@ export const getExpiredMedicines = async () => {
     const diffTime = d2 - d1;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    console.log(diffDays);
-
     if (diffDays <= 0) {
       expired.push(item);
     }

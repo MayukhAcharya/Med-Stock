@@ -357,6 +357,7 @@ const AddMedicineScreen = () => {
     profileName: string,
   ) => {
     const date = new Date(startDate);
+    const now = new Date();
 
     //CREATE A TRIGGER NOTIFICATION FOR ALL OF THE MEDICINES IN THE ARRAY
     for (let [index, item] of medicineArray.entries()) {
@@ -364,6 +365,11 @@ const AddMedicineScreen = () => {
       const { hourStr, minuteStr } = to24HourFormat(medicationTime);
       date.setHours(Number(hourStr));
       date.setMinutes(Number(minuteStr));
+
+      //If scheduled time is before now, move to the next day
+      if (date.getTime() <= now.getTime()) {
+        date.setDate(date.getDate() + 1);
+      }
 
       // Create a time-based trigger
       const trigger: TimestampTrigger = {

@@ -4,6 +4,7 @@ import {
   FlatList,
   ScrollView,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import {
   AlertTriangleIcon,
@@ -26,6 +27,10 @@ import Button from 'src/components/Button/Button';
 import { ReusableDateFormatter } from 'src/utils/FormattedDate';
 import LottieView from 'lottie-react-native';
 import { getExpiredMedicines } from 'src/utils/getExpiredMedicines';
+import {
+  batteryOptimizationMethod,
+  requestPermssion,
+} from 'src/hooks/getNotificationPermission';
 
 type navigationPropsForDashboard = NativeStackNavigationProp<
   DashboardStackParamList,
@@ -138,6 +143,16 @@ const DashboardScreen = () => {
       };
     }, []),
   );
+
+  useEffect(() => {
+    // if (Platform.OS === 'android' && Platform.Version >= 33) {
+    //   requestPermssion();
+    // } else {
+    //   [batteryOptimizationMethod()];
+    // }
+    requestPermssion();
+  }, []);
+
   return (
     <BackgroundFill showDesign={false} backgroundColor="white">
       <ScrollView>

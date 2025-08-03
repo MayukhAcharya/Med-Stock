@@ -1,12 +1,12 @@
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigation from './navigation/AppNavigation';
 import BackgroundFetch from 'react-native-background-fetch';
-import { notificationService } from './utils/NotificationService';
 import { useEffect } from 'react';
 
 function App() {
   const initBackgroundFetch = async () => {
     // Configure the background fetch
+
     const status = await BackgroundFetch.configure(
       {
         minimumFetchInterval: 1400,

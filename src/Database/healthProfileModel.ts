@@ -11,4 +11,5 @@ export default class HealthProfile extends Model {
   @field('medicine_array') medicineArray!: string;
   @field('start_date') startDate!: string;
   @field('end_date') endDate!: string;
+  @field('is_done') isDone!: boolean;
 }

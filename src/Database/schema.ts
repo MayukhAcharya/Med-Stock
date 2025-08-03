@@ -92,6 +92,10 @@ export const schema = appSchema({
           name: 'end_date',
           type: 'string',
         },
+        {
+          name: 'is_done',
+          type: 'boolean',
+        },
       ],
     }),
   ],
