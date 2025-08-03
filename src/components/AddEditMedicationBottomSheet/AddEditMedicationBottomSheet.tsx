@@ -90,13 +90,14 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
   });
   const [searchString, setSearchString] = useState<string>('');
 
-  const addNotificationOfProfile = async (
-    medicineData: medicationTypes,
+  const addEditNotificationOfProfile = async (
+    medicineData: any,
     startDate: any,
     profileName: any,
   ) => {
     try {
       const date = new Date(startDate);
+      const now = new Date();
 
       //CREATE A TRIGGER NOTIFICATION FOR ALL OF THE MEDICINES IN THE ARRAY
       const { hourStr, minuteStr } = to24HourFormat(
@@ -104,6 +105,11 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
       );
       date.setHours(Number(hourStr));
       date.setMinutes(Number(minuteStr));
+
+      // If scheduled time is before now, move to the next day
+      if (date.getTime() <= now.getTime()) {
+        date.setDate(date.getDate() + 1);
+      }
 
       // Create a time-based trigger
       const trigger: TimestampTrigger = {
@@ -198,6 +204,12 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
             }
           })
         : [];
+      const editObj = {
+        medicineName: medicineData.medicineName,
+        medicationTime: medicineData.medicationTime,
+        notificationId: medicineData.notificationId,
+      };
+      await addEditNotificationOfProfile(editObj, startDate, profileName);
       onSaveArray(updatedArray);
     } else {
       const addObject = {
@@ -210,7 +222,7 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
           medicineData.medicineId
         }${new Date().getTime()}`,
       };
-      await addNotificationOfProfile(addObject, startDate, profileName);
+      await addEditNotificationOfProfile(addObject, startDate, profileName);
       onSave(addObject);
     }
   };

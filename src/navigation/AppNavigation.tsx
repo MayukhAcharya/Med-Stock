@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import {
-  Alert,
-  Linking,
-  PermissionsAndroid,
-  Platform,
-  Text,
-} from 'react-native';
+import { Text } from 'react-native';
 import {
   BriefcaseMedical,
   HeartPlusIcon,
   HomeIcon,
   User,
 } from 'lucide-react-native';
-import notifee from '@notifee/react-native';
 
 import {
   AllMedicineStackParamList,
@@ -42,7 +35,6 @@ import MedicationProfilesScreen from 'src/screens/MedicationProfilesScreen';
 import HealthProfileMedicationScreen from 'src/screens/HealthProfileMedicationScreen';
 import EditMedicationScreen from 'src/screens/EditMedicationScreen';
 import AddHealthProfileScreen from 'src/screens/AddHealthProfileScreen';
-import { getNotificationPermission } from 'src/hooks/getNotificationPermission';
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -357,66 +349,6 @@ const AppNavigation = () => {
           setUserType('UnAuthUser');
         }
       });
-  }, []);
-
-  const requestPermssion = async () => {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-      );
-
-      if (granted === 'granted') {
-        console.log('granted');
-        await batteryOptimizationMethod();
-      } else {
-        Alert.alert('Permission', 'Permission Needed to access Camera', [
-          {
-            text: 'Cancel',
-            style: 'cancel',
-          },
-          {
-            text: 'Settings',
-            onPress: () => {
-              Linking.openSettings();
-            },
-          },
-        ]);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const batteryOptimizationMethod = async () => {
-    const batteryOptimizationEnabled =
-      await notifee.isBatteryOptimizationEnabled();
-    if (batteryOptimizationEnabled) {
-      Alert.alert(
-        'Restrictions Detected',
-        'To ensure notifications are delivered, please disable battery optimization for the app.',
-        [
-          // 3. launch intent to navigate the user to the appropriate screen
-          {
-            text: 'OK, open settings',
-            onPress: async () =>
-              await notifee.openBatteryOptimizationSettings(),
-          },
-          {
-            text: 'Cancel',
-            style: 'cancel',
-          },
-        ],
-        { cancelable: false },
-      );
-    }
-  };
-
-  useEffect(() => {
-    if (Platform.OS === 'android' && Platform.Version >= 33) {
-      requestPermssion();
-    } else {
-      [batteryOptimizationMethod()];
-    }
   }, []);
 
   return (

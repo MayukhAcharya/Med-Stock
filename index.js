@@ -7,9 +7,14 @@ import App from './src/App';
 import { name as appName } from './app.json';
 import notifee, { EventType, TriggerType } from '@notifee/react-native';
 import BackgroundFetch from 'react-native-background-fetch';
+
 import { notificationService } from 'src/utils/NotificationService';
 import { getExpiredMedicines } from 'src/utils/getExpiredMedicines';
 import { ReusableDateFormatter } from 'src/utils/FormattedDate';
+import { getHealthProofileForCancelNotis } from 'src/utils/getHealthProfileForCancelNotis';
+import { database } from 'src/Database/database';
+import HealthProfile from 'src/Database/healthProfileModel';
+import { updateHealthProfileToDone } from 'src/utils/updateHealthProfileToDone';
 
 notifee.onBackgroundEvent(async ({ type, detail }) => {
   const { notification } = detail;
@@ -43,6 +48,8 @@ const HeadlessTask = async event => {
   console.log('[HeadlessTask] event:', event.taskId);
 
   const expiredMedicines = await getExpiredMedicines();
+  const { flattenedNotificationIds, profileIds } =
+    await getHealthProofileForCancelNotis();
 
   for (let [index, item] of expiredMedicines.entries()) {
     const { medicine_name, expiry_date } = item;
@@ -52,6 +59,14 @@ const HeadlessTask = async event => {
         expiry_date,
       )}. Please discard or replace it.`,
     );
+  }
+
+  if (flattenedNotificationIds.length > 0) {
+    await notifee.cancelAllNotifications(flattenedNotificationIds);
+  }
+
+  if (profileIds.length > 0) {
+    await updateHealthProfileToDone(profileIds);
   }
 
   BackgroundFetch.finish(event.taskId);

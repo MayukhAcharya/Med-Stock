@@ -33,6 +33,7 @@ type dateProps = {
   onChange?: (date: Date) => void;
   labelSyle?: StyleProp<TextStyle>;
   disable?: boolean;
+  minDate?: string;
 };
 
 const DateComponent = (props: dateProps) => {
@@ -50,6 +51,7 @@ const DateComponent = (props: dateProps) => {
     onChange,
     style,
     disable = false,
+    minDate,
   } = props;
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -143,6 +145,7 @@ const DateComponent = (props: dateProps) => {
                 textMonthFontFamily: 'PlusJakartaSans-Regular',
               }}
               initialDate={value}
+              minDate={minDate}
             />
           </View>
         </Modal>
