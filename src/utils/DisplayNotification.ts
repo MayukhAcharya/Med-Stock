@@ -5,7 +5,7 @@ export const addChannelId = async () => {
   if (!channelId) {
     channelId = await notifee.createChannel({
       id: 'app',
-      name: 'Notification Channel',
+      name: 'Miscellaneous',
       importance: AndroidImportance.HIGH,
       sound: 'default',
     });

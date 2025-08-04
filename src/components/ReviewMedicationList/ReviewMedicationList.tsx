@@ -54,7 +54,7 @@ const ReviewMedicationList = (props: reviewMedicationListProps) => {
   );
 
   const removeItems = (id: string) => {
-    const filteredItems = medicineArray.filter(item => item.medicineId !== id);
+    const filteredItems = medicineArray.filter(item => item.id !== id);
 
     setMedicineArray(filteredItems);
     onUpdation(filteredItems);
@@ -111,7 +111,7 @@ const ReviewMedicationList = (props: reviewMedicationListProps) => {
                       </View>
                       <TouchableOpacity
                         onPress={() => {
-                          removeItems(item.medicineId);
+                          removeItems(item.id);
                         }}
                       >
                         <X size={20} color={colors.grey} />

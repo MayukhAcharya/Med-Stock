@@ -21,6 +21,7 @@ import { MedicationProfileStack } from 'src/navigation/types';
 import { useNavigation } from '@react-navigation/native';
 import { to24HourFormat } from 'src/utils/convertTime';
 import { addChannelId } from 'src/utils/DisplayNotification';
+import { addHealthProfileChannelId } from 'src/utils/HealthProfileChannel';
 
 type navigationPropsForHealthProfile =
   NativeStackNavigationProp<MedicationProfileStack>;
@@ -119,7 +120,7 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
         repeatFrequency: RepeatFrequency.DAILY,
       };
 
-      let channelId = await addChannelId();
+      let channelId = await addHealthProfileChannelId();
 
       // Create a trigger notification
       await notifee.createTriggerNotification(

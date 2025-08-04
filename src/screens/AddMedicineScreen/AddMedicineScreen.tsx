@@ -42,6 +42,7 @@ import {
   onDisplayNotification,
 } from 'src/utils/DisplayNotification';
 import { to24HourFormat } from 'src/utils/convertTime';
+import { addHealthProfileChannelId } from 'src/utils/HealthProfileChannel';
 
 type navigationPropsForAddMedicine = NativeStackNavigationProp<
   AllMedicineStackParamList,
@@ -379,7 +380,7 @@ const AddMedicineScreen = () => {
         repeatFrequency: RepeatFrequency.DAILY,
       };
 
-      let channelId = await addChannelId();
+      let channelId = await addHealthProfileChannelId();
 
       // Create a trigger notification
       await notifee.createTriggerNotification(
