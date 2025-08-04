@@ -1,14 +1,10 @@
 import notifee, { AuthorizationStatus } from '@notifee/react-native';
-import { Alert, Linking } from 'react-native';
+import { Alert, Linking, PermissionsAndroid } from 'react-native';
 
 export const requestPermssion = async () => {
   const settings = await notifee.requestPermission();
 
   if (settings.authorizationStatus == AuthorizationStatus.AUTHORIZED) {
-    // const alarmSettings = await notifee.getNotificationSettings();
-    // if (alarmSettings.android.alarm != AndroidNotificationSetting.ENABLED) {
-    //   await notifee.openAlarmPermissionSettings();
-    // } to be used in health profile when adding it
     await batteryOptimizationMethod();
     return 'Authorized';
   } else if (settings.authorizationStatus == AuthorizationStatus.DENIED) {

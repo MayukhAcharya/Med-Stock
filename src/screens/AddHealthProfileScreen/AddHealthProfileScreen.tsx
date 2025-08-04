@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import { EditIcon } from 'lucide-react-native';
 import notifee, {
   AndroidImportance,
+  AndroidNotificationSetting,
   AndroidVisibility,
   RepeatFrequency,
   TimestampTrigger,
@@ -14,7 +15,12 @@ import notifee, {
 import BackgroundFill from 'src/components/BackgroundFill/BackgroundFill';
 import { styles } from 'src/screens/AddHealthProfileScreen/styles';
 import { MedicationProfileStack } from 'src/navigation/types';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import { fieldRegex } from 'src/constants/constants';
 import { database } from 'src/Database/database';
 import HealthProfile from 'src/Database/healthProfileModel';
@@ -33,6 +39,7 @@ import {
   onDisplayNotification,
 } from 'src/utils/DisplayNotification';
 import { to24HourFormat } from 'src/utils/convertTime';
+import { addHealthProfileChannelId } from 'src/utils/HealthProfileChannel';
 
 type navigationPropsForHealthProfile =
   NativeStackNavigationProp<MedicationProfileStack>;
@@ -214,13 +221,13 @@ const AddHealthProfileScreen = () => {
     startDate: string,
     profileName: string,
   ) => {
-    const date = new Date(startDate);
     const now = new Date();
 
     //CREATE A TRIGGER NOTIFICATION FOR ALL OF THE MEDICINES IN THE ARRAY
     for (let [index, item] of medicineArray.entries()) {
       const { id, medicationTime, medicineName, notificationId } = item;
       const { hourStr, minuteStr } = to24HourFormat(medicationTime);
+      const date = new Date(startDate);
       date.setHours(Number(hourStr));
       date.setMinutes(Number(minuteStr));
 
@@ -237,7 +244,7 @@ const AddHealthProfileScreen = () => {
         repeatFrequency: RepeatFrequency.DAILY,
       };
 
-      let channelId = await addChannelId();
+      let channelId = await addHealthProfileChannelId();
 
       // Create a trigger notification
       await notifee.createTriggerNotification(
@@ -322,6 +329,36 @@ const AddHealthProfileScreen = () => {
       ],
     );
   };
+
+  const alarmReminderPermssion = async () => {
+    const settings = await notifee.getNotificationSettings();
+    if (settings.android.alarm == AndroidNotificationSetting.ENABLED) {
+      return;
+    } else {
+      Alert.alert(
+        'Warning!',
+        'To ensure your medications alerts are delivered please enable the alarms and reminders',
+        [
+          {
+            text: 'Ok, open Settings',
+            onPress: async () => {
+              await notifee.openAlarmPermissionSettings();
+            },
+          },
+          {
+            text: 'No',
+            style: 'cancel',
+          },
+        ],
+      );
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      alarmReminderPermssion();
+    }, []),
+  );
 
   useEffect(() => {
     getMedicineDataMethod();

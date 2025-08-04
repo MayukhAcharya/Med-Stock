@@ -1,5 +1,8 @@
 export const to24HourFormat = (time12h: string) => {
-  const [time, modifier] = time12h.trim().split(' '); // e.g., "9:47", "PM"
+  const [time, modifier] = time12h
+    .trim()
+    .replace(/\u202F/g, ' ')
+    .split(' '); // e.g., "9:47", "PM"
   let [hours, minutes] = time.split(':').map(Number);
 
   if (modifier.toLowerCase() === 'pm' && hours !== 12) {
