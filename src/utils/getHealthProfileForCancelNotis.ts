@@ -24,7 +24,7 @@ export const getHealthProofileForCancelNotis = async () => {
     const diffTime = d2 - d1;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0 && !item.is_done) {
+    if (diffDays === -1 && !item.is_done) {
       const medicineArray = JSON.parse(item.medicine_array);
       notificationIds.push(
         medicineArray.map((item: any) => item.notificationId),

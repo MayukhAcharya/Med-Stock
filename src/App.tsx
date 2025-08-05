@@ -6,10 +6,9 @@ import { useEffect } from 'react';
 function App() {
   const initBackgroundFetch = async () => {
     // Configure the background fetch
-
     const status = await BackgroundFetch.configure(
       {
-        minimumFetchInterval: 1400,
+        minimumFetchInterval: 360,
         stopOnTerminate: false,
         startOnBoot: true,
         enableHeadless: true,

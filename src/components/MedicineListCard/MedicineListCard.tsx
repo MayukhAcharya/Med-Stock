@@ -21,6 +21,7 @@ type medicineListProps = {
   category?: string;
   isHealthProfile?: boolean;
   medicationTime?: string;
+  markAsRequired?: boolean;
   onPress: () => void;
 };
 
@@ -34,6 +35,7 @@ const MedicineListCard = (props: medicineListProps) => {
     onPress,
     isHealthProfile = false,
     medicationTime,
+    markAsRequired = true,
   } = props;
   return (
     <TouchableOpacity style={currentStyles.container} onPress={() => onPress()}>
@@ -80,8 +82,14 @@ const MedicineListCard = (props: medicineListProps) => {
       <View>
         {isHealthProfile ? null : (
           <View style={commonStyles.alignItemsRight}>
-            <Text style={currentStyles.expiresTextStyle}>Expires</Text>
-            <Text style={currentStyles.dateTextStyle}>{expiryDate}</Text>
+            {markAsRequired ? (
+              <>
+                <Text style={currentStyles.expiresTextStyle}>Expires</Text>
+                <Text style={currentStyles.dateTextStyle}>{expiryDate}</Text>
+              </>
+            ) : (
+              <Text style={currentStyles.unrequiredTextStyle}>Unrequired</Text>
+            )}
           </View>
         )}
       </View>

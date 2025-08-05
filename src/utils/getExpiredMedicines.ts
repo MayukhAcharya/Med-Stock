@@ -8,6 +8,7 @@ type medicineDataTypes = {
   medicine_name: string;
   quantity: string;
   uses: string;
+  mark_as_required: boolean;
 };
 
 export const getExpiredMedicines = async () => {
@@ -26,17 +27,19 @@ export const getExpiredMedicines = async () => {
   const [day1, month1, year1] = todayDate.split('/').map(Number);
 
   allMedicines.map(item => {
-    const itemDate = ReusableDateFormatter(item.expiry_date);
-    const [day2, month2, year2] = itemDate.split('/').map(Number);
+    if (item.mark_as_required) {
+      const itemDate = ReusableDateFormatter(item.expiry_date);
+      const [day2, month2, year2] = itemDate.split('/').map(Number);
 
-    const d1: any = new Date(year1, month1 - 1, day1);
-    const d2: any = new Date(year2, month2 - 1, day2);
+      const d1: any = new Date(year1, month1 - 1, day1);
+      const d2: any = new Date(year2, month2 - 1, day2);
 
-    const diffTime = d2 - d1;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const diffTime = d2 - d1;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays <= 0) {
-      expired.push(item);
+      if (diffDays <= 0) {
+        expired.push(item);
+      }
     }
   });
 

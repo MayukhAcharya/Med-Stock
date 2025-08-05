@@ -43,4 +43,9 @@ export const styles = () =>
       fontSize: normalize(15),
       color: colors.pureBlack,
     },
+    unrequiredTextStyle: {
+      ...fonts.regular,
+      fontSize: normalize(15),
+      color: colors.error,
+    },
   });
