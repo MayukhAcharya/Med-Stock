@@ -1,11 +1,9 @@
 import {
   View,
   Text,
-  Image,
   Pressable,
   FlatList,
   ActivityIndicator,
-  TouchableOpacity,
   Alert,
 } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
@@ -34,6 +32,7 @@ type healthProfileTypes = {
   medication_type: string;
   medicine_array: string;
   profile_name: string;
+  is_done: boolean;
 };
 
 const MedicationProfilesScreen = () => {
@@ -223,6 +222,7 @@ const MedicationProfilesScreen = () => {
                           },
                         });
                       }}
+                      isDone={item.is_done}
                     />
                   </View>
                 );

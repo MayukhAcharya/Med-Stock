@@ -34,10 +34,7 @@ import SearchDropdown from 'src/components/SearchDropdown/SearchDropdown';
 import TimeComponent from 'src/components/TimeComponent/TimeComponent';
 import Button from 'src/components/Button/Button';
 import ReviewMedicationList from 'src/components/ReviewMedicationList/ReviewMedicationList';
-import {
-  addChannelId,
-  onDisplayNotification,
-} from 'src/utils/DisplayNotification';
+import { onDisplayNotification } from 'src/utils/DisplayNotification';
 import { to24HourFormat } from 'src/utils/convertTime';
 import { addHealthProfileChannelId } from 'src/utils/HealthProfileChannel';
 
@@ -251,7 +248,7 @@ const AddHealthProfileScreen = () => {
         {
           id: notificationId,
           title: `Reminder for ${profileName}'s medication`,
-          body: `It's ${medicineName} time! Please take your dose now💊`,
+          body: `Time for your dose of ${medicineName}! Please take your medicine now 💊`,
           android: {
             channelId: channelId,
             pressAction: {

@@ -33,6 +33,7 @@ type medicineDataTypes = {
   medicine_name: string;
   quantity: string;
   uses: string;
+  mark_as_required: boolean;
 };
 
 const AllMedicinesScreen = () => {
@@ -129,6 +130,7 @@ const AllMedicinesScreen = () => {
                           },
                         });
                       }}
+                      markAsRequired={item.mark_as_required}
                     />
                   );
                 }}

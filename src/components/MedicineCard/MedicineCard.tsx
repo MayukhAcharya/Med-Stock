@@ -2,6 +2,7 @@ import { View, Text, Image, TouchableOpacity, Pressable } from 'react-native';
 import React from 'react';
 import {
   BandageIcon,
+  BanIcon,
   DropletsIcon,
   ImageOffIcon,
   MoveDiagonalIcon,
@@ -14,6 +15,7 @@ import { styles } from 'src/components/MedicineCard/styles';
 import { commonStyles } from 'src/config/commonStyles';
 import { OintmentIconBig } from 'src/assets/svg/OintmentIconBig';
 import { ReusableDateFormatter } from 'src/utils/FormattedDate';
+import { colors } from 'src/config/colors';
 
 type medicineCardProps = {
   medicineName: string;
@@ -21,11 +23,19 @@ type medicineCardProps = {
   category: string;
   color: string;
   onPress: () => void;
+  markAsRequired: boolean;
 };
 
 const MedicineCard = (props: medicineCardProps) => {
   const currentStyles = styles();
-  const { expiryDate, medicineName, category, color, onPress } = props;
+  const {
+    expiryDate,
+    medicineName,
+    category,
+    color,
+    onPress,
+    markAsRequired = true,
+  } = props;
   return (
     <Pressable
       style={currentStyles.container}
@@ -33,7 +43,15 @@ const MedicineCard = (props: medicineCardProps) => {
         onPress();
       }}
     >
-      <View style={commonStyles.alignItemsRight}>
+      <View
+        style={
+          markAsRequired
+            ? commonStyles.alignItemsRight
+            : [commonStyles.spaceBetween, commonStyles.row]
+        }
+      >
+        {markAsRequired ? null : <BanIcon size={20} color={colors.error} />}
+
         <MoveDiagonalIcon size={20} />
       </View>
       <View style={commonStyles.aic}>
@@ -59,7 +77,9 @@ const MedicineCard = (props: medicineCardProps) => {
         </View>
         <View style={commonStyles.mt5}>
           <Text style={currentStyles.expiryTextStyle}>
-            Expires-{ReusableDateFormatter(expiryDate)}
+            {markAsRequired
+              ? `Expires-${ReusableDateFormatter(expiryDate)}`
+              : 'Unrequired'}
           </Text>
         </View>
       </View>

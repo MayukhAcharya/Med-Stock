@@ -182,22 +182,8 @@ const SearchDropdown = (props: searchDrodpownProps) => {
                     >
                       <Text style={currentStyles.itemLabelStyle}>
                         {item.label}
+                        {item.mark_as_required ? '' : ' (Unrequired)'}
                       </Text>
-                      <View>
-                        {item.label === 'Tablet' ? (
-                          <PillIcon />
-                        ) : item.label === 'Syrup' ? (
-                          <PillBottleIcon />
-                        ) : item.label === 'Bandage' ? (
-                          <BandageIcon />
-                        ) : item.label === 'Ointment' ? (
-                          <OintmentIcon />
-                        ) : item.value === 'drop' ? (
-                          <DropletsIcon />
-                        ) : item.value === 'syringe' ? (
-                          <SyringeIcon />
-                        ) : null}
-                      </View>
                     </TouchableOpacity>
                   );
                 }}

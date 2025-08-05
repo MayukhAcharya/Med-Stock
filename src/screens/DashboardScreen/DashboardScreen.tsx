@@ -44,6 +44,7 @@ type medicineDataTypes = {
   medicine_name: string;
   quantity: string;
   uses: string;
+  mark_as_required: boolean;
 };
 
 const DashboardScreen = () => {
@@ -174,47 +175,52 @@ const DashboardScreen = () => {
               </View>
             ) : (
               <View>
-                <View style={currentStyles.MedsView}>
-                  <Text style={currentStyles.safeTextStyle}>Safe</Text>
-                  <View style={commonStyles.mt8}>
-                    <ShieldPlusIcon color={colors.green} size={25} />
-                  </View>
-                  <Text style={currentStyles.totalMedsTextStyle}>
-                    ({safeMeds.length} medicines)
-                  </Text>
-                </View>
+                {safeMeds.length > 0 ? (
+                  <View>
+                    <View style={currentStyles.MedsView}>
+                      <Text style={currentStyles.safeTextStyle}>Safe</Text>
+                      <View style={commonStyles.mt8}>
+                        <ShieldPlusIcon color={colors.green} size={25} />
+                      </View>
+                      <Text style={currentStyles.totalMedsTextStyle}>
+                        ({safeMeds.length} medicines)
+                      </Text>
+                    </View>
 
-                {/* Safe Medicine cards     */}
-                <View style={[commonStyles.mt25]}>
-                  <FlatList
-                    data={safeMeds}
-                    renderItem={({ item, index }) => {
-                      return (
-                        <View style={{ marginBottom: 10 }}>
-                          <MedicineCard
-                            expiryDate={item.expiry_date}
-                            medicineName={item.medicine_name}
-                            category={item.category}
-                            color={colors.green}
-                            onPress={() => {
-                              navigation.navigate('MedicineDetailsScreen', {
-                                medicineDetails: {
-                                  id: item.id,
-                                },
-                              });
-                            }}
-                          />
-                        </View>
-                      );
-                    }}
-                    keyExtractor={(item, index) => item.id}
-                    horizontal
-                    ItemSeparatorComponent={() => (
-                      <View style={commonStyles.ml20} />
-                    )}
-                    showsHorizontalScrollIndicator={false}
-                  />
-                </View>
+                    {/* Safe Medicine cards     */}
+                    <View style={[commonStyles.mt25]}>
+                      <FlatList
+                        data={safeMeds}
+                        renderItem={({ item, index }) => {
+                          return (
+                            <View style={{ marginBottom: 10 }}>
+                              <MedicineCard
+                                expiryDate={item.expiry_date}
+                                medicineName={item.medicine_name}
+                                category={item.category}
+                                color={colors.green}
+                                markAsRequired={item.mark_as_required}
+                                onPress={() => {
+                                  navigation.navigate('MedicineDetailsScreen', {
+                                    medicineDetails: {
+                                      id: item.id,
+                                    },
+                                  });
+                                }}
+                              />
+                            </View>
+                          );
+                        }}
+                        keyExtractor={(item, index) => item.id}
+                        horizontal
+                        ItemSeparatorComponent={() => (
+                          <View style={commonStyles.ml20} />
+                        )}
+                        showsHorizontalScrollIndicator={false}
+                      />
+                    </View>
+                  </View>
+                ) : null}
 
                 {nearExpiryMeds.length > 0 ? (
                   <View>
@@ -245,6 +251,7 @@ const DashboardScreen = () => {
                                 medicineName={item.medicine_name}
                                 category={item.category}
                                 color={colors.darkYellow}
+                                markAsRequired={item.mark_as_required}
                                 onPress={() => {
                                   navigation.navigate('MedicineDetailsScreen', {
                                     medicineDetails: {
@@ -293,6 +300,7 @@ const DashboardScreen = () => {
                                 medicineName={item.medicine_name}
                                 category={item.category}
                                 color={colors.error}
+                                markAsRequired={item.mark_as_required}
                                 onPress={() => {
                                   navigation.navigate('MedicineDetailsScreen', {
                                     medicineDetails: {

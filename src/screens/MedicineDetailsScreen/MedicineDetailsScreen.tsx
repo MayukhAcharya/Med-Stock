@@ -27,13 +27,9 @@ import {
 import { AllMedicineStackParamList } from 'src/navigation/types';
 import { database } from 'src/Database/database';
 import Medicine from 'src/Database/medicineModel';
-import {
-  fieldRegex,
-  numberFieldRegex,
-  timeoutConstant,
-} from 'src/constants/constants';
+import { fieldRegex, numberFieldRegex } from 'src/constants/constants';
 
-type routeProps = RouteProp<AllMedicineStackParamList>;
+type routeProps = RouteProp<AllMedicineStackParamList, 'MedicineDetailsScreen'>;
 
 type navigationPropForMedicineDetials = NativeStackNavigationProp<
   AllMedicineStackParamList,
@@ -163,6 +159,9 @@ const MedicineDetailsScreen = () => {
           medicineUpdate.markAsRequired = values.mark_as_required
             ? false
             : true;
+          medicineUpdate.quantity = values.mark_as_required
+            ? values.quantity
+            : '0';
         });
       });
       setIsLoading(prev => ({
