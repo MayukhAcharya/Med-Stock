@@ -62,7 +62,7 @@ const HeadlessTask = async event => {
   }
 
   if (flattenedNotificationIds.length > 0) {
-    await notifee.cancelAllNotifications(flattenedNotificationIds);
+    await notifee.cancelTriggerNotifications(flattenedNotificationIds);
   }
 
   if (profileIds.length > 0) {

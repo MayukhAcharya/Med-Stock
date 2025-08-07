@@ -5,6 +5,7 @@ import {
   ScrollView,
   ActivityIndicator,
   Platform,
+  Alert,
 } from 'react-native';
 import {
   AlertTriangleIcon,
@@ -28,6 +29,7 @@ import { ReusableDateFormatter } from 'src/utils/FormattedDate';
 import LottieView from 'lottie-react-native';
 import { getExpiredMedicines } from 'src/utils/getExpiredMedicines';
 import {
+  autostartMethod,
   batteryOptimizationMethod,
   requestPermssion,
 } from 'src/hooks/getNotificationPermission';
@@ -146,12 +148,12 @@ const DashboardScreen = () => {
   );
 
   useEffect(() => {
-    // if (Platform.OS === 'android' && Platform.Version >= 33) {
-    //   requestPermssion();
-    // } else {
-    //   [batteryOptimizationMethod()];
-    // }
-    requestPermssion();
+    if (Platform.OS === 'android' && Platform.Version >= 33) {
+      requestPermssion();
+    } else {
+      [batteryOptimizationMethod()];
+      autostartMethod();
+    }
   }, []);
 
   return (

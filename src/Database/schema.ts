@@ -22,6 +22,10 @@ export const schema = appSchema({
           name: 'allergies',
           type: 'string',
         },
+        {
+          name: 'autoStart',
+          type: 'boolean',
+        },
       ],
     }),
     tableSchema({

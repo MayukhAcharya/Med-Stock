@@ -8,4 +8,5 @@ export default class Profile extends Model {
   @field('age') age!: string;
   @field('gender') gender!: string;
   @field('allergies') allergies!: any;
+  @field('autoStart') autostart!: boolean;
 }
