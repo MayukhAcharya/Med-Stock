@@ -1,4 +1,7 @@
-import notifee, { AndroidImportance } from '@notifee/react-native';
+import notifee, {
+  AndroidImportance,
+  AndroidVisibility,
+} from '@notifee/react-native';
 
 export const addChannelId = async () => {
   let channelId: any = null;
@@ -8,6 +11,7 @@ export const addChannelId = async () => {
       name: 'Miscellaneous',
       importance: AndroidImportance.HIGH,
       sound: 'default',
+      visibility: AndroidVisibility.PUBLIC,
     });
   }
 

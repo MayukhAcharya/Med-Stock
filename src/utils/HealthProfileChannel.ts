@@ -1,4 +1,7 @@
-import notifee, { AndroidImportance } from '@notifee/react-native';
+import notifee, {
+  AndroidImportance,
+  AndroidVisibility,
+} from '@notifee/react-native';
 
 export const addHealthProfileChannelId = async () => {
   let healthProfileChannelId: any = null;
@@ -8,6 +11,7 @@ export const addHealthProfileChannelId = async () => {
       name: 'Health Profiles',
       importance: AndroidImportance.HIGH,
       sound: 'default',
+      visibility: AndroidVisibility.PUBLIC,
     });
   }
 
