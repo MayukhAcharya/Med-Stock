@@ -1,9 +1,9 @@
 import { View, Text, useColorScheme, StatusBar } from 'react-native';
 import React, { ReactNode } from 'react';
 import { LinearGradient } from 'react-native-linear-gradient';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { styles } from 'src/components/BackgroundFill/styles';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { commonStyles } from 'src/config/commonStyles';
 
 type backgroundProps = {

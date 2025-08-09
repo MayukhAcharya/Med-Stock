@@ -8,6 +8,7 @@ import {
   HomeIcon,
   User,
 } from 'lucide-react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
   AllMedicineStackParamList,
@@ -35,10 +36,7 @@ import MedicationProfilesScreen from 'src/screens/MedicationProfilesScreen';
 import HealthProfileMedicationScreen from 'src/screens/HealthProfileMedicationScreen';
 import EditMedicationScreen from 'src/screens/EditMedicationScreen';
 import AddHealthProfileScreen from 'src/screens/AddHealthProfileScreen';
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+import OnboardingScreen from 'src/screens/OnboardingScreen';
 
 const AppNavigation = () => {
   const UnAuthStack = createNativeStackNavigator<UnAuthStackParamList>();
@@ -58,8 +56,12 @@ const AppNavigation = () => {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName="LoginRegisterScreen"
+      initialRouteName="OnboardingScreen"
     >
+      <UnAuthStack.Screen
+        name="OnboardingScreen"
+        component={OnboardingScreen}
+      />
       <UnAuthStack.Screen name="LoginRegisterScreen" component={LoginScreen} />
     </UnAuthStack.Navigator>
   );
