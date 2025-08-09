@@ -27,7 +27,6 @@ import { database } from 'src/Database/database';
 import Button from 'src/components/Button/Button';
 import { ReusableDateFormatter } from 'src/utils/FormattedDate';
 import LottieView from 'lottie-react-native';
-import { getExpiredMedicines } from 'src/utils/getExpiredMedicines';
 import {
   autostartMethod,
   batteryOptimizationMethod,

@@ -8,7 +8,7 @@ function App() {
     // Configure the background fetch
     const status = await BackgroundFetch.configure(
       {
-        minimumFetchInterval: 360,
+        minimumFetchInterval: 15,
         stopOnTerminate: false,
         startOnBoot: true,
         enableHeadless: true,
