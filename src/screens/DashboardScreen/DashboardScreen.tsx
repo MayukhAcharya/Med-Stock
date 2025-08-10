@@ -150,8 +150,7 @@ const DashboardScreen = () => {
     if (Platform.OS === 'android' && Platform.Version >= 33) {
       requestPermssion();
     } else {
-      [batteryOptimizationMethod()];
-      autostartMethod();
+      batteryOptimizationMethod();
     }
   }, []);
 
