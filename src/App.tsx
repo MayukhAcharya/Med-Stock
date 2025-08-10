@@ -2,6 +2,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigation from './navigation/AppNavigation';
 import BackgroundFetch from 'react-native-background-fetch';
 import { useEffect } from 'react';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 function App() {
   const initBackgroundFetch = async () => {
@@ -43,7 +44,9 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <AppNavigation />
+      <KeyboardProvider>
+        <AppNavigation />
+      </KeyboardProvider>
     </SafeAreaProvider>
   );
 }

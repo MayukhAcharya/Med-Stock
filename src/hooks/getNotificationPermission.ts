@@ -36,26 +36,37 @@ export const batteryOptimizationMethod = async () => {
         // 3. launch intent to navigate the user to the appropriate screen
         {
           text: 'OK, open settings',
-          onPress: async () => await notifee.openBatteryOptimizationSettings(),
+          onPress: async () =>
+            await notifee.openBatteryOptimizationSettings().then(async res => {
+              const profileData = database.get('profile');
+              const items: any = await profileData.query().fetch();
+
+              const profileId = items[0]._raw.id;
+              const autostartEnabled = items[0]._raw.autoStart;
+
+              await autostartMethod(profileId, autostartEnabled);
+            }),
         },
       ],
       { cancelable: false },
     );
+  } else {
+    const profileData = database.get('profile');
+    const items: any = await profileData.query().fetch();
+
+    const profileId = items[0]._raw.id;
+    const autostartEnabled = items[0]._raw.autoStart;
+    await autostartMethod(profileId, autostartEnabled);
   }
 };
 
-export const autostartMethod = async () => {
+export const autostartMethod = async (
+  profileId: string,
+  autostartEnabled: boolean,
+) => {
   const powerManagerInfo = await notifee.getPowerManagerInfo();
-  const batteryOptimizationEnabled =
-    await notifee.isBatteryOptimizationEnabled();
 
-  const profileData = database.get('profile');
-  const items: any = await profileData.query().fetch();
-
-  const profileId = items[0]._raw.id;
-  const autostartEnabled = items[0]._raw.autoStart;
-
-  if (!batteryOptimizationEnabled || !autostartEnabled) {
+  if (!autostartEnabled) {
     if (powerManagerInfo.activity) {
       Alert.alert(
         'Restrictions Detected',

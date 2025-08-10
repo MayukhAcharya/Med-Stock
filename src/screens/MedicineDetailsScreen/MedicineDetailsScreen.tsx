@@ -136,7 +136,6 @@ const MedicineDetailsScreen = () => {
         isSaveLoading: false,
       }));
       getMedicineDetailsData();
-      navigation.goBack();
     } catch (error) {
       setIsLoading(prev => ({
         ...prev,
@@ -388,20 +387,22 @@ const MedicineDetailsScreen = () => {
                 disable={!dirty || !values.mark_as_required}
               />
             </View>
+            {showUsesModal ? (
+              <UsesBottomSheet
+                onClose={() => {
+                  handleSubmit();
+                  setUsesModal(false);
+                }}
+                isVisible={showUsesModal}
+                useData={uses}
+                usesArray={data => {
+                  setUses(data);
+                }}
+              />
+            ) : null}
           </View>
         )}
       </Formik>
-
-      {showUsesModal ? (
-        <UsesBottomSheet
-          onClose={() => setUsesModal(false)}
-          isVisible={showUsesModal}
-          useData={uses}
-          usesArray={data => {
-            setUses(data);
-          }}
-        />
-      ) : null}
     </BackgroundFill>
   );
 };
