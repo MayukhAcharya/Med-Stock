@@ -268,6 +268,8 @@ const EditMedicationScreen = () => {
           onSave={() => {}}
           allMedicineArray={allMedications}
           id={route.params.editMedicationData.id}
+          profileName={route.params.editMedicationData.profileName}
+          startDate={route.params.editMedicationData.startDate}
         />
       ) : null}
       {addMedicationData ? (

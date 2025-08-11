@@ -8,6 +8,7 @@ import notifee, {
   TimestampTrigger,
   TriggerType,
 } from '@notifee/react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import { styles } from 'src/components/AddEditMedicationBottomSheet/styles';
 import { colors } from 'src/config/colors';
@@ -18,9 +19,7 @@ import Button from 'src/components/Button/Button';
 import TimeComponent from 'src/components/TimeComponent/TimeComponent';
 import SearchDropdown from '../SearchDropdown/SearchDropdown';
 import { MedicationProfileStack } from 'src/navigation/types';
-import { useNavigation } from '@react-navigation/native';
 import { to24HourFormat } from 'src/utils/convertTime';
-import { addChannelId } from 'src/utils/DisplayNotification';
 import { addHealthProfileChannelId } from 'src/utils/HealthProfileChannel';
 
 type navigationPropsForHealthProfile =
@@ -127,7 +126,7 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
         {
           id: medicineData.notificationId,
           title: `Reminder for ${profileName}'s medication`,
-          body: `It's ${medicineData.medicineName} time! Please take your dose now💊`,
+          body: `Time for your dose of ${medicineData.medicineName}! Please take your medicine now 💊`,
           android: {
             channelId: channelId,
             pressAction: {

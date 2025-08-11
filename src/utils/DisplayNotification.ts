@@ -4,7 +4,7 @@ import notifee, {
 } from '@notifee/react-native';
 
 export const addChannelId = async () => {
-  let channelId: any = null;
+  let channelId: any = await notifee.getChannel('app');
   if (!channelId) {
     channelId = await notifee.createChannel({
       id: 'app',
@@ -13,23 +13,29 @@ export const addChannelId = async () => {
       sound: 'default',
       visibility: AndroidVisibility.PUBLIC,
     });
+    return channelId;
+  } else {
+    return channelId.id;
   }
-
-  return channelId;
 };
 
 export const onDisplayNotification = async (
   title: string,
   notificationText: string,
 ) => {
-  await notifee.displayNotification({
-    title: title,
-    body: notificationText,
-    android: {
-      channelId: await addChannelId(),
-      pressAction: {
-        id: 'default',
+  const channelId = await addChannelId();
+  try {
+    await notifee.displayNotification({
+      title: title,
+      body: notificationText,
+      android: {
+        channelId: channelId,
+        pressAction: {
+          id: 'default',
+        },
       },
-    },
-  });
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
