@@ -43,11 +43,11 @@ function App() {
   }, []);
 
   return (
-    <SafeAreaProvider>
-      <KeyboardProvider>
+    <KeyboardProvider>
+      <SafeAreaProvider>
         <AppNavigation />
-      </KeyboardProvider>
-    </SafeAreaProvider>
+      </SafeAreaProvider>
+    </KeyboardProvider>
   );
 }
 

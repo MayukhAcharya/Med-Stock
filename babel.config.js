@@ -11,6 +11,12 @@ module.exports = {
       },
     ],
     ['@babel/plugin-proposal-decorators', { legacy: true }],
-    'react-native-reanimated/plugin',
+    ['react-native-worklets-core/plugin'],
+    [
+      'react-native-reanimated/plugin',
+      {
+        globals: ['__scanOCR'],
+      },
+    ],
   ],
 };

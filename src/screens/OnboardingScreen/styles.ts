@@ -1,5 +1,4 @@
 import { StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from 'src/config/colors';
 import { fonts } from 'src/config/fonts';
 import normalize from 'src/config/normalize';
