@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@ismaelmoreiraa/vision-camera-ocr": "^3.0.2",
     "@notifee/react-native": "^9.1.8",
     "@nozbe/watermelondb": "^0.28.0",
     "@nozbe/with-observables": "^1.6.0",
@@ -35,6 +36,8 @@
     "react-native-safe-area-context": "^5.4.1",
     "react-native-screens": "^4.11.1",
     "react-native-svg": "^15.12.0",
+    "react-native-vision-camera": "^4.7.1",
+    "react-native-worklets-core": "^1.6.2",
     "yup": "^1.6.1"
   },
   "devDependencies": {

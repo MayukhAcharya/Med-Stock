@@ -24,10 +24,8 @@ import { colors } from 'src/config/colors';
 import { AllMedicineStackParamList } from 'src/navigation/types';
 import { useNavigation } from '@react-navigation/native';
 
-type navigationPropsToAddMedicine = NativeStackNavigationProp<
-  AllMedicineStackParamList,
-  'AddMedicineScreen'
->;
+type navigationPropsToAddMedicine =
+  NativeStackNavigationProp<AllMedicineStackParamList>;
 
 type floatinButtonProps = {
   isFistAdd: boolean;
@@ -132,6 +130,7 @@ const FloatingButton = (props: floatinButtonProps) => {
           style={currentStyles.smallIconsPressStyle}
           onPress={() => {
             handlePress();
+            navigation.navigate('CameraScreen');
           }}
         >
           <CameraIcon color={colors.pureWhite} />
