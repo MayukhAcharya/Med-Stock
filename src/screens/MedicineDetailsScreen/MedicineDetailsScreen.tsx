@@ -363,20 +363,33 @@ const MedicineDetailsScreen = () => {
               />
             </View>
             <View style={currentStyles.buttonView}>
-              <Button
-                label={
-                  values.mark_as_required
-                    ? 'Mark as Not Required'
-                    : 'Mark as Required'
-                }
-                mainStyle={[currentStyles.notRequiredStyle]}
-                labelStyle={currentStyles.notRequiredLabelStyle}
-                onPress={() => {
-                  alertMethod(values);
-                }}
-                showActivityIndicator={isLoading.isMarkAsRequired}
-                indicatorColor={colors.extraDarkBlue}
-              />
+              <View style={[commonStyles.row, commonStyles.spaceBetween]}>
+                <Button
+                  label={
+                    values.mark_as_required
+                      ? 'Mark as Not Required'
+                      : 'Mark as Required'
+                  }
+                  mainStyle={[currentStyles.notRequiredStyle]}
+                  labelStyle={currentStyles.notRequiredLabelStyle}
+                  onPress={() => {
+                    alertMethod(values);
+                  }}
+                  showActivityIndicator={isLoading.isMarkAsRequired}
+                  indicatorColor={colors.extraDarkBlue}
+                />
+                <Button
+                  label={'Delete'}
+                  mainStyle={[currentStyles.deleteStyle]}
+                  labelStyle={currentStyles.deleteLabelStyle}
+                  onPress={() => {
+                    // alertMethod(values);
+                  }}
+                  // showActivityIndicator={isLoading.isMarkAsRequired}
+                  indicatorColor={colors.pureWhite}
+                />
+              </View>
+
               <Button
                 label="Save medicine details"
                 mainStyle={commonStyles.w100per}

@@ -54,7 +54,7 @@ export const styles = () =>
       rowGap: normalize(15),
     },
     notRequiredStyle: {
-      width: '100%',
+      width: '48%',
       backgroundColor: colors.pureWhite,
       borderWidth: 1,
       borderColor: colors.error,
@@ -63,6 +63,16 @@ export const styles = () =>
     notRequiredLabelStyle: {
       ...fonts.medium,
       color: colors.pureBlack,
+      fontSize: normalize(15),
+    },
+    deleteStyle: {
+      width: '48%',
+      backgroundColor: colors.error,
+      elevation: 0,
+    },
+    deleteLabelStyle: {
+      ...fonts.medium,
+      color: colors.pureWhite,
       fontSize: normalize(15),
     },
   });

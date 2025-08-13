@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { NavigationContainer } from '@react-navigation/native';
+import {
+  getFocusedRouteNameFromRoute,
+  NavigationContainer,
+} from '@react-navigation/native';
 import { Text } from 'react-native';
 import {
   BriefcaseMedical,
@@ -37,6 +40,7 @@ import HealthProfileMedicationScreen from 'src/screens/HealthProfileMedicationSc
 import EditMedicationScreen from 'src/screens/EditMedicationScreen';
 import AddHealthProfileScreen from 'src/screens/AddHealthProfileScreen';
 import OnboardingScreen from 'src/screens/OnboardingScreen';
+import CameraScreen from 'src/screens/CameraScreen';
 
 const AppNavigation = () => {
   const UnAuthStack = createNativeStackNavigator<UnAuthStackParamList>();
@@ -126,6 +130,14 @@ const AppNavigation = () => {
           header: () => <Header title="Add Medicine" showBackIcon={true} />,
         }}
       />
+      <AllMedicineStack.Screen
+        name="CameraScreen"
+        component={CameraScreen}
+        options={{
+          headerShown: true,
+          header: () => <Header title="Add Medicine" showBackIcon={true} />,
+        }}
+      />
     </AllMedicineStack.Navigator>
   );
 
@@ -205,14 +217,14 @@ const AppNavigation = () => {
   const AuthStackScreens = () => (
     <AuthStack.Navigator
       initialRouteName="DashboardStackScreens"
-      screenOptions={{
+      screenOptions={({ route }) => ({
         tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: colors.pureWhite,
           height: normalize(55) + insets.bottom,
           paddingBottom: insets.bottom,
         },
-      }}
+      })}
     >
       <AuthStack.Screen
         name="DashboardStackScreens"
@@ -246,31 +258,41 @@ const AppNavigation = () => {
       <AuthStack.Screen
         name="AllMedicineStackScreens"
         component={AllMedicineStackScreens}
-        options={{
-          headerShown: false,
-          tabBarHideOnKeyboard: true,
-          tabBarLabel: ({ focused }) => {
-            return (
-              <Text
-                style={{
-                  ...fonts.medium,
-                  fontSize: normalize(12),
-                  // color: focused ? colors.pureWhite : colors.primaryBlue,
-                  color: colors.primaryBlue,
-                }}
-              >
-                All Medicines
-              </Text>
-            );
-          },
-          tabBarIcon: ({ focused }) => {
-            return (
-              <BriefcaseMedical
-                size={18}
-                color={focused ? colors.primaryBlue : colors.pureBlack}
-              />
-            );
-          },
+        options={({ route }) => {
+          const routeName: any = getFocusedRouteNameFromRoute(route);
+          const hideRouteName = ['CameraScreen'];
+          return {
+            headerShown: false,
+            tabBarHideOnKeyboard: true,
+            tabBarLabel: ({ focused }) => {
+              return (
+                <Text
+                  style={{
+                    ...fonts.medium,
+                    fontSize: normalize(12),
+                    // color: focused ? colors.pureWhite : colors.primaryBlue,
+                    color: colors.primaryBlue,
+                  }}
+                >
+                  All Medicines
+                </Text>
+              );
+            },
+            tabBarIcon: ({ focused }) => {
+              return (
+                <BriefcaseMedical
+                  size={18}
+                  color={focused ? colors.primaryBlue : colors.pureBlack}
+                />
+              );
+            },
+            tabBarStyle: {
+              display: hideRouteName.includes(routeName) ? 'none' : 'flex',
+              backgroundColor: colors.pureWhite,
+              height: normalize(55) + insets.bottom,
+              paddingBottom: insets.bottom,
+            },
+          };
         }}
       />
       <AuthStack.Screen
