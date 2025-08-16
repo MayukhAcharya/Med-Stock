@@ -55,6 +55,9 @@ export const commonStyles = StyleSheet.create({
   justifyFlexEnd: {
     justifyContent: 'flex-end',
   },
+  justifyFlexStart: {
+    justifyContent: 'flex-start',
+  },
   opacity0: {
     opacity: 0,
   },

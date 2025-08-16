@@ -414,7 +414,12 @@ const AddMedicineScreen = () => {
     <BackgroundFill showDesign={false} backgroundColor="white">
       <Formik
         initialValues={{
-          medicineName: '',
+          medicineName:
+            allMedicineRoute.params &&
+            allMedicineRoute.params.addMedicineDetails &&
+            allMedicineRoute.params.addMedicineDetails.medicineName
+              ? allMedicineRoute.params.addMedicineDetails.medicineName
+              : '',
           quantity: '',
           category: 'Tablet',
         }}
