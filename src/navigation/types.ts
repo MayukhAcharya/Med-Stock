@@ -22,6 +22,7 @@ type medicineParams = {
 
 type addMedicineParams = {
   isFirstAdd?: boolean;
+  medicineName?: string;
 };
 
 //DASHBOARD STACK

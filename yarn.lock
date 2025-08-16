@@ -1588,6 +1588,11 @@
   dependencies:
     invariant "^2.2.4"
 
+"@react-native-ml-kit/text-recognition@^1.5.2":
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/@react-native-ml-kit/text-recognition/-/text-recognition-1.5.2.tgz#c8492d6d2874c07f83f8c245b933dd43c23a159d"
+  integrity sha512-zPnJrD19u4FhT0ntvtnZVEhvPym9KyZ0R+UXBYJbCT0ePL9DpMnSewBFnHy44YnXKGgbokRQXUQMMM+GOsQs7w==
+
 "@react-native/assets-registry@0.80.0":
   version "0.80.0"
   resolved "https://registry.yarnpkg.com/@react-native/assets-registry/-/assets-registry-0.80.0.tgz#7c03e0cf07fdd9e4a54ce2bbe8ae49f48440d422"
