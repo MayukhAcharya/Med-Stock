@@ -1,4 +1,10 @@
-import { View, Text, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  ToastAndroid,
+} from 'react-native';
 import React, { useState } from 'react';
 import * as yup from 'yup';
 import { Formik } from 'formik';
@@ -109,7 +115,9 @@ const MedicineDetailsScreen = () => {
       const data: any = medicineDetails._raw;
       setFieldValues(data);
       setUses(JSON.parse(data.uses));
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const updateMedicineDetailsMethod = async (values: medicineDataTypes) => {
@@ -136,6 +144,10 @@ const MedicineDetailsScreen = () => {
         isSaveLoading: false,
       }));
       getMedicineDetailsData();
+      ToastAndroid.show(
+        `${values.medicine_name} is updated successfully!`,
+        ToastAndroid.SHORT,
+      );
     } catch (error) {
       setIsLoading(prev => ({
         ...prev,
@@ -152,7 +164,7 @@ const MedicineDetailsScreen = () => {
     try {
       const medicineUpdate = await database
         .get<Medicine>('medicines')
-        .find(route.params?.medicineDetails.id);
+        .find(values.id);
       await database.write(async () => {
         await medicineUpdate.update(() => {
           medicineUpdate.markAsRequired = values.mark_as_required
@@ -168,11 +180,31 @@ const MedicineDetailsScreen = () => {
         isMarkAsRequired: false,
       }));
       getMedicineDetailsData();
+      ToastAndroid.show(
+        `${values.medicine_name} is updated successfully!`,
+        ToastAndroid.SHORT,
+      );
     } catch (error) {
       setIsLoading(prev => ({
         ...prev,
         isMarkAsRequired: true,
       }));
+    }
+  };
+
+  const deleteMedicineMethod = async (values: medicineDataTypes) => {
+    try {
+      const deleteMedicine = await database
+        .get<Medicine>('medicines')
+        .find(values.id);
+
+      await database.write(async () => {
+        deleteMedicine.destroyPermanently();
+      });
+      navigation.goBack();
+      ToastAndroid.show(`Medicine is deleted permanently!`, ToastAndroid.SHORT);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -187,6 +219,25 @@ const MedicineDetailsScreen = () => {
           text: 'Yes',
           onPress: () => {
             markAsRequiredMethod(values);
+          },
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+    );
+  };
+
+  const deleteAlertMethod = (values: medicineDataTypes) => {
+    Alert.alert(
+      'Warning',
+      `This action will delete ${values.medicine_name} from the app permanently. This action cannot be undone.`,
+      [
+        {
+          text: 'Yes',
+          onPress: () => {
+            deleteMedicineMethod(values);
           },
         },
         {
@@ -383,9 +434,8 @@ const MedicineDetailsScreen = () => {
                   mainStyle={[currentStyles.deleteStyle]}
                   labelStyle={currentStyles.deleteLabelStyle}
                   onPress={() => {
-                    // alertMethod(values);
+                    deleteAlertMethod(values);
                   }}
-                  // showActivityIndicator={isLoading.isMarkAsRequired}
                   indicatorColor={colors.pureWhite}
                 />
               </View>

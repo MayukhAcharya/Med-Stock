@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ToastAndroid } from 'react-native';
 import React, { useRef, useState } from 'react';
 import { PlusCircleIcon } from 'lucide-react-native';
 import { Formik } from 'formik';
@@ -205,6 +205,7 @@ const AddMedicineScreen = () => {
       }
 
       navigation.goBack();
+      ToastAndroid.show(`Medicine added successfully!`, ToastAndroid.SHORT);
       setIsLoading(prev => ({
         ...prev,
         isSaveLoading: false,
@@ -273,6 +274,7 @@ const AddMedicineScreen = () => {
           quantity: '',
         },
       });
+      ToastAndroid.show(`Medicine added successfully!`, ToastAndroid.SHORT);
       setIsLoading(prev => ({
         ...prev,
         isSaveAnotherLoading: false,

@@ -5,6 +5,7 @@ import {
   Pressable,
   Alert,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import React, { useState } from 'react';
 import { Edit, Trash2Icon } from 'lucide-react-native';
@@ -128,6 +129,27 @@ const HealthProfileMedicationScreen = () => {
     );
   };
 
+  const handleNavigationMethod = async (item: any) => {
+    try {
+      const medicineDetails = await database
+        .get('medicines')
+        .find(item.medicineId);
+      const data: any = medicineDetails._raw;
+      if (data) {
+        navigation.navigate('MedicineDetailsScreen', {
+          medicineDetails: {
+            id: item.medicineId,
+          },
+        });
+      }
+    } catch (error) {
+      ToastAndroid.show(
+        `${item.medicineName} is deleted permanently`,
+        ToastAndroid.SHORT,
+      );
+    }
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       const unsubscribe = getMedicationsMethod();
@@ -146,11 +168,7 @@ const HealthProfileMedicationScreen = () => {
                   medicineName={item.medicineName}
                   category={item.category}
                   onPress={() => {
-                    navigation.navigate('MedicineDetailsScreen', {
-                      medicineDetails: {
-                        id: item.medicineId,
-                      },
-                    });
+                    handleNavigationMethod(item);
                   }}
                   medicationTime={item.medicationTime}
                   isHealthProfile={true}
