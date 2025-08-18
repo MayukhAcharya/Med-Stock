@@ -11,17 +11,19 @@ export const styles = () =>
       paddingHorizontal: normalize(16),
     },
     logoText: {
-      ...fonts.bold,
+      ...fonts.semiBold,
       fontSize: normalize(25),
-      color: colors.pureBlack,
+      color: colors.pureWhite,
     },
     loginRegisterContainer: {
       marginTop: normalize(60, 'height'),
       width: normalize(343, 'width'),
       backgroundColor: colors.pureWhite,
-      borderRadius: normalize(12),
+      borderRadius: normalize(20),
       elevation: 10,
       flexDirection: 'row',
+      borderWidth: 1,
+      borderColor: '#E0E0E0',
     },
     loginTextStyle: {
       ...fonts.bold,
@@ -51,6 +53,7 @@ export const styles = () =>
     buttonStyle: {
       width: normalize(295, 'width'),
       height: normalize(46, 'height'),
+      borderRadius: normalize(24),
     },
     orViewStyle: {
       marginTop: normalize(25, 'height'),
@@ -108,5 +111,22 @@ export const styles = () =>
     inputContainer: {
       marginTop: normalize(25, 'height'),
       rowGap: normalize(16),
+    },
+    imageStyle: {
+      width: normalize(50, 'width'),
+      height: normalize(50, 'height'),
+      resizeMode: 'contain',
+    },
+    headerStyle: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: normalize(20, 'height'),
+      columnGap: normalize(10),
+    },
+    buttonLabelStyle: {
+      ...fonts.semiBold,
+      color: colors.pureWhite,
+      fontSize: normalize(16),
     },
   });
