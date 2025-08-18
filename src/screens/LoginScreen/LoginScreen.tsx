@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -78,8 +78,12 @@ const LoginScreen = () => {
   return (
     <BackgroundFill showDesign={true} scroll>
       <View style={currentStyles.container}>
-        <View style={[commonStyles.mt20, commonStyles.aic]}>
-          <Text style={currentStyles.logoText}>MEDISTOCK LOGO</Text>
+        <View style={[currentStyles.headerStyle]}>
+          <Text style={currentStyles.logoText}>Med Stock</Text>
+          <Image
+            source={require('src/assets/img/logo.png')}
+            style={currentStyles.imageStyle}
+          />
         </View>
         <View style={[commonStyles.aic, commonStyles.mt30]}>
           <View style={currentStyles.loginRegisterContainer}>
@@ -159,11 +163,12 @@ const LoginScreen = () => {
                   </View>
                   <View style={commonStyles.mt38}>
                     <Button
-                      label="Let's appName"
+                      label="Get Started"
                       onPress={() => {
                         handleSubmit();
                       }}
                       mainStyle={currentStyles.buttonStyle}
+                      labelStyle={currentStyles.buttonLabelStyle}
                       showActivityIndicator={isLoading}
                     />
                   </View>

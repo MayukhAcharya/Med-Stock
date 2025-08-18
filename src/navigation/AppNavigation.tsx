@@ -12,6 +12,7 @@ import {
   User,
 } from 'lucide-react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import SplashScreen from 'react-native-splash-screen';
 
 import {
   AllMedicineStackParamList,
@@ -369,8 +370,10 @@ const AppNavigation = () => {
       .forEach(item => {
         if (item.length > 0) {
           setUserType('AuthUser');
+          SplashScreen.hide();
         } else {
           setUserType('UnAuthUser');
+          SplashScreen.hide();
         }
       });
   }, []);
