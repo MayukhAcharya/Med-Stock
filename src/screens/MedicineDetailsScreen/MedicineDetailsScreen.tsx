@@ -67,6 +67,10 @@ const categoryOptions = [
     label: 'Cartridge/Ampule',
     value: 'syringe',
   },
+  {
+    label: 'Oral Solution',
+    value: 'oral',
+  },
 ];
 
 const MedicineDetailsScreen = () => {

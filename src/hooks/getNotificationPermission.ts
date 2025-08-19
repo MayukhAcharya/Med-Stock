@@ -30,7 +30,7 @@ export const batteryOptimizationMethod = async () => {
     await notifee.isBatteryOptimizationEnabled();
   if (batteryOptimizationEnabled) {
     Alert.alert(
-      'Restrictions Detected',
+      'Battery Restrictions Detected',
       'To ensure notifications are delivered, please disable battery optimization for the app.',
       [
         // 3. launch intent to navigate the user to the appropriate screen
@@ -69,7 +69,7 @@ export const autostartMethod = async (
   if (!autostartEnabled) {
     if (powerManagerInfo.activity) {
       Alert.alert(
-        'Restrictions Detected',
+        'AutoStart Restrictions Detected',
         'To ensure notifications are delivered, please turn on Autostart to prevent the app from being killed',
         [
           // 3. launch intent to navigate the user to the appropriate screen

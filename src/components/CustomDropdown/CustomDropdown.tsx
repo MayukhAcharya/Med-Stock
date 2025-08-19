@@ -12,13 +12,14 @@ import {
   BandageIcon,
   ChevronDown,
   DropletsIcon,
+  Milk,
   PillBottleIcon,
   PillIcon,
   SyringeIcon,
 } from 'lucide-react-native';
 
 import { styles } from 'src/components/CustomDropdown/styles';
-import CustomTextInput from '../CustomTextInput/CustomTextInput';
+import CustomTextInput from 'src/components/CustomTextInput/CustomTextInput';
 import { colors } from 'src/config/colors';
 import { OintmentIcon } from 'src/assets/svg/OintmentIcon';
 
@@ -114,6 +115,8 @@ const CustomDropdown = (props: dropdownProps) => {
                       <DropletsIcon />
                     ) : item.value === 'syringe' ? (
                       <SyringeIcon />
+                    ) : item.value === 'oral' ? (
+                      <Milk />
                     ) : null}
                   </View>
                 </TouchableOpacity>

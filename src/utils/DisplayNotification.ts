@@ -33,6 +33,8 @@ export const onDisplayNotification = async (
         pressAction: {
           id: 'default',
         },
+        smallIcon: 'ic_small_icon',
+        color: '#FFFFFF',
       },
     });
   } catch (error) {

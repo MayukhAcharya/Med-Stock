@@ -8,6 +8,7 @@ import {
   DropletsIcon,
   Drumstick,
   ImageOffIcon,
+  Milk,
   PillBottleIcon,
   PillIcon,
   SyringeIcon,
@@ -52,6 +53,8 @@ const MedicineListCard = (props: medicineListProps) => {
           <DropletsIcon size={75} />
         ) : category === 'Cartridge/Ampule' ? (
           <SyringeIcon size={75} />
+        ) : category === 'Oral Solution' ? (
+          <Milk size={75} />
         ) : (
           <ImageOffIcon size={75} />
         )}

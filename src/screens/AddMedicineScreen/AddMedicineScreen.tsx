@@ -1,4 +1,10 @@
-import { View, Text, TouchableOpacity, ToastAndroid } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ToastAndroid,
+  Keyboard,
+} from 'react-native';
 import React, { useRef, useState } from 'react';
 import { PlusCircleIcon } from 'lucide-react-native';
 import { Formik } from 'formik';
@@ -88,6 +94,10 @@ const categoryOptions = [
   {
     label: 'Cartridge/Ampule',
     value: 'syringe',
+  },
+  {
+    label: 'Oral Solution',
+    value: 'oral',
   },
 ];
 
@@ -397,6 +407,8 @@ const AddMedicineScreen = () => {
             },
             importance: AndroidImportance.HIGH,
             visibility: AndroidVisibility.PUBLIC,
+            smallIcon: 'ic_small_icon',
+            color: '#FFFFFF',
           },
         },
         trigger,
@@ -519,6 +531,7 @@ const AddMedicineScreen = () => {
                   labelSyle={currentStyles.labelStyle}
                   onChange={date => {
                     setDate(date);
+                    Keyboard.dismiss();
                   }}
                 />
               </View>
