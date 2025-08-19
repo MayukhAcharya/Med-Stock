@@ -134,6 +134,8 @@ const AddEditMedicationBottomSheet = (props: addEditMedicationProps) => {
             },
             importance: AndroidImportance.HIGH,
             visibility: AndroidVisibility.PUBLIC,
+            smallIcon: 'ic_small_icon',
+            color: '#FFFFFF',
           },
         },
         trigger,

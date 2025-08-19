@@ -5,6 +5,7 @@ import {
   BanIcon,
   DropletsIcon,
   ImageOffIcon,
+  Milk,
   MoveDiagonalIcon,
   PillBottleIcon,
   PillIcon,
@@ -68,6 +69,8 @@ const MedicineCard = (props: medicineCardProps) => {
             <DropletsIcon size={70} color={color} />
           ) : category === 'Cartridge/Ampule' ? (
             <SyringeIcon size={70} color={color} />
+          ) : category === 'Oral Solution' ? (
+            <Milk size={75} color={color} />
           ) : (
             <ImageOffIcon size={70} color={color} />
           )}

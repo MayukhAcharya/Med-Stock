@@ -256,6 +256,8 @@ const AddHealthProfileScreen = () => {
             },
             importance: AndroidImportance.HIGH,
             visibility: AndroidVisibility.PUBLIC,
+            smallIcon: 'ic_small_icon',
+            color: '#FFFFFF',
           },
         },
         trigger,
@@ -450,7 +452,7 @@ const AddHealthProfileScreen = () => {
                 />
                 <View style={[commonStyles.row, commonStyles.spaceBetween]}>
                   <DateComponent
-                    label="Start Date"
+                    label="Start Date*"
                     borderColor={colors.borderColor}
                     value={fromDate}
                     placeholder="date"
@@ -462,7 +464,7 @@ const AddHealthProfileScreen = () => {
                     }}
                   />
                   <DateComponent
-                    label="End Date"
+                    label="End Date*"
                     borderColor={colors.borderColor}
                     value={toDate}
                     placeholder="date"

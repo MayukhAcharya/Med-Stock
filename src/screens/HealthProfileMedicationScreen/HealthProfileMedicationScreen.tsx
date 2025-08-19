@@ -175,7 +175,7 @@ const HealthProfileMedicationScreen = () => {
                 />
               );
             }}
-            keyExtractor={item => item.medicineId}
+            keyExtractor={item => item.id}
             ItemSeparatorComponent={() => <View style={commonStyles.mt20} />}
             showsVerticalScrollIndicator={false}
           />
