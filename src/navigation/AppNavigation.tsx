@@ -41,7 +41,6 @@ import HealthProfileMedicationScreen from 'src/screens/HealthProfileMedicationSc
 import EditMedicationScreen from 'src/screens/EditMedicationScreen';
 import AddHealthProfileScreen from 'src/screens/AddHealthProfileScreen';
 import OnboardingScreen from 'src/screens/OnboardingScreen';
-import CameraScreen from 'src/screens/CameraScreen';
 
 const AppNavigation = () => {
   const UnAuthStack = createNativeStackNavigator<UnAuthStackParamList>();
@@ -126,14 +125,6 @@ const AppNavigation = () => {
       <AllMedicineStack.Screen
         name="AddMedicineScreen"
         component={AddMedicineScreen}
-        options={{
-          headerShown: true,
-          header: () => <Header title="Add Medicine" showBackIcon={true} />,
-        }}
-      />
-      <AllMedicineStack.Screen
-        name="CameraScreen"
-        component={CameraScreen}
         options={{
           headerShown: true,
           header: () => <Header title="Add Medicine" showBackIcon={true} />,

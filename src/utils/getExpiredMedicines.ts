@@ -45,3 +45,21 @@ export const getExpiredMedicines = async () => {
 
   return expired;
 };
+
+export function isWithinNotificationWindow() {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+
+  // Define allowed time ranges as [startHour, endHour]
+  const ranges = [
+    [9, 10], // 9am - 10am
+    [13, 14], // 1pm - 2pm
+    [18, 19], // 6pm - 7pm
+    [21, 22], // 9pm - 10pm
+  ];
+
+  return ranges.some(([start, end]) => {
+    return hours >= start && (hours < end || (hours === end && minutes === 0));
+  });
+}

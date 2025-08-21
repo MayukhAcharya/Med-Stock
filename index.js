@@ -9,7 +9,10 @@ import notifee, { EventType, TriggerType } from '@notifee/react-native';
 import BackgroundFetch from 'react-native-background-fetch';
 
 import { notificationService } from 'src/utils/NotificationService';
-import { getExpiredMedicines } from 'src/utils/getExpiredMedicines';
+import {
+  getExpiredMedicines,
+  isWithinNotificationWindow,
+} from 'src/utils/getExpiredMedicines';
 import { ReusableDateFormatter } from 'src/utils/FormattedDate';
 import { getHealthProofileForCancelNotis } from 'src/utils/getHealthProfileForCancelNotis';
 import { database } from 'src/Database/database';
@@ -51,8 +54,11 @@ const HeadlessTask = async event => {
   const { flattenedNotificationIds, profileIds } =
     await getHealthProofileForCancelNotis();
 
+  const isWithinNotificationTime = isWithinNotificationWindow();
+
   for (let [index, item] of expiredMedicines.entries()) {
     const { medicine_name, expiry_date } = item;
+    if (!isWithinNotificationTime) continue;
     await notificationService(
       `${medicine_name} is Expired`,
       `${medicine_name} expired on ${ReusableDateFormatter(

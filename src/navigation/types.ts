@@ -22,7 +22,6 @@ type medicineParams = {
 
 type addMedicineParams = {
   isFirstAdd?: boolean;
-  medicineName?: string;
 };
 
 //DASHBOARD STACK
@@ -37,7 +36,6 @@ export type AllMedicineStackParamList = {
   AllMedicinesScreen: undefined;
   MedicineDetailsScreen: { medicineDetails: medicineParams };
   AddMedicineScreen: { addMedicineDetails: addMedicineParams }; //will be used only for first time
-  CameraScreen: undefined;
 };
 
 //PROFILE STACK
