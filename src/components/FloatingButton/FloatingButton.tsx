@@ -1,17 +1,6 @@
 import { View, Pressable } from 'react-native';
 import React from 'react';
-import Animated, {
-  Extrapolation,
-  interpolate,
-  useAnimatedStyle,
-  useDerivedValue,
-  useSharedValue,
-  withDelay,
-  withSpring,
-  withTiming,
-  Easing,
-} from 'react-native-reanimated';
-import { CameraIcon, PlusIcon, TextIcon } from 'lucide-react-native';
+import { PlusIcon } from 'lucide-react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { styles } from 'src/components/FloatingButton/styles';
@@ -29,101 +18,25 @@ type floatinButtonProps = {
 const FloatingButton = (props: floatinButtonProps) => {
   const { isFistAdd } = props;
   const currentStyles = styles();
-  const firstValue = useSharedValue(0);
-  const secondValue = useSharedValue(0);
-  const isOpen = useSharedValue(false);
-  const progress = useDerivedValue(() =>
-    isOpen.value ? withTiming(1) : withTiming(0),
-  );
+
   const navigation = useNavigation<navigationPropsToAddMedicine>();
-
-  const handlePress = () => {
-    const config = {
-      easing: Easing.bezier(0.68, -0.6, 0.32, 1.6),
-      duration: 500,
-    };
-    if (isOpen.value) {
-      secondValue.value = withTiming(30, config);
-      firstValue.value = withDelay(50, withTiming(30, config));
-    } else {
-      secondValue.value = withDelay(100, withSpring(130));
-      firstValue.value = withSpring(210);
-    }
-    isOpen.value = !isOpen.value;
-  };
-
-  const plusIconAnimate = useAnimatedStyle(() => {
-    return {
-      transform: [{ rotate: `${progress.value * 45}deg` }],
-    };
-  });
-
-  const cameraIconAnimate = useAnimatedStyle(() => {
-    const scale = interpolate(
-      secondValue.value,
-      [30, 130],
-      [0, 1],
-      Extrapolation.CLAMP,
-    );
-
-    return {
-      bottom: secondValue.value,
-      transform: [{ scale: scale }],
-    };
-  });
-
-  const textIconAnimate = useAnimatedStyle(() => {
-    const scale = interpolate(
-      firstValue.value,
-      [30, 210],
-      [0, 1],
-      Extrapolation.CLAMP,
-    );
-
-    return {
-      bottom: firstValue.value,
-      transform: [{ scale: scale }],
-    };
-  });
 
   return (
     <View style={[currentStyles.container]}>
-      <Animated.View style={[currentStyles.smallFab, textIconAnimate]}>
+      <View style={[currentStyles.fab]}>
         <Pressable
-          style={currentStyles.smallIconsPressStyle}
           onPress={() => {
-            handlePress();
             navigation.navigate('AddMedicineScreen', {
               addMedicineDetails: {
                 isFirstAdd: isFistAdd,
               },
             });
           }}
-        >
-          <TextIcon color={colors.pureWhite} />
-        </Pressable>
-      </Animated.View>
-      <Animated.View style={[currentStyles.smallFab, cameraIconAnimate]}>
-        <Pressable
-          style={currentStyles.smallIconsPressStyle}
-          onPress={() => {
-            handlePress();
-            navigation.navigate('CameraScreen');
-          }}
-        >
-          <CameraIcon color={colors.pureWhite} />
-        </Pressable>
-      </Animated.View>
-      <Animated.View style={[currentStyles.fab, plusIconAnimate]}>
-        <Pressable
-          onPress={() => {
-            handlePress();
-          }}
           style={currentStyles.plusIconPressStyle}
         >
           <PlusIcon color={colors.pureWhite} />
         </Pressable>
-      </Animated.View>
+      </View>
     </View>
   );
 };
