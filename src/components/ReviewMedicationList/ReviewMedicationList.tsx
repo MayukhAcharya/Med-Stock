@@ -41,7 +41,7 @@ const ReviewMedicationList = (props: reviewMedicationListProps) => {
       <View style={[currentStyles.tableColumn, commonStyles.w30Per]}>
         <Text style={currentStyles.flatlistHeaderTextStyle}>Sr No.</Text>
       </View>
-      <View style={[currentStyles.tableColumn, commonStyles.w45Per]}>
+      <View style={[currentStyles.tableColumn, commonStyles.w65per]}>
         <Text style={currentStyles.flatlistHeaderTextStyle}>Medicine Name</Text>
       </View>
     </View>
