@@ -9,7 +9,7 @@ import {
   StatusBar,
 } from 'react-native';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
-import { Calendar } from 'react-native-calendars';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import { styles } from 'src/components/DateComponent/styles';
 import CustomTextInput from '../CustomTextInput/CustomTextInput';
@@ -64,11 +64,13 @@ const DateComponent = (props: dateProps) => {
     day: 'numeric',
   });
 
-  const handleCalendarChange = (date: Date) => {
-    setSelectedDate(date);
-    setIsOpen(false);
-    if (onChange) {
-      onChange(date);
+  const handleCalendarChange = (event: any, date?: Date) => {
+    if (date) {
+      setSelectedDate(date);
+      setIsOpen(false);
+      if (onChange) {
+        onChange(date);
+      }
     }
   };
 
@@ -102,53 +104,15 @@ const DateComponent = (props: dateProps) => {
         />
       </TouchableOpacity>
       {isOpen ? (
-        <Modal
-          transparent
-          visible={isOpen}
-          animationType="slide"
-          onRequestClose={() => setIsOpen(false)}
-        >
-          <StatusBar
-            backgroundColor={colors.backgroundTransparent}
-            barStyle={'light-content'}
-            translucent
+        <View style={currentStyles.mainContainer}>
+          <DateTimePicker
+            mode="date"
+            value={new Date(value)}
+            onChange={handleCalendarChange}
+            display="calendar"
+            minimumDate={minDate ? new Date(minDate) : undefined}
           />
-          <View style={[currentStyles.mainContainer]}>
-            <TouchableOpacity
-              onPress={() => setIsOpen(false)}
-              style={currentStyles.crossIconStyle}
-            >
-              <X color={colors.pureWhite} size={25} />
-            </TouchableOpacity>
-            <Calendar
-              onDayPress={day => handleCalendarChange(new Date(day.timestamp))}
-              current={new Date().toISOString()}
-              markingType={'custom'}
-              markedDates={{
-                [selectedDate ? selectedDate.toISOString().split('T')[0] : '']:
-                  {
-                    selected: true,
-                    selectedColor: colors.primaryBlue,
-                  },
-              }}
-              style={currentStyles.calendarStyle}
-              renderArrow={direction => {
-                if (direction === 'left') {
-                  return <ChevronLeft />;
-                } else {
-                  return <ChevronRight />;
-                }
-              }}
-              theme={{
-                textDayFontFamily: 'PlusJakartaSans-Regular',
-                textDayHeaderFontFamily: 'PlusJakartaSans-Regular',
-                textMonthFontFamily: 'PlusJakartaSans-Regular',
-              }}
-              initialDate={value}
-              minDate={minDate}
-            />
-          </View>
-        </Modal>
+        </View>
       ) : null}
     </View>
   );

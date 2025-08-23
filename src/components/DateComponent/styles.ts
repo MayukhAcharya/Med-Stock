@@ -6,7 +6,7 @@ export const styles = () =>
   StyleSheet.create({
     mainContainer: {
       backgroundColor: colors.backgroundTransparent,
-      paddingTop: width / 3,
+      // paddingTop: width / 3,
       alignItems: 'center',
       flex: 1,
     },
