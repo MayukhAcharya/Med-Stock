@@ -6,6 +6,7 @@ import {
   ActivityIndicator,
   Platform,
   Alert,
+  AppState,
 } from 'react-native';
 import {
   AlertTriangleIcon,
@@ -14,6 +15,7 @@ import {
   ShieldPlusIcon,
 } from 'lucide-react-native';
 import React, { useEffect, useRef, useState } from 'react';
+import notifee, { AuthorizationStatus } from '@notifee/react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { styles } from 'src/screens/DashboardScreen/styles';
@@ -152,6 +154,20 @@ const DashboardScreen = () => {
     } else {
       batteryOptimizationMethod();
     }
+  }, []);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', async state => {
+      if (state === 'active') {
+        const settings = await notifee.getNotificationSettings();
+
+        if (settings.authorizationStatus === AuthorizationStatus.AUTHORIZED) {
+          await batteryOptimizationMethod();
+        }
+      }
+    });
+
+    return () => subscription.remove();
   }, []);
 
   return (

@@ -10,18 +10,22 @@ export const requestPermssion = async () => {
     await batteryOptimizationMethod();
     return 'Authorized';
   } else if (settings.authorizationStatus == AuthorizationStatus.DENIED) {
-    Alert.alert('Permission', 'Permission needed to send Notifications', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'Settings',
-        onPress: () => {
-          Linking.openSettings();
+    Alert.alert(
+      'Warning',
+      'You will not get important notifications, please update the notifcation permission now',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
         },
-      },
-    ]);
+        {
+          text: 'Settings',
+          onPress: async () => {
+            Linking.openSettings();
+          },
+        },
+      ],
+    );
   }
 };
 
