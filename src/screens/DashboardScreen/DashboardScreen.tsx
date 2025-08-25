@@ -149,19 +149,31 @@ const DashboardScreen = () => {
   );
 
   useEffect(() => {
-    if (Platform.OS === 'android' && Platform.Version >= 33) {
-      requestPermssion();
-    } else {
-      batteryOptimizationMethod();
-    }
+    const permissionMethod = async () => {
+      if (Platform.OS === 'android' && Platform.Version >= 33) {
+        requestPermssion();
+      } else {
+        batteryOptimizationMethod();
+      }
+    };
+
+    permissionMethod();
   }, []);
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', async state => {
       if (state === 'active') {
+        // Re-check permissions after returning from settings
         const settings = await notifee.getNotificationSettings();
+        const batteryOptimizationEnabled =
+          await notifee.isBatteryOptimizationEnabled();
 
-        if (settings.authorizationStatus === AuthorizationStatus.AUTHORIZED) {
+        if (
+          settings.authorizationStatus === AuthorizationStatus.AUTHORIZED &&
+          batteryOptimizationEnabled &&
+          Platform.OS === 'android' &&
+          Platform.Version >= 33
+        ) {
           await batteryOptimizationMethod();
         }
       }
